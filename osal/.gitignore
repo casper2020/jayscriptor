@@ -1,0 +1,13 @@
+###########################
+# OSAL PROJECT .gitignore
+###########################
+
+*.o
+out
+src/osal/osal_date.cc
+
+###############
+# GLOBAL XCODE
+###############
+*xcuserdata*
+*xcworkspacedata*
