@@ -5,20 +5,16 @@ INTERM = casper/java/fake_java_parser.hh casper/java/fake_java_parser.cc
 
 OBJECTS = casper/java/fake_java_parser.o      \
 					jayscriptor.o 											\
-	        casper/term.o 											\
-				  casper/number_parser.o              \
-					./osal/src/osal/osal_date.o        	\
-					./osal/src/osal/posix/posix_time.o 	\
-					./osal/src/osal/exception.o        	\
-					./osal/src/osal/utils/pow10.o      	\
-					casper/java/fake_java_term.o        \
+					./osal/src/osal/osal_date.o         \
+					./osal/src/osal/posix/posix_time.o  \
+					./osal/src/osal/exception.o         \
+					./osal/src/osal/utils/pow10.o       \
 					casper/java/fake_java_scanner.o     \
 					casper/scanner.o                    \
 					casper/java/fake_java_expression.o  \
-					casper/abstract_data_source.o       \
 					casper/java/ast.o                   \
-					casper/java/interpreter.o           \
-					casper/dm_data_source.o
+					casper/java/interpreter.o
+
 
 jayscriptor: $(OBJECTS)
 	$(CXX) -o $@ $(OBJECTS)

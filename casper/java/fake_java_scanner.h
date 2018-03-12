@@ -23,7 +23,6 @@
 #define NRS_CASPER_CASPER_JAVA_FAKE_JAVA_SCANNER_H
 
 #include "casper/scanner.h"
-#include "casper/java/fake_java_term.h"
 #include "casper/java/fake_java_parser.hh"
 
 namespace casper
@@ -36,21 +35,21 @@ namespace casper
         class FakeJavaScanner : public casper::Scanner
         {
             friend class FakeJavaParser;
-            
+
         public: // methods
-            
+
             FakeJavaScanner ();
             virtual ~FakeJavaScanner ();
-            
+
         public: // methods
-            
+
             virtual void SetInput (const char* a_expression, size_t a_lenght);
-            
+
             FakeJavaParser::token_type Scan (FakeJavaParser::semantic_type*, casper::java::location* a_location);
-            
+
             void SetDoubleVar (const char* a_var_name, double a_double);
             void SetStringVar (const char* a_var_name, const char* a_value);
-            
+
         };
 
     } // namespace java

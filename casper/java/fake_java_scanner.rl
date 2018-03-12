@@ -19,16 +19,21 @@
  * along with casper.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "casper/java/fake_java_scanner.h"
-#include "osal/osalite.h"
+ #include "casper/java/fake_java_scanner.h"
+ #include "osal/osalite.h"
+#include "osal/osal_types.h"
+#include "osal/osal_time.h"
+#include "osal/osal_date.h"
+#include "osal/utils/pow10.h"
+#include "osal/exception.h"
 
-%%{
-    machine casper_fake_java_scanner;
-    include generic_number_parser "../../../osal/src/osal/ragelib/generic_number_parser.rlh";
-    alphtype char;
-    write data;
+ %%{
+     machine casper_fake_java_scanner;
+     include generic_number_parser "../../../osal/src/osal/ragelib/generic_number_parser.rlh";
+     alphtype char;
+     write data;
 
-    ws = [ \t\n];
+     ws = [ \t\n];
 
     variable_ref  = '$V' [{(] [a-zA-Z_][a-zA-Z0-9#_\-?]* [})];
 

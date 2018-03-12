@@ -1,16 +1,11 @@
-#include <stdio.h>
 #include <iostream>
 #include <fstream>
-#include "casper/term.h"
-#include "casper/dm_data_source.h"
+#include "osal/exception.h"
 #include "casper/java/fake_java_expression.h"
 
 int main(int argc, char* argv[]){
 
   casper::java::FakeJavaExpression exp;
-  casper::MyDataSource* data_source = new casper::MyDataSource;
-
-  exp.SetDataSource(data_source);
 
   std::ifstream in(argv[1]);
 
