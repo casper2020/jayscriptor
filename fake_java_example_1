@@ -7,3 +7,4 @@
 ("teste").isEmpty() ? "ola" : "ola2: " + "teste2"
 6 == 1 ? "Original" : (6.toString() + "ª Via")
 ("teste").indexOf("es"+"t")
+$P{tax_registration_number} + ": A idade de " + ($F{gajo} ? "tipo" : "tipa") + " " + $F{field2} + " é " + ($F{field1} + 0.5)

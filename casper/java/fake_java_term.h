@@ -24,7 +24,6 @@
 
 #include "casper/term.h"
 
-
 namespace casper
 {
     namespace java
@@ -38,7 +37,7 @@ namespace casper
 
                      FakeJavaTerm      ();
             virtual ~FakeJavaTerm      ();
-
+            
             virtual void  SetAndHandleError  (int a_error);
             void          operator          =(const char* a_string);
             void          operator          =(std::string a_string);
@@ -51,19 +50,19 @@ namespace casper
             text_ = a_string;
             type_ = EText;
         }
-
+        
         inline void FakeJavaTerm::operator =(std::string a_string)
         {
             text_ = a_string;
             type_ = EText;
         }
-
+        
         inline void FakeJavaTerm::operator =(double a_value)
         {
             number_ = a_value;
             type_   = ENumber;
         }
-
+        
     } // namespace see
 } // namespace casper
 

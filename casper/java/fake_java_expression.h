@@ -26,7 +26,6 @@
 #include "casper/java/fake_java_parser.hh"
 #include "casper/java/fake_java_term.h"
 #include "casper/abstract_data_source.h"
-#include "casper/java/interpreter.h"
 
 #if !defined(CASPER_NO_ICU)
     #include "unicode/locid.h"
@@ -86,8 +85,6 @@ namespace casper
 
             const Term& Calculate           (const std::string& a_expression);
             const Term& Calculate           (const char* a_expression, size_t a_len);
-            void       Convert           (const std::string& a_expression);
-            void       Convert           (const char* a_expression, size_t a_len);
             const Term& GetVariable         (const char* a_varname) const;
             void        SetDoubleVariable   (const char* a_varname, double a_double);
             void        SetStringVariable   (const char* a_varname, const char* a_value);
@@ -146,6 +143,12 @@ namespace casper
 
         inline int casper::java::FakeJavaExpression::GetFieldType (const char* a_field_name)
         {
+
+            const Term* result = data_source_->GetField(a_field_name);
+            std::cout << result->GetType() << '\n';
+            return result->GetType();
+
+
             IntHash::iterator it = field_type_map_.find(a_field_name);
             if ( field_type_map_.end() == it ) {
                 return Term::EUndefined;

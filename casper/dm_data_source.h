@@ -14,6 +14,7 @@ namespace casper {
       virtual void        AddEmptyRow   ();
       virtual const Term* GetParameter  (const char* a_param_name);
       virtual const Term* GetField      (const char* a_field_name);
+      virtual void        AppendDataRow (const casper::SymbolTable& a_row);
       virtual void        Rewind        ();
 
                MyDataSource ();

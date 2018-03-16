@@ -10,6 +10,15 @@ casper::MyDataSource::~MyDataSource (){
     /* empty */
 }
 
+void casper::MyDataSource::AppendDataRow (const casper::SymbolTable& a_row){
+    casper::SymbolTable new_line;
+    for ( auto symb : a_row ) {
+        new_line[symb.first] = symb.second;
+    }
+    lines_.push_back(new_line);
+    data_source_row_count_++;
+}
+
 void casper::MyDataSource::SetParameter (const char* a_name, const Term& a_value){
     scalars_[a_name] = a_value;
 }

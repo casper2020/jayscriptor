@@ -27,14 +27,13 @@
 const char* const casper::java::FakeJavaExpression::k_java_number_types_ [] = { "java.lang.Integer", "java.lang.Long", "java.lang.Double", "java.lang.Float", "java.lang.Byte", nullptr };
 const char* const casper::java::FakeJavaExpression::k_java_string_types_ [] = { "java.lang.String", nullptr };
 const char* const casper::java::FakeJavaExpression::k_boolean_string_types_ [] = { "java.lang.Boolean", nullptr };
-extern AstNode root;
 
 /**
  * @brief Constructor
  */
 #if !defined(CASPER_NO_ICU)
 casper::java::FakeJavaExpression::FakeJavaExpression (const U_ICU_NAMESPACE::Locale* a_locale)
-    : parser_(scanner_, *this), locale_ptr_(a_locale), use_data_source_variables_(false), use_data_source_param_types_(false)
+    : parser_(scanner_, *this), locale_ptr_(a_locale), use_data_source_variables_(false), use_data_source_param_types_(true)
 {
     data_source_ = nullptr;
 }
@@ -55,78 +54,6 @@ casper::java::FakeJavaExpression::FakeJavaExpression ()
 casper::java::FakeJavaExpression::~FakeJavaExpression ()
 {
     /* empty */
-}
-
-
-//move this to other file....
-void printAstTree(AstNode* node, int ntabs){
-  //Numbers
-  if(node->getType()==1){
-    for(int i=0; i<ntabs; i++){
-      std::cout << "\t";
-    }
-    std::cout << node->getVal() << "\n";
-  }
-  //Text
-  else if(node->getType()==2){
-    for(int i=0; i<ntabs; i++){
-        std::cout << "\t";
-    }
-    std::cout  << node->getText() << "\n";
-  }
-  //Expressions
-  else if(node->getType()==3){
-    for(int i=0; i<ntabs; i++){
-        std::cout << "\t";
-    }
-    std::cout  << node->getOp() << "\n";
-    printAstTree(node->getLeft(), ++ntabs);
-    printAstTree(node->getRight(), ntabs++);
-  }
-  //Operations
-  else if(node->getType()==4){
-    for(int i=0; i<ntabs; i++){
-        std::cout << "\t";
-    }
-    std::cout  << node->getOp() << "\n";
-    printAstTree(node->getLeft(), ++ntabs);
-    if(nullptr != node->getRight())
-      printAstTree(node->getRight(), ntabs++);
-  }
-
-  else if(node->getType()==5){
-    for(int i=0; i<ntabs; i++){
-        std::cout << "\t";
-    }
-    std::cout  << node->getOp() << "\n";
-  //  std::cout << "between " << node->getBIndex() << " " << node->getEIndex() << "\n";
-    printAstTree(node->getLeft(), ++ntabs);
-    if(nullptr != node->getRight())
-      printAstTree(node->getRight(), ntabs++);
-  }
-}
-
-
-void casper::java::FakeJavaExpression::Convert (const std::string& a_expression){
-    Convert(a_expression.c_str(), a_expression.size());
-}
-
-void casper::java::FakeJavaExpression::Convert (const char* a_expression, size_t a_len){
-    try {
-        result_.SetNull();
-        root = ast_null();
-        scanner_.SetInput(a_expression, a_len);
-        parser_.parse();
-
-        printJS(&root);
-
-    } catch (osal::Exception& a_exception) {
-        if ( a_exception .IsNull() ) {
-            result_.SetNull();
-        } else {
-            throw a_exception;
-        }
-    }
 }
 
 const casper::Term& casper::java::FakeJavaExpression::Calculate (const std::string& a_expression)
@@ -198,6 +125,7 @@ void casper::java::FakeJavaExpression::GetParameter (Term& o_term, const char* a
     if ( param != NULL ) {
 
         int parameter_type;
+        use_data_source_param_types_ = true;
 
         if ( true == use_data_source_param_types_ ) {
             parameter_type = param->GetType();
@@ -240,9 +168,24 @@ void casper::java::FakeJavaExpression::GetParameter (Term& o_term, const char* a
     }
 }
 
+//CHANGE THIS!!!!
 void casper::java::FakeJavaExpression::GetField (Term& o_term, const char* a_field_name)
 {
     const Term* field = data_source_->GetField(a_field_name);
+
+    int tipo = field->GetType();
+
+    if(tipo == Term::EText){
+        o_term = field->ToStringBoolAsNum();
+    }
+    else if(tipo == Term::ENumber){
+        o_term = field->ToNumber();
+    }
+    else if(tipo == Term::EBoolean){
+        o_term = field->ToBoolean();
+    }
+    else throw OSAL_EXCEPTION("Field '%s' error...", a_field_name);
+/*
     if ( field != NULL ) {
         IntHash::iterator typ_it = field_type_map_.find(a_field_name);
 
@@ -274,7 +217,7 @@ void casper::java::FakeJavaExpression::GetField (Term& o_term, const char* a_fie
         }
     } else {
         o_term.SetNull();
-    }
+    }*/
 }
 
 void casper::java::FakeJavaExpression::SetFieldType (const char* a_field_name, const char* a_class_name)

@@ -27,27 +27,26 @@
 #include <stdint.h>
 #include <math.h> // NAN
 
-
 namespace casper {
 
     class NumberParser
     {
-
+        
     public: // Static Data
-
+        
         static const uint8_t k_max_fractional_digits_;
-
+        
     private: // Data
-
+        
         double number_;
-
+        
     private: // Parser Data
-
+        
         int         cs_;
         char const* ts_;
         char const* te_;
         int         act_;
-
+        
         uint64_t integer_;
         uint64_t fractional_;
         uint8_t  fractional_digits_cnt_;
@@ -57,38 +56,38 @@ namespace casper {
         int64_t  integer_value_;
         double   double_value_;
         bool     negative_exponent_;
-        bool     negative_;
-
+        bool     negative_;        
+        
     public: // Constructor(s) / Destructor
-
+        
         NumberParser ();
         virtual ~NumberParser ();
-
+        
     public: // Method(s) / Function(s)
-
+        
         double ParseDouble (const std::string& a_number);
         float  ParseFloat  (const std::string& a_number);
         int    ParseInt    (const std::string& a_number);
 
     protected: // Method(s) / Function(s)
-
+        
         void Parse         (const std::string& a_number);
 
     public: // Accessors
-
+        
         double DoubleValue ();
         float  FloatValue  ();
         int    IntValue    ();
         bool   IsNAN       ();
-
+        
     public: // Static Method(s) / Function(s)
-
+        
         static bool ParseDouble (const std::string& a_value, double& o_value);
         static bool ParseFloat  (const std::string& a_value, float& o_value);
         static bool ParseInt    (const std::string& a_value, int& o_value);
 
     }; // end of class NumberParser
-
+    
     /**
      * @return
      *         @li The number value as double.
@@ -98,9 +97,9 @@ namespace casper {
     {
         return number_;
     }
-
+    
     /**
-     * @return
+     * @return 
      *         @li The number value as float.
      *         @li NAN if it's not a number
      */
@@ -108,7 +107,7 @@ namespace casper {
     {
         return static_cast<float>(number_);
     }
-
+    
     /**
      * @return
      *         @li The number value as int.
@@ -118,7 +117,7 @@ namespace casper {
     {
         return static_cast<int>(number_);
     }
-
+    
     /*
      * @brief Check if the parsed number is a number or not.
      *
@@ -130,7 +129,7 @@ namespace casper {
     {
         return isnan(number_);
     }
-
+    
 } // end of namespace casper
 
 #endif // NRS_CASPER_CASPER_NUMBER_PARSER_H_

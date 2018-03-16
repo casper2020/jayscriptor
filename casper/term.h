@@ -50,7 +50,6 @@
 
 #include "casper/number_parser.h"
 
-
 namespace casper
 {
     /*

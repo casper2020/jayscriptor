@@ -2,7 +2,7 @@
 %require "3.0"
 %defines
 %define api.namespace  { casper::java }
-%define api.value.type { class AstNode }
+%define api.value.type {class casper::java::FakeJavaTerm }
 %define parser_class_name { FakeJavaParser }
 
 %code requires {
@@ -10,11 +10,12 @@
       namespace java {
           class FakeJavaScanner;
           class FakeJavaExpression;
+          class FakeJavaTerm;
       }
   }
   #include <cmath>
   #include <iostream>
-  #include "casper/java/ast.h"
+  #include "casper/java/fake_java_term.h"
 }
 
 %parse-param { casper::java::FakeJavaScanner& scanner_ } { casper::java::FakeJavaExpression& expr_ }
@@ -24,7 +25,6 @@
   #include "casper/java/fake_java_expression.h"
   #include "osal/exception.h"
   #define yylex scanner_.Scan
-  AstNode root;
 }
 
 %token END           0
@@ -98,91 +98,106 @@
 %%
     input:
            END
-         | term END                       { root = $1;                          }
+         | term END                          {  expr_.result_ = $1; (void) @1;             }
          ;
 
     term:
-           expressions
-         | generic_ops
-         | string_ops
-         | integer_ops
-         | boolean_ops
-         | double_ops
-         | leaf_terminals
-         ;
+          expressions
+        | generic_ops
+        | string_ops
+        | integer_ops
+        | boolean_ops
+        | double_ops
+        | date_ops
+        | leaf_terminals
+        ;
 
-   leaf_terminals:
-                 NUM                      { $$ = $1;                            }
-                 | TEXTLITERAL            { $$ = $1;                            }
-                 | TK_null                { $$ = ast_null();                    }
-                 | VARIABLE               { $$ = mkVar($1);                     }
-                 | FIELD                  { $$ = mkField($1);                   }
-                 | PARAMETER              { $$ = mkParam($1);                   }
-                 ;
+    leaf_terminals:
+                  | NUM                      { $$ = $1;                                       }
+                  | TEXTLITERAL              { $$.SetString($1);                              }
+                  | TK_null                  { $$.SetNull();                                  }
+                  | VARIABLE                 { expr_.GetVariable($$, $1);                     }
+                  | FIELD                    { expr_.GetField($$, $1.ToString().c_str());     }
+                  | PARAMETER                { expr_.GetParameter($$, $1.ToString().c_str()); }
+                  ;
 
     expressions:
-                '(' term ')'              { $$ = $2;                            }
-              | term '+' term             { $$ = ast_expression("+",$1,$3);     }
-              | term '-' term             { $$ = ast_expression("-",$1,$3);     }
-              | term '*' term             { $$ = ast_expression("*",$1,$3);     }
-              | term '/' term             { $$ = ast_expression("/",$1,$3);     }
-              | term '^' term             { $$ = ast_expression("^",$1,$3);     }
-              | term '%' term             { $$ = ast_expression("%",$1,$3);     }
-              | term '>' term             { $$ = ast_expression(">",$1,$3);     }
-              | term '<' term             { $$ = ast_expression("<",$1,$3);     }
-              | term  GE term             { $$ = ast_expression(">=",$1,$3);    }
-              | term  LE term             { $$ = ast_expression("<=",$1,$3);    }
-              | term  NE term             { $$ = ast_expression("!=",$1,$3);    }
-              | term  EQ term             { $$ = ast_expression("==",$1,$3);    }
-              | term  OR term             { $$ = ast_expression("||",$1,$3);    }
-              | term AND term             { $$ = ast_expression("&&",$1,$3);    }
-              | term '?' term ':' term    { $$ = ast_if($1, $3, $5);            }
-              | '-' term %prec UMINUS     { $$ = ast_expression("UM",$2,$2);    }
-              | '+' term %prec UPLUS      { $$ = $2;                            }
-              | '!' term                  { $$ = ast_expression("!",$2,$2);     }
+                '(' term ')'                 { $$ = $2;                            }
+              | term '+' term                { $$.AddNumOrText($1,$3);             }
+              | term '-' term                { $$.Subtract($1,$3);                 }
+              | term '*' term                { $$.Multiply($1,$3);                 }
+              | term '/' term                { $$.Divide($1,$3);                   }
+              | term '^' term                { $$.Pow($1,$3);                      }
+              | term '%' term                { printf("TODO %%\n");                }
+              | term '>' term                { $$.Greater($1, $3);                 }
+              | term '<' term                { $$.Less($1, $3);                    }
+              | term  GE term                { $$.GreaterOrEqual($1, $3);          }
+              | term  LE term                { $$.LessOrEqual($1, $3);             }
+              | term  NE term                { $$.NotEqual($1,$3);                 }
+              | term  EQ term                { $$.Equal($1,$3);                    }
+              | term  OR term                { $$.Or($1,$3);                       }
+              | term AND term                { $$.And($1,$3);                      }
+              | term '?' term ':' term       { $$.If($1, $3, $5);                  }
+              | '-' term %prec UMINUS        { $$.UnaryMinus($2);                  }
+              | '+' term %prec UPLUS         { $$ = $2;                            }
+              | '!' term                     { $$.Not($2);                         }
               ;
+
     generic_ops:
-                 term '.' equals      '(' term ')'  { $$=ast_expression("==",$1,$5);            }
-               | term '.' toString    '(' ')'       { $$=ast_operation("toString",$1);          }
-               | term '.' intValue    '(' ')'       { $$=ast_operation("parseInt",$1);          }
-               | term '.' to_i        '(' ')'       { $$=ast_operation("parseInt",$1);          }
-               | term '.' to_f        '(' ')'       { $$=ast_operation("parseFloat",$1);        }
-               | term '.' doubleValue '(' ')'       { $$=ast_operation("parseFloat",$1);        }
-               | term '.' isNaN       '(' ')'       { $$=ast_operation("isNan",$1);             }
+                 term '.' equals      '(' term ')'         { $$.Equal($1, $5);                   }
+               | term '.' toString    '(' ')'              { $$ = $1.ToString().c_str();         }
+               | term '.' intValue    '(' ')'              { $$.ParseInteger($1);                }
+               | term '.' to_i        '(' ')'              { $$.ToI($1);                         }
+               | term '.' to_f        '(' ')'              { $$.ToF($1);                         }
+               | term '.' doubleValue '(' ')'              { $$.ParseDouble($1);                 }
+               | term '.' isNaN       '(' ')'              { $$.IsNan($1);                       }
                ;
 
     string_ops:
-                term '.' isEmpty     '(' ')'               { $$=ast_strOp("IsEmpty",$1);        }
-              | term '.' length      '(' ')'               { $$=ast_strOp("length",$1);         }
-              | term '.' toUpperCase '(' ')'               { $$=ast_strOp("toUpperCase",$1);    }
-              | term '.' toLowerCase '(' ')'               { $$=ast_strOp("toLowerCase",$1);    }
-              | term '.' substring   '(' term ',' term ')' { $$=ast_strOp("substring",$1,$5,$7);}
-              | term '.' substring   '(' term ')'          { $$=ast_strOp("substring",$1,$5);   }
-              | term '.' indexOf     '(' term ')'          { $$=ast_strOp("indexOf",$1,$5);     }
-              | term '.' replace     '(' term ',' term ')' { $$=ast_strOp("replace",$1,$5,$7);  }
-              ;
-    boolean_ops:
-                Boolean '.' parseBoolean '(' term ')'    { $$ = ast_operation("parseBool",$5);  }
-              | Boolean '.' valueOf      '(' term ')'    { $$ = ast_operation("valueOf",$5);    }
-              | Boolean '.' TK_TRUE                      { $$ = ast_bool(true);                 }
-              | Boolean '.' TK_FALSE                     { $$ = ast_bool(false);                }
-              | TK_true                                  { $$ = ast_bool(true);                 }
-              | TK_false                                 { $$ = ast_bool(false);                }
+                term '.' isEmpty     '(' ')'               { $$.IsEmpty($1);                     }
+              | term '.' length      '(' ')'               { $$.Length($1);                      }
+              | term '.' toUpperCase '(' ')'               { $$.ToUpperCase($1);                 }
+              | term '.' toLowerCase '(' ')'               { $$.ToLowerCase($1);                 }
+              | term '.' substring   '(' term ',' term ')' { $$.Substring($1, $5, $7);           }
+              | term '.' substring   '(' term ')'          { $$.Substring($1, $5);               }
+              | term '.' indexOf     '(' term ')'          { $$.IndexOf($1, $5);                 }
+              | term '.' replace     '(' term ',' term ')' { $$.Replace($1, $5, $7);             }
               ;
 
+    boolean_ops:
+                 Boolean '.' parseBoolean '(' term ')'     { $$.ParseBoolean($5);                }
+               | Boolean '.' valueOf      '(' term ')'     { $$.If($5);                          }
+               | Boolean '.' TK_TRUE                       { $$.BooleanTrue();                   }
+               | Boolean '.' TK_FALSE                      { $$.BooleanFalse();                  }
+               | TK_true                                   { $$.BooleanTrue();                   }
+               | TK_false                                  { $$.BooleanFalse();                  }
+               ;
+
     double_ops:
-                Double  '.' valueOf     '(' term ')'     { $$ = ast_operation("parseFloat",$5); }
-              | Double  '.' parseDouble '(' term ')'     { $$ = ast_operation("parseFloat",$5); }
-              | Double  '.' isNaN       '(' term ')'     { $$ = ast_operation("isNan",$5);      }
-              | Double  '.' toString    '(' term ')'     { $$ = ast_operation("toString",$5);   }
-              | Math    '.' abs         '(' term ')'     { $$ = ast_operation("Math.abs",$5);   }
+                Double  '.' valueOf     '(' term ')'       { $$.ParseDouble($5);                 }
+              | Double  '.' parseDouble '(' term ')'       { $$.ParseDouble($5);                 }
+              | Double  '.' isNaN       '(' term ')'       { $$.IsNan($5);                       }
+              | Double  '.' toString    '(' term ')'       { $$.DoubleToString($5);              }
+              | Math    '.' abs         '(' term ')'       { $$.FakeJavaAbs($5);                 }
               ;
 
     integer_ops:
-                 Integer '.' valueOf    '(' term ')'    { $$ = ast_operation("parseInt",$5);    }
-               | Integer '.' parseInt   '(' term ')'    { $$ = ast_operation("parseInt",$5);    }
-               | Integer '.' toString   '(' term ')'    { $$ = ast_operation("toString",$5);    }
+                 Integer '.' valueOf    '(' term ')'       { $$.ParseInteger($5);                }
+               | Integer '.' parseInt   '(' term ')'       { $$.ParseInteger($5);                }
+               | Integer '.' toString   '(' term ')'       { $$.IntegerToString($5);             }
                ;
+
+    date_ops:
+                 TK_NEW         '.' TK_DATE '(' ')'               { $$.NewDate();               }
+               | TK_DATE_FORMAT '.' parse   '(' term ',' term ')' {
+#if !defined(CASPER_NO_ICU)
+                 $$.ParseDate($5, $7, expr_);
+#else
+  $$ = $5; // TODO Martelada
+#endif
+               }
+               ;
+
 %%
 
 void casper::java::FakeJavaParser::error (const location_type& a_location, const std::string& a_msg)
