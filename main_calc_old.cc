@@ -11,22 +11,6 @@
 
 using namespace std;
 
-string GetStdoutFromCommand(string cmd) {
-  string data;
-  FILE * stream;
-  const int max_buffer = 256;
-  char buffer[max_buffer];
-  cmd.append(" 2>&1");
-
-  stream = popen(cmd.c_str(), "r");
-  if (stream) {
-    while (!feof(stream))
-      if (fgets(buffer, max_buffer, stream) != NULL) data.append(buffer);
-    pclose(stream);
-  }
-  return data;
-}
-
 
 int main(int argc, char* argv[]){
 
@@ -87,7 +71,7 @@ int main(int argc, char* argv[]){
 
   std::string line;
 
-  int cnt = 30;
+  int cnt = 1000;
 
   while(getline(in, line)){
     try{
@@ -104,7 +88,7 @@ int main(int argc, char* argv[]){
       std::cout << "C++ ---> nr of operations: " << cnt
                 << "\nelapsed time: " << elapsed_seconds.count()*1000 << "ms\n";
 
-/*
+    /*
       t1 = exp.Calculate(line);
       if(t1.GetType()==0x01)
         std::cout << t1.GetNumber() << '\n';

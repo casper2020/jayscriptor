@@ -1,5 +1,5 @@
-#include "/Users/bruno/work/v8/v8/include/libplatform/libplatform.h"
-#include "/Users/bruno/work/v8/v8/include/v8.h"
+#include "../v8/v8/include/libplatform/libplatform.h"
+#include "../v8/v8/include/v8.h"
 
 #include <assert.h>
 #include <fcntl.h>

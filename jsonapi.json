@@ -1,0 +1,164 @@
+{
+  "data": {
+    "type": "vw_accounting_transactions",
+    "id": "2613",
+    "attributes": {
+      "debit_total_fiscal_currency": 243,
+      "credit_total_fiscal_currency": 235.32,
+      "debit_total_document_currency": 243,
+      "credit_total_document_currency": 235.32,
+      "accountable_id": null,
+      "accountable_document_type": null,
+      "accountable_document_no": null,
+      "transaction_date": "2016-12-31",
+      "document_date": "2016-12-31",
+      "finalized_at": null,
+      "user_id": 36126,
+      "user_name": "Gabriela Inocêncio",
+      "description": "Teste eurico Made in WS1",
+      "external_reference": "",
+      "journal_id": "ABR",
+      "journal_name": "ABR - Abertura",
+      "journal_entry": null,
+      "accounting_document_type_id": "FC",
+      "accounting_document_type_description": "FC - Fatura de compra",
+      "document_no": null,
+      "accounting_document_series_id": null,
+      "accounting_document_series_no": null,
+      "status": "draft",
+      "balanced": true,
+      "currency_id": 1,
+      "currency_code": "EUR",
+      "currency_symbol": "€",
+      "currency_pattern": "#,##0.00",
+      "is_foreign_currency": false,
+      "fiscal_currency_id": 1,
+      "fiscal_currency_symbol": "€",
+      "fiscal_currency_pattern": "#,##0.00",
+      "currency_conversion_rate": null,
+      "third_party_control_id": "none",
+      "third_party_control_description": "Sem controlo",
+      "third_party_id": null,
+      "third_party_entity_id": null,
+      "third_party_name": null,
+      "third_party_tax_number": null,
+      "third_party_description": null,
+      "company_name": "Neto Ranito & Seabra Limitada",
+      "company_id": 2289,
+      "company_tax_registration_number": "503893536",
+      "has_cost_dimensions": false,
+      "has_cash_flows": false,
+      "warnings": null,
+      "line_warnings": "Utilização de contas integradoras: 2211\\nMovimentação de contas não expectáveis num diário tipificado como abertura: 24322111\\n",
+      "updated_at": "2018-03-19 03:43:25.17072",
+      "suggestion_type": "manual"
+    },
+    "relationships": {
+      "lines": {
+        "data": [
+          {
+            "type": "vw_accounting_transaction_lines",
+            "id": "7499"
+          },
+          {
+            "type": "vw_accounting_transaction_lines",
+            "id": "7518"
+          },
+          {
+            "type": "vw_accounting_transaction_lines",
+            "id": "7523"
+          }
+        ]
+      }
+    }
+  },
+  "included": [
+    {
+      "id": "7499",
+      "type": "vw_accounting_transaction_lines",
+      "attributes": {
+        "transaction_id": 2613,
+        "transaction_debit_total_fiscal_currency": 243,
+        "transaction_credit_total_fiscal_currency": 235.32,
+        "transaction_debit_total_document_currency": 243,
+        "transaction_credit_total_document_currency": 235.32,
+        "account_id": "2211",
+        "parent_id": "221",
+        "account_description": "Fornecedores-Conta-corrente-Continente",
+        "seqno": 0,
+        "description": "Teste eurico Made in WS1",
+        "debit_amount": null,
+        "credit_amount": 222,
+        "debit_expression": null,
+        "credit_expression": "222",
+        "cost_dimension_id": null,
+        "cost_dimension_code": null,
+        "cost_dimension_name": null,
+        "cash_flow_id": null,
+        "cash_flow_code": null,
+        "cash_flow_description": null,
+        "cash_flow_ids_description": null,
+        "vat_code_id": 110007,
+        "vat_code_description": "Compras Continente  Op. gerais Invest RED"
+      }
+    },
+    {
+      "type": "vw_accounting_transaction_lines",
+      "id": "7523",
+      "attributes": {
+        "transaction_id": 2613,
+        "transaction_debit_total_fiscal_currency": 243,
+        "transaction_credit_total_fiscal_currency": 235.32,
+        "transaction_debit_total_document_currency": 243,
+        "transaction_credit_total_document_currency": 235.32,
+        "account_id": "24322111",
+        "parent_id": "2432211",
+        "account_description": "IVA - Dedutível-Investimentos-Reduzida-Operações gerais-Continente",
+        "seqno": 1,
+        "description": "Teste eurico Made in WS1",
+        "debit_amount": null,
+        "credit_amount": 13.32,
+        "debit_expression": null,
+        "credit_expression": null,
+        "cost_dimension_id": null,
+        "cost_dimension_code": null,
+        "cost_dimension_name": null,
+        "cash_flow_id": null,
+        "cash_flow_code": null,
+        "cash_flow_description": null,
+        "cash_flow_ids_description": null,
+        "vat_code_id": null,
+        "vat_code_description": null
+      }
+    },
+    {
+      "type": "vw_accounting_transaction_lines",
+      "id": "7518",
+      "attributes": {
+        "transaction_id": 2613,
+        "transaction_debit_total_fiscal_currency": 243,
+        "transaction_credit_total_fiscal_currency": 235.32,
+        "transaction_debit_total_document_currency": 243,
+        "transaction_credit_total_document_currency": 235.32,
+        "account_id": null,
+        "parent_id": null,
+        "account_description": null,
+        "seqno": 2,
+        "description": "Teste eurico Made in WS1",
+        "debit_amount": 243,
+        "credit_amount": null,
+        "debit_expression": "243",
+        "credit_expression": null,
+        "cost_dimension_id": null,
+        "cost_dimension_code": null,
+        "cost_dimension_name": null,
+        "cash_flow_id": null,
+        "cash_flow_code": null,
+        "cash_flow_description": null,
+        "cash_flow_ids_description": null,
+        "vat_code_id": null,
+        "vat_code_description": null
+      }
+    }
+  ]
+}

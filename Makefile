@@ -1,10 +1,7 @@
 
 INCLUDE_DIRS = -I . -I ./osal/src -I . -I /Users/bruno/work/v8/v8/include
 
-INTERM = casper/java/fake_java_parser.hh casper/java/fake_java_parser.cc
-
-OBJECTS = casper/java/fake_java_parser.o      \
-					main_calc.o \
+OBJECTS = main_calc.o \
 	        casper/term.o \
 				  casper/number_parser.o              \
 					./osal/src/osal/osal_date.o        \
@@ -16,6 +13,7 @@ OBJECTS = casper/java/fake_java_parser.o      \
 					casper/scanner.o                    \
 					casper/java/fake_java_expression.o  \
 					casper/abstract_data_source.o       \
+					casper/java/fake_java_parser.o      \
 					casper/dm_data_source.o							\
 					v8_shell.o
 
@@ -60,4 +58,4 @@ CXXFLAGS = $(INCLUDE_DIRS) -std=c++11 -Wall $(DEFINES) -c -g
 	$(CXX) $(CXXFLAGS) $< -o $@
 
 clean:
-	rm $(OBJECTS) $(INTERM)
+	rm $(OBJECTS)
