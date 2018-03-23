@@ -1,5 +1,5 @@
 9+4*3/(9-21)>5 && 6/11<=12
-(Math.abs(-(5+23.23)*5)).to_i()
+(Math.abs(-(5+23.23)%5)).to_i()
 (5*4/23).equals(6+2-4)
 "teste".isEmpty()
 ("teste").substring(2,4)

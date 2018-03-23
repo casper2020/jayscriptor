@@ -1,6 +1,8 @@
 
 INCLUDE_DIRS = -I . -I ./osal/src
 
+# -I . -I /Users/bruno/work/v8/v8/include
+
 INTERM = casper/java/fake_java_parser.hh casper/java/fake_java_parser.cc
 
 OBJECTS = casper/java/fake_java_parser.o      \
@@ -15,9 +17,19 @@ OBJECTS = casper/java/fake_java_parser.o      \
 					casper/java/ast.o                   \
 					casper/java/interpreter.o
 
+#OBJECTS2 = 	/Users/bruno/work/v8/v8/out/x64.release/libv8_base.a							\
+						/Users/bruno/work/v8/v8/out/x64.release/libv8_libbase.a						\
+						/Users/bruno/work/v8/v8/out/x64.release/libv8_external_snapshot.a	\
+						/Users/bruno/work/v8/v8/out/x64.release/libv8_libplatform.a				\
+						/Users/bruno/work/v8/v8/out/x64.release/libv8_libsampler.a				\
+						/Users/bruno/work/v8/v8/out/x64.release/libicuuc.a								\
+						/Users/bruno/work/v8/v8/out/x64.release/libicui18n.a
+
 
 jayscriptor: $(OBJECTS)
 	$(CXX) -o $@ $(OBJECTS)
+
+# -Wl, $(OBJECTS2) -Wl, -ldl
 
 YACC=bison
 RAGEL=ragel

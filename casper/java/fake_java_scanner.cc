@@ -38,7 +38,7 @@ static const int casper_fake_java_scanner_error = 0;
 static const int casper_fake_java_scanner_en_main = 202;
 
 
-#line 181 "casper/java/fake_java_scanner.rl"
+#line 182 "casper/java/fake_java_scanner.rl"
 
 
 /**
@@ -55,7 +55,7 @@ casper::java::FakeJavaScanner::FakeJavaScanner ()
 	(   act_) = 0;
 	}
 
-#line 189 "casper/java/fake_java_scanner.rl"
+#line 190 "casper/java/fake_java_scanner.rl"
     OSAL_UNUSED_PARAM(casper_fake_java_scanner_first_final);
     OSAL_UNUSED_PARAM(casper_fake_java_scanner_error);
     OSAL_UNUSED_PARAM(casper_fake_java_scanner_en_main);
@@ -87,7 +87,7 @@ void casper::java::FakeJavaScanner::SetInput (const char* a_expression, size_t a
 	(   act_) = 0;
 	}
 
-#line 212 "casper/java/fake_java_scanner.rl"
+#line 213 "casper/java/fake_java_scanner.rl"
 }
 
 casper::java::FakeJavaParser::token_type casper::java::FakeJavaScanner::Scan (casper::java::FakeJavaParser::semantic_type* o_val, casper::java::location* a_location)
@@ -108,7 +108,7 @@ tr0:
 	case 0:
 	{{goto st0;}}
 	break;
-	case 63:
+	case 64:
 	{{(     p_) = (((    te_)))-1;}
                              if ( (int)(te_ - ts_) - 2 < 0 ) {
                                 *o_val = "";
@@ -146,7 +146,7 @@ tr0:
 	}
 	goto st202;
 tr3:
-#line 146 "casper/java/fake_java_scanner.rl"
+#line 147 "casper/java/fake_java_scanner.rl"
 	{{(     p_) = (((    te_)))-1;}{
                              if ( (int)(te_ - ts_) - 2 < 0 ) {
                                 *o_val = "";
@@ -181,7 +181,7 @@ tr3:
                            }}
 	goto st202;
 tr12:
-#line 128 "casper/java/fake_java_scanner.rl"
+#line 129 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{
                                 ret = FakeJavaParser::token::FIELD;
                                 *o_val = std::string(ts_ + 3, te_ - ts_ - 4);
@@ -189,7 +189,7 @@ tr12:
                            }}
 	goto st202;
 tr15:
-#line 134 "casper/java/fake_java_scanner.rl"
+#line 135 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{
                                 ret = FakeJavaParser::token::PARAMETER;
                                 *o_val = std::string(ts_ + 3, te_ - ts_ - 4);
@@ -197,7 +197,7 @@ tr15:
                            }}
 	goto st202;
 tr18:
-#line 122 "casper/java/fake_java_scanner.rl"
+#line 123 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{
                                 ret = FakeJavaParser::token::VARIABLE;
                                 *o_val = std::string(ts_ + 3, te_ - ts_ - 4);
@@ -205,11 +205,11 @@ tr18:
                            }}
 	goto st202;
 tr19:
-#line 116 "casper/java/fake_java_scanner.rl"
+#line 117 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = FakeJavaParser::token::AND       ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
 tr20:
-#line 140 "casper/java/fake_java_scanner.rl"
+#line 141 "casper/java/fake_java_scanner.rl"
 	{{(     p_) = (((    te_)))-1;}{
                                 ret = FakeJavaParser::token::NUM;
                                 *o_val = double_value_;
@@ -217,7 +217,7 @@ tr20:
                            }}
 	goto st202;
 tr24:
-#line 115 "casper/java/fake_java_scanner.rl"
+#line 116 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = FakeJavaParser::token::EQ        ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
 tr30:
@@ -373,67 +373,71 @@ tr224:
 	{(    te_) = (     p_)+1;{ ret = FakeJavaParser::token::valueOf      ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
 tr225:
-#line 117 "casper/java/fake_java_scanner.rl"
+#line 118 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = FakeJavaParser::token::OR        ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
 tr226:
-#line 178 "casper/java/fake_java_scanner.rl"
+#line 179 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;}
 	goto st202;
-tr230:
+tr229:
+#line 103 "casper/java/fake_java_scanner.rl"
+	{(    te_) = (     p_)+1;{ ret = (FakeJavaParser::token_type) '%' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
+	goto st202;
+tr231:
 #line 97 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = (FakeJavaParser::token_type) '(' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr231:
+tr232:
 #line 98 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = (FakeJavaParser::token_type) ')' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr232:
+tr233:
 #line 101 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = (FakeJavaParser::token_type) '*' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr233:
+tr234:
 #line 99 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = (FakeJavaParser::token_type) '+' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr234:
-#line 109 "casper/java/fake_java_scanner.rl"
+tr235:
+#line 110 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = (FakeJavaParser::token_type) ',' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr235:
+tr236:
 #line 100 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = (FakeJavaParser::token_type) '-' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr236:
-#line 108 "casper/java/fake_java_scanner.rl"
+tr237:
+#line 109 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = (FakeJavaParser::token_type) '.' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr237:
+tr238:
 #line 102 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = (FakeJavaParser::token_type) '/' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr239:
-#line 103 "casper/java/fake_java_scanner.rl"
+tr240:
+#line 104 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = (FakeJavaParser::token_type) ':' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr243:
-#line 105 "casper/java/fake_java_scanner.rl"
+tr244:
+#line 106 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = (FakeJavaParser::token_type) '?' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr264:
-#line 110 "casper/java/fake_java_scanner.rl"
+tr265:
+#line 111 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = (FakeJavaParser::token_type) '}' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr265:
-#line 104 "casper/java/fake_java_scanner.rl"
+tr266:
+#line 105 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_);(     p_)--;{ ret = (FakeJavaParser::token_type) '!' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr266:
-#line 114 "casper/java/fake_java_scanner.rl"
+tr267:
+#line 115 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = FakeJavaParser::token::NE        ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr267:
-#line 146 "casper/java/fake_java_scanner.rl"
+tr268:
+#line 147 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_);(     p_)--;{
                              if ( (int)(te_ - ts_) - 2 < 0 ) {
                                 *o_val = "";
@@ -467,7 +471,7 @@ tr267:
                              }
                            }}
 	goto st202;
-tr269:
+tr270:
 #line 87 "casper/java/../../../osal/src/osal/ragelib/generic_number_parser.rlh"
 	{
         if ( divider_ == 1 && exponent_ == 0 ) {
@@ -488,34 +492,34 @@ tr269:
             }
         }
     }
-#line 140 "casper/java/fake_java_scanner.rl"
+#line 141 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_);(     p_)--;{
                                 ret = FakeJavaParser::token::NUM;
                                 *o_val = double_value_;
                                 {(     p_)++; (    cs_) = 202; goto _out;}
                            }}
 	goto st202;
-tr273:
-#line 107 "casper/java/fake_java_scanner.rl"
+tr274:
+#line 108 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_);(     p_)--;{ ret = (FakeJavaParser::token_type) '<' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr274:
-#line 112 "casper/java/fake_java_scanner.rl"
+tr275:
+#line 113 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = FakeJavaParser::token::LE        ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr275:
-#line 106 "casper/java/fake_java_scanner.rl"
+tr276:
+#line 107 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_);(     p_)--;{ ret = (FakeJavaParser::token_type) '>' ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr276:
-#line 113 "casper/java/fake_java_scanner.rl"
+tr277:
+#line 114 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_)+1;{ ret = FakeJavaParser::token::GE        ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr277:
+tr278:
 #line 90 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_);(     p_)--;{ ret = FakeJavaParser::token::TK_DATE      ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
-tr279:
+tr280:
 #line 68 "casper/java/fake_java_scanner.rl"
 	{(    te_) = (     p_);(     p_)--;{ ret = FakeJavaParser::token::parse        ; {(     p_)++; (    cs_) = 202; goto _out;} }}
 	goto st202;
@@ -529,26 +533,27 @@ st202:
 case 202:
 #line 1 "NONE"
 	{(    ts_) = (     p_);}
-#line 533 "casper/java/fake_java_scanner.cc"
+#line 537 "casper/java/fake_java_scanner.cc"
 	switch( (*(     p_)) ) {
 		case 32: goto tr226;
 		case 33: goto st203;
 		case 34: goto st1;
 		case 36: goto st3;
+		case 37: goto tr229;
 		case 38: goto st13;
-		case 40: goto tr230;
-		case 41: goto tr231;
-		case 42: goto tr232;
-		case 43: goto tr233;
-		case 44: goto tr234;
-		case 45: goto tr235;
-		case 46: goto tr236;
-		case 47: goto tr237;
-		case 58: goto tr239;
+		case 40: goto tr231;
+		case 41: goto tr232;
+		case 42: goto tr233;
+		case 43: goto tr234;
+		case 44: goto tr235;
+		case 45: goto tr236;
+		case 46: goto tr237;
+		case 47: goto tr238;
+		case 58: goto tr240;
 		case 60: goto st208;
 		case 61: goto st17;
 		case 62: goto st209;
-		case 63: goto tr243;
+		case 63: goto tr244;
 		case 66: goto st18;
 		case 68: goto st24;
 		case 70: goto st36;
@@ -569,11 +574,11 @@ case 202:
 		case 116: goto st169;
 		case 118: goto st195;
 		case 124: goto st201;
-		case 125: goto tr264;
+		case 125: goto tr265;
 	}
 	if ( (*(     p_)) > 10 ) {
 		if ( 48 <= (*(     p_)) && (*(     p_)) <= 57 )
-			goto tr238;
+			goto tr239;
 	} else if ( (*(     p_)) >= 9 )
 		goto tr226;
 	goto st0;
@@ -585,8 +590,8 @@ st203:
 		goto _test_eof203;
 case 203:
 	if ( (*(     p_)) == 61 )
-		goto tr266;
-	goto tr265;
+		goto tr267;
+	goto tr266;
 tr4:
 #line 44 "casper/java/fake_java_scanner.rl"
 	{ has_quotes = true; }
@@ -595,32 +600,32 @@ st1:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof1;
 case 1:
-#line 599 "casper/java/fake_java_scanner.cc"
+#line 604 "casper/java/fake_java_scanner.cc"
 	if ( (*(     p_)) == 34 )
 		goto tr2;
 	goto st1;
 tr2:
 #line 1 "NONE"
 	{(    te_) = (     p_)+1;}
-#line 146 "casper/java/fake_java_scanner.rl"
-	{(   act_) = 63;}
+#line 147 "casper/java/fake_java_scanner.rl"
+	{(   act_) = 64;}
 	goto st204;
 tr5:
 #line 1 "NONE"
 	{(    te_) = (     p_)+1;}
 #line 44 "casper/java/fake_java_scanner.rl"
 	{ has_quotes = true; }
-#line 146 "casper/java/fake_java_scanner.rl"
-	{(   act_) = 63;}
+#line 147 "casper/java/fake_java_scanner.rl"
+	{(   act_) = 64;}
 	goto st204;
 st204:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof204;
 case 204:
-#line 621 "casper/java/fake_java_scanner.cc"
+#line 626 "casper/java/fake_java_scanner.cc"
 	if ( (*(     p_)) == 34 )
 		goto st2;
-	goto tr267;
+	goto tr268;
 st2:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof2;
@@ -771,7 +776,7 @@ case 13:
 	if ( (*(     p_)) == 38 )
 		goto tr19;
 	goto st0;
-tr238:
+tr239:
 #line 1 "NONE"
 	{(    te_) = (     p_)+1;}
 #line 75 "casper/java/../../../osal/src/osal/ragelib/generic_number_parser.rlh"
@@ -791,7 +796,7 @@ tr238:
         integer_ += ((*(     p_)) - '0');
     }
 	goto st205;
-tr271:
+tr272:
 #line 1 "NONE"
 	{(    te_) = (     p_)+1;}
 #line 45 "casper/java/../../../osal/src/osal/ragelib/generic_number_parser.rlh"
@@ -804,15 +809,15 @@ st205:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof205;
 case 205:
-#line 808 "casper/java/fake_java_scanner.cc"
+#line 813 "casper/java/fake_java_scanner.cc"
 	switch( (*(     p_)) ) {
 		case 46: goto st14;
 		case 69: goto st15;
 		case 101: goto st15;
 	}
 	if ( 48 <= (*(     p_)) && (*(     p_)) <= 57 )
-		goto tr271;
-	goto tr269;
+		goto tr272;
+	goto tr270;
 st14:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof14;
@@ -837,14 +842,14 @@ st206:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof206;
 case 206:
-#line 841 "casper/java/fake_java_scanner.cc"
+#line 846 "casper/java/fake_java_scanner.cc"
 	switch( (*(     p_)) ) {
 		case 69: goto st15;
 		case 101: goto st15;
 	}
 	if ( 48 <= (*(     p_)) && (*(     p_)) <= 57 )
 		goto tr21;
-	goto tr269;
+	goto tr270;
 st15:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof15;
@@ -866,7 +871,7 @@ st16:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof16;
 case 16:
-#line 870 "casper/java/fake_java_scanner.cc"
+#line 875 "casper/java/fake_java_scanner.cc"
 	if ( 48 <= (*(     p_)) && (*(     p_)) <= 57 )
 		goto tr23;
 	goto tr20;
@@ -881,17 +886,17 @@ st207:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof207;
 case 207:
-#line 885 "casper/java/fake_java_scanner.cc"
+#line 890 "casper/java/fake_java_scanner.cc"
 	if ( 48 <= (*(     p_)) && (*(     p_)) <= 57 )
 		goto tr23;
-	goto tr269;
+	goto tr270;
 st208:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof208;
 case 208:
 	if ( (*(     p_)) == 61 )
-		goto tr274;
-	goto tr273;
+		goto tr275;
+	goto tr274;
 st17:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof17;
@@ -904,8 +909,8 @@ st209:
 		goto _test_eof209;
 case 209:
 	if ( (*(     p_)) == 61 )
-		goto tr276;
-	goto tr275;
+		goto tr277;
+	goto tr276;
 st18:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof18;
@@ -979,10 +984,10 @@ st210:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof210;
 case 210:
-#line 983 "casper/java/fake_java_scanner.cc"
+#line 988 "casper/java/fake_java_scanner.cc"
 	if ( (*(     p_)) == 70 )
 		goto st27;
-	goto tr277;
+	goto tr278;
 st27:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof27;
@@ -1755,13 +1760,13 @@ st211:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof211;
 case 211:
-#line 1759 "casper/java/fake_java_scanner.cc"
+#line 1764 "casper/java/fake_java_scanner.cc"
 	switch( (*(     p_)) ) {
 		case 66: goto st134;
 		case 68: goto st140;
 		case 73: goto st145;
 	}
-	goto tr279;
+	goto tr280;
 st134:
 	if ( ++(     p_) == (    pe_) )
 		goto _test_eof134;
@@ -2465,25 +2470,25 @@ case 201:
 	if ( (     p_) == (   eof_) )
 	{
 	switch ( (    cs_) ) {
-	case 203: goto tr265;
+	case 203: goto tr266;
 	case 1: goto tr0;
-	case 204: goto tr267;
+	case 204: goto tr268;
 	case 2: goto tr3;
-	case 205: goto tr269;
+	case 205: goto tr270;
 	case 14: goto tr20;
-	case 206: goto tr269;
+	case 206: goto tr270;
 	case 15: goto tr20;
 	case 16: goto tr20;
-	case 207: goto tr269;
-	case 208: goto tr273;
-	case 209: goto tr275;
-	case 210: goto tr277;
+	case 207: goto tr270;
+	case 208: goto tr274;
+	case 209: goto tr276;
+	case 210: goto tr278;
 	case 27: goto tr35;
 	case 28: goto tr35;
 	case 29: goto tr35;
 	case 30: goto tr35;
 	case 31: goto tr35;
-	case 211: goto tr279;
+	case 211: goto tr280;
 	case 134: goto tr151;
 	case 135: goto tr151;
 	case 136: goto tr151;
@@ -2503,7 +2508,7 @@ case 201:
 	_out: {}
 	}
 
-#line 220 "casper/java/fake_java_scanner.rl"
+#line 221 "casper/java/fake_java_scanner.rl"
     a_location->begin.line   = 1;
     a_location->begin.column = (int)(ts_ - input_);
     a_location->end.line     = 1;

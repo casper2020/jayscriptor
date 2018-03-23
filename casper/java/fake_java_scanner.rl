@@ -100,6 +100,7 @@
         '-'   => { ret = (FakeJavaParser::token_type) '-' ; fbreak; };
         '*'   => { ret = (FakeJavaParser::token_type) '*' ; fbreak; };
         '/'   => { ret = (FakeJavaParser::token_type) '/' ; fbreak; };
+        '%'   => { ret = (FakeJavaParser::token_type) '%' ; fbreak; };
         ':'   => { ret = (FakeJavaParser::token_type) ':' ; fbreak; };
         '!'   => { ret = (FakeJavaParser::token_type) '!' ; fbreak; };
         '?'   => { ret = (FakeJavaParser::token_type) '?' ; fbreak; };
