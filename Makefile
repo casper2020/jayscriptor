@@ -1,8 +1,6 @@
 
 INCLUDE_DIRS = -I . -I ./osal/src
 
-# -I . -I /Users/bruno/work/v8/v8/include
-
 INTERM = casper/java/fake_java_parser.hh casper/java/fake_java_parser.cc
 
 OBJECTS = casper/java/fake_java_parser.o      \
@@ -15,23 +13,15 @@ OBJECTS = casper/java/fake_java_parser.o      \
 					casper/scanner.o                    \
 					casper/java/fake_java_expression.o  \
 					casper/java/ast.o                   \
-					casper/java/interpreter.o
-
-#OBJECTS2 = 	/Users/bruno/work/v8/v8/out/x64.release/libv8_base.a							\
-						/Users/bruno/work/v8/v8/out/x64.release/libv8_libbase.a						\
-						/Users/bruno/work/v8/v8/out/x64.release/libv8_external_snapshot.a	\
-						/Users/bruno/work/v8/v8/out/x64.release/libv8_libplatform.a				\
-						/Users/bruno/work/v8/v8/out/x64.release/libv8_libsampler.a				\
-						/Users/bruno/work/v8/v8/out/x64.release/libicuuc.a								\
-						/Users/bruno/work/v8/v8/out/x64.release/libicui18n.a
+					casper/java/ast_node.o
 
 
 jayscriptor: $(OBJECTS)
 	$(CXX) -o $@ $(OBJECTS)
 
-# -Wl, $(OBJECTS2) -Wl, -ldl
 
-YACC=bison
+#YACC=bison
+YACC=/usr/local/Cellar/bison/3.0.4_1/bin/bison
 RAGEL=ragel
 DEFINES = -D CASPER_NO_ICU
 CFLAGS = $(INCLUDE_DIRS) $(DEFINES) -c -g
@@ -58,4 +48,4 @@ CXXFLAGS = $(INCLUDE_DIRS) -std=c++11 -Wall $(DEFINES) -c -g
 	$(CXX) $(CXXFLAGS) $< -o $@
 
 clean:
-	rm $(OBJECTS) $(INTERM)
+	rm -f $(OBJECTS) $(INTERM)

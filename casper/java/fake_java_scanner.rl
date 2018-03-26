@@ -1,22 +1,22 @@
 /**
- * @file fake_java_scanner.cc Implementation of FakeJavaScanner
+ * @file fake_java_scanner.rl
  *
- * Copyright (c) 2010-2016 Neto Ranito & Seabra LDA. All rights reserved.
+ * Copyright (c) 2011-2018 Cloudware S.A. All rights reserved.
  *
- * This file is part of casper.
+ * This file is part of jayscriptor.
  *
- * casper is free software: you can redistribute it and/or modify
+ * jayscriptor is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * casper  is distributed in the hope that it will be useful,
+ * jayscriptor is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with casper.  If not, see <http://www.gnu.org/licenses/>.
+ * along with jayscriptor.  If not, see <http://www.gnu.org/licenses/>.
  */
 
  #include "casper/java/fake_java_scanner.h"
@@ -26,6 +26,9 @@
 #include "osal/osal_date.h"
 #include "osal/utils/pow10.h"
 #include "osal/exception.h"
+
+#include "casper/java/ast.h"
+#include "casper/java/ast_node.h"
 
  %%{
      machine casper_fake_java_scanner;
@@ -122,31 +125,31 @@
         #
         variable_ref    => {
                                 ret = FakeJavaParser::token::VARIABLE;
-                                *o_val = std::string(ts_ + 3, te_ - ts_ - 4);
+                                (*value) = std::string(ts_ + 3, te_ - ts_ - 4);
                                 fbreak;
                            };
 
         field_ref       => {
                                 ret = FakeJavaParser::token::FIELD;
-                                *o_val = std::string(ts_ + 3, te_ - ts_ - 4);
+                                (*value) = std::string(ts_ + 3, te_ - ts_ - 4);
                                 fbreak;
                            };
 
         parameter_ref   => {
                                 ret = FakeJavaParser::token::PARAMETER;
-                                *o_val = std::string(ts_ + 3, te_ - ts_ - 4);
+                                (*value) = std::string(ts_ + 3, te_ - ts_ - 4);
                                 fbreak;
                            };
 
         positive_number => {
                                 ret = FakeJavaParser::token::NUM;
-                                *o_val = double_value_;
+                                (*value) = double_value_;
                                 fbreak;
                            };
 
         text_literal    => {
                              if ( (int)(te_ - ts_) - 2 < 0 ) {
-                                *o_val = "";
+                                (*value) = ("");
                                 ret = (FakeJavaParser::token_type) '"';
                                 fbreak;
                              } else {
@@ -167,10 +170,10 @@
                                        }
                                     }
                                     *(dst) = 0;
-                                    *o_val = buf;
+                                    (*value) = buf;
                                     free(buf);
                                 } else {
-                                    *o_val = std::string(ts_ + 1, te_ - ts_ - 2);
+                                    (*value) = std::string(ts_ + 1, te_ - ts_ - 2);
                                 }
                                 ret = FakeJavaParser::token::TEXTLITERAL;
                                 fbreak;
@@ -184,7 +187,8 @@
 /**
  * @brief Constructor
  */
-casper::java::FakeJavaScanner::FakeJavaScanner ()
+                     casper::java::FakeJavaScanner::FakeJavaScanner (casper::java::Ast& a_ast)
+ : ast_(a_ast)
 {
     %% write init;
     OSAL_UNUSED_PARAM(casper_fake_java_scanner_first_final);
@@ -216,6 +220,12 @@ casper::java::FakeJavaParser::token_type casper::java::FakeJavaScanner::Scan (ca
 {
     casper::java::FakeJavaParser::token_type ret = casper::java::FakeJavaParser::token::END;
     bool has_quotes = false;
+    
+    if ( nullptr == (*o_val) ) {
+        (*o_val) = ast_.NewAstNode();
+    }
+                     
+    casper::java::FakeJavaParser::semantic_type value = (*o_val);
 
     %% write exec;
     a_location->begin.line   = 1;

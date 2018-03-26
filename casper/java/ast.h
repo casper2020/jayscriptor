@@ -1,103 +1,88 @@
+/**
+ * @file ast.h
+ *
+ * Copyright (c) 2011-2018 Cloudware S.A. All rights reserved.
+ *
+ * This file is part of jayscriptor.
+ *
+ * jayscriptor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * jayscriptor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with jayscriptor.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-class AstNode {
-  protected:
-    AstNode*      right_;
-    AstNode*      left_;
-    bool          bool_;
-    int           type_;
-    double        num_;
-    std::string   text_;
-    std::string   op_;
-    AstNode*      arg1_;
-    AstNode*      arg2_;
+#pragma once
 
-  public: // enumerations
+#ifndef CASPER_JAVA_AST_H_
+#define CASPER_JAVA_AST_H_
 
-      enum {
-          TUndef  = 0,
-          TNum    = 1,
-          TText   = 2,
-          TExpr   = 3,
-          TOps    = 4,
-          TStrOps = 5,
-          TIf     = 6,
-          TBool   = 7,
-          TVar    = 8,
-          TParam  = 9,
-          TField  = 10
-      };
+#include <vector>
+#include "casper/java/ast_node.h"
 
-  public:
-    //setters
-    virtual   void        setRight(AstNode* t_right);
-    virtual   void        setLeft(AstNode* t_left);
-    virtual   void        setOp(std::string t_op);
-    virtual   void        setVal(double t_val);
-    virtual   void        setText(std::string t_text);
-    virtual   void        setArg1(AstNode* t_arg1);
-    virtual   void        setArg2(AstNode* t_arg2);
+namespace casper
+{
 
-    //getters
-    virtual   AstNode*    getRight();
-    virtual   AstNode*    getLeft();
-    virtual   std::string getOp();
-    virtual   double      getVal();
-    virtual   std::string getText();
-    virtual   AstNode*    getArg1();
-    virtual   AstNode*    getArg2();
+    namespace java
+    {
+        class FakeJavaParser;
+        class FakeJavaExpression;
+        
+        class Ast
+        {
+            
+            friend class FakeJavaParser;
+            friend class FakeJavaExpression;
+            
+        protected: // Data
 
-    virtual bool  getBool  ()             { return bool_; };
-    virtual void  setBool  (bool t_bool)  { bool_=t_bool; };
-    virtual int   getType  ()             { return type_; };
-    virtual void  setType  (int t_tipo)   { type_=t_tipo; };
+            std::vector<AstNode*> allocated_nodes_;
+            AstNode*              root_;
 
-               AstNode ();                    // constructor
-               AstNode (const AstNode &obj);  // copy constructor
-    virtual   ~AstNode ();                    // destructor
+        public: // Constructor(s) / Destructor
 
-    void          operator          =(const char* a_string);
-    void          operator          =(std::string a_string);
-    void          operator          =(double a_value);
-    void          operator          =(bool t_bool);
-};
+            Ast ();
+            virtual ~Ast();
 
-inline void AstNode::operator =(const char* a_string) {
-    text_ = a_string;
-    type_ = TText;
-}
+        public: // Function(s) / Method(s)
 
-inline void AstNode::operator =(std::string a_string) {
-    text_ = a_string;
-    type_ = TText;
-}
+            AstNode* Expression (const std::string& a_op, AstNode* a_left, AstNode* a_right);
+            AstNode* Operation  (const std::string& a_op, AstNode* a_left);
+            AstNode* StrOp      (const std::string& a_op, AstNode* a_left);
+            AstNode* StrOp      (const std::string& a_op, AstNode* a_left, AstNode* a_right);
+            AstNode* StrOp      (const std::string& a_op, AstNode* a_left, AstNode* a_right_1, AstNode* a_right_2);
+            AstNode* If         (AstNode* a_left, AstNode* a_right_1, AstNode* a_right_2);
+            AstNode* Bool       (bool a_bool);
 
-inline void AstNode::operator =(bool t_bool) {
-    if(t_bool) num_=1;
-    else num_=0;
-    bool_ = t_bool;
-    type_ = TBool;
-}
+            AstNode* NewAstNode ();
+            AstNode* NewAstNode (const int a_num);
+            AstNode* NewAstNode (const std::string& a_text);
+            AstNode* NewAstNode (const casper::java::AstNode::Type a_type, const std::string& a_text);
 
-inline void AstNode::operator =(double a_value) {
-    left_   = nullptr;
-    right_  = nullptr;
-    num_    = a_value;
-    type_   = TNum;
-}
+        protected:
 
-AstNode ast_expression(std::string t_op, AstNode t_left, AstNode t_right);
+            void     Reset   ();
 
-AstNode ast_operation(std::string t_op, AstNode t_left);
+        }; // end of class 'Ast'
 
-AstNode ast_strOp(std::string t_op, AstNode t_left);
-AstNode ast_strOp(std::string t_op, AstNode t_left, AstNode t_right);
-AstNode ast_strOp(std::string t_op, AstNode t_left, AstNode t_r1, AstNode t_r2);
+        inline void Ast::Reset ()
+        {
+            root_ = nullptr;
+            for ( auto it : allocated_nodes_ ) {
+                delete it;
+            }
+            allocated_nodes_.clear();
+        }
 
-AstNode ast_if(AstNode t_left, AstNode t_r1, AstNode t_r2);
+    } // end of namespace 'java'
 
-AstNode ast_bool(bool t_bool);
-AstNode ast_null();
+} // end of namespace 'casper'
 
-AstNode mkVar(AstNode t_ast);
-AstNode mkField(AstNode t_ast);
-AstNode mkParam(AstNode t_ast);
+#endif // CASPER_JAVA_AST_H_

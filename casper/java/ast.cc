@@ -1,218 +1,268 @@
+/**
+ * @file ast.cc
+ *
+ * Copyright (c) 2011-2018 Cloudware S.A. All rights reserved.
+ *
+ * This file is part of jayscriptor.
+ *
+ * jayscriptor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * jayscriptor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with jayscriptor.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <iostream>
-#include "ast.h"
+#include "casper/java/ast.h"
 
-AstNode::AstNode (){
-  left_  = nullptr;
-  right_ = nullptr;
-  arg1_  = nullptr;
-  arg2_  = nullptr;
-}
+#ifdef __APPLE__
+#pragma mark -
+#endif
 
-AstNode::~AstNode (){
-  if ( nullptr != left_ ) {
-    //delete left_;
-    //left_ = nullptr;
-  }
-  if ( nullptr != right_ ) {
-    //delete right_;
-    //right_ = nullptr;
-  }
+casper::java::Ast::Ast ()
+{
+    root_ = nullptr;
 }
 
-AstNode::AstNode(const AstNode &obj) {
-   left_  = obj.left_;
-   right_ = obj.right_;
-   arg1_ = obj.arg1_;
-   arg2_ = obj.arg2_;
-   num_  = obj.num_;
-   op_   = obj.op_;
-   text_ = obj.text_;
-   type_ = obj.type_;
+casper::java::Ast::~Ast ()
+{
+    Reset();
 }
 
-void AstNode::setRight(AstNode* t_right){
-  right_=t_right;
-}
-void AstNode::setLeft(AstNode* t_left){
-  left_=t_left;
-}
-void AstNode::setOp(std::string t_op){
-  op_=t_op;
-}
-void AstNode::setVal(double t_val){
-  num_=t_val;
-}
-void AstNode::setText(std::string t_text){
-  text_=t_text;
-}
-void AstNode::setArg1(AstNode* t_arg1){ arg1_=t_arg1; }
-void AstNode::setArg2(AstNode* t_arg2){ arg2_=t_arg2; }
+#ifdef __APPLE__
+#pragma mark -
+#endif
 
-AstNode* AstNode::getRight    (){ return right_; }
-AstNode* AstNode::getLeft     (){ return left_; }
-std::string AstNode::getOp    (){ return op_; }
-double AstNode::getVal        (){ return num_; }
-std::string AstNode::getText  (){ return text_; }
-AstNode* AstNode::getArg1     (){ return arg1_; }
-AstNode* AstNode::getArg2     (){ return arg2_; }
+casper::java::AstNode* casper::java::Ast::NewAstNode ()
+{
+    AstNode* node = new AstNode();
+    
+    allocated_nodes_.push_back(node);
+    
+    return node;
+}
 
-AstNode ast_expression(std::string t_op, AstNode t_left, AstNode t_right){
+casper::java::AstNode* casper::java::Ast::NewAstNode (const int a_num)
+{
+    AstNode* node = new AstNode(a_num);
+    
+    allocated_nodes_.push_back(node);
+    
+    return node;
+}
+
+casper::java::AstNode* casper::java::Ast::NewAstNode (const std::string& a_text)
+{
+    AstNode* node = new AstNode(a_text);
+    
+    allocated_nodes_.push_back(node);
+    
+    return node;
+}
+
+
+casper::java::AstNode* casper::java::Ast::NewAstNode (const casper::java::AstNode::Type a_type, const std::string& a_text)
+{
+    AstNode* node = new AstNode(a_type, a_text);
+    
+    allocated_nodes_.push_back(node);
+    
+    return node;
+}
+
+casper::java::AstNode* casper::java::Ast::Expression (const std::string& a_op, casper::java::AstNode* a_left, casper::java::AstNode* a_right)
+{
+#if 1
+    
+    AstNode* node = new AstNode(AstNode::TExpr, a_left, a_right);
+    
+    node->setOp(a_op);
+    
+    allocated_nodes_.push_back(node);
+    
+    return node;
+    
+#else
     AstNode node;
-    AstNode* tr = new AstNode();
-    AstNode* tl = new AstNode();
-    *tr = t_right;
-    *tl = t_left;
+    AstNode* tr = NewNode(a_right);
+    AstNode* tl = NewNode(a_left);
+
     node.setRight(tr);
     node.setLeft(tl);
-    node.setOp(t_op);
+    node.setOp(a_op);
     node.setType(AstNode::TExpr);
-    node.setVal(0);
-    node.setArg1(nullptr);
-    node.setArg2(nullptr);
 
     return node;
+#endif
 }
 
-AstNode ast_operation(std::string t_op, AstNode t_left){
+casper::java::AstNode* casper::java::Ast::Operation (const std::string& a_op, casper::java::AstNode* a_left)
+{
+#if 1
+    
+    AstNode* node = new AstNode(AstNode::TOps, a_left);
+    
+    node->setOp(a_op);
+    
+    allocated_nodes_.push_back(node);
+    
+    return node;
+    
+#else
     AstNode node;
-    AstNode* tl = new AstNode();
-    *tl = t_left;
-    node.setRight(nullptr);
+    AstNode* tl = NewNode(a_left);
     node.setLeft(tl);
-    node.setOp(t_op);
+    node.setOp(a_op);
     node.setType(AstNode::TOps);
-    node.setVal(0);
-    node.setArg1(nullptr);
-    node.setArg2(nullptr);
 
     return node;
+#endif
 }
 
-AstNode ast_strOp(std::string t_op, AstNode t_left){
+casper::java::AstNode* casper::java::Ast::StrOp (const std::string& a_op, casper::java::AstNode* a_left)
+{
+#if 1
+    
+    AstNode* node = new AstNode(AstNode::TStrOps, a_left);
+    
+    node->setOp(a_op);
+    
+    allocated_nodes_.push_back(node);
+    
+    return node;
+    
+#else
+
     AstNode node;
-    AstNode* tl = new AstNode();
-    *tl = t_left;
-    node.setRight(nullptr);
+    AstNode* tl = NewNode(a_left);
     node.setLeft(tl);
-    node.setOp(t_op);
+    node.setOp(a_op);
     node.setType(AstNode::TStrOps);
-    node.setVal(0);
-    node.setArg1(nullptr);
-    node.setArg2(nullptr);
 
     return node;
+#endif
 }
 
-AstNode ast_strOp(std::string t_op, AstNode t_left, AstNode t_right){
+casper::java::AstNode* casper::java::Ast::StrOp (const std::string& a_op, casper::java::AstNode* a_left, casper::java::AstNode* a_right)
+{
+#if 1
+    
+    AstNode* node = new AstNode(AstNode::TStrOps, a_left);
+    
+    node->setOp(a_op);
+    node->setArg1(a_right);
+    
+    allocated_nodes_.push_back(node);
+    
+    return node;
+    
+#else
+
     AstNode node;
-    AstNode* tr = new AstNode();
-    AstNode* tl = new AstNode();
-    *tr = t_right;
-    *tl = t_left;
-    node.setRight(nullptr);
+    AstNode* tr = NewNode(a_right);
+    AstNode* tl = NewNode(a_left);
+
     node.setLeft(tl);
-    node.setOp(t_op);
+    node.setOp(a_op);
     node.setType(AstNode::TStrOps);
-    node.setVal(0);
     node.setArg1(tr);
-    node.setArg2(nullptr);
 
     return node;
+#endif
 }
 
-AstNode ast_strOp(std::string t_op, AstNode t_left, AstNode t_r1, AstNode t_r2){
+casper::java::AstNode* casper::java::Ast::StrOp (const std::string& a_op, casper::java::AstNode* a_left, casper::java::AstNode* a_right_1, casper::java::AstNode* a_right_2)
+{
+#if 1
+    
+    AstNode* node = new AstNode(AstNode::TStrOps, a_left);
+    
+    node->setOp(a_op);
+    node->setArg1(a_right_1);
+    node->setArg2(a_right_2);
+    
+    allocated_nodes_.push_back(node);
+    
+    return node;
+    
+#else
+
     AstNode node;
-    AstNode* tl = new AstNode();
-    *tl = t_left;
-    node.setRight(nullptr);
+    AstNode* tl = NewNode(a_left);
+
     node.setLeft(tl);
-    node.setOp(t_op);
+    node.setOp(a_op);
     node.setType(AstNode::TStrOps);
-    node.setVal(0);
-    AstNode* tr1 = new AstNode();
-    *tr1 = t_r1;
-    AstNode* tr2 = new AstNode();
-    *tr2 = t_r2;
+    AstNode* tr1 = NewNode(a_right_1);
+    AstNode* tr2 = NewNode(a_right_2);
+
     node.setArg1(tr1);
     node.setArg2(tr2);
 
     return node;
+#endif
 }
 
-AstNode ast_if(AstNode t_left, AstNode t_r1, AstNode t_r2){
+casper::java::AstNode* casper::java::Ast::If (casper::java::AstNode* a_left, casper::java::AstNode* a_right_1, casper::java::AstNode* a_right_2)
+{
+#if 1
+    
+    AstNode* node = new AstNode(AstNode::TIf, a_left);
+    
+    node->setOp("if");
+    node->setArg1(a_right_1);
+    node->setArg2(a_right_2);
+    
+    allocated_nodes_.push_back(node);
+    
+    return node;
+    
+#else
+
     AstNode node;
-    AstNode* tl = new AstNode();
-    *tl = t_left;
-    node.setRight(nullptr);
+    AstNode* tl = NewNode(a_left);
+
     node.setLeft(tl);
     node.setOp("if");
     node.setType(AstNode::TIf);
-    node.setVal(0);
-    AstNode* tr1 = new AstNode();
-    *tr1 = t_r1;
-    AstNode* tr2 = new AstNode();
-    *tr2 = t_r2;
+
+    AstNode* tr1 = NewNode(a_right_1);
+    AstNode* tr2 = NewNode(a_right_2);
+
     node.setArg1(tr1);
     node.setArg2(tr2);
 
     return node;
+#endif
 }
 
-AstNode ast_bool(bool t_bool){
-    AstNode node;
-    node.setLeft(nullptr);
-    node.setRight(nullptr);
-    node.setArg1(nullptr);
-    node.setArg2(nullptr);
-    node.setType(AstNode::TBool);
-    node.setBool(t_bool);
-    if(t_bool) node.setVal(1);
-    else node.setVal(0);
+casper::java::AstNode* casper::java::Ast::Bool(bool a_bool)
+{
+#if 1
+    
+    AstNode* node = new AstNode(AstNode::TBool);
+    node->setBool(a_bool);
+    node->setVal(true == a_bool ? 1 : 0);
+    
+    allocated_nodes_.push_back(node);
 
     return node;
-}
+#else
 
-AstNode ast_null(){
-    AstNode node;
-    node.setLeft(nullptr);
-    node.setRight(nullptr);
-    node.setArg1(nullptr);
-    node.setArg2(nullptr);
-    node.setType(AstNode::TUndef);
-
+    AstNode node(AstNode::TBool);
+    node.setBool(a_bool);
+    if ( true == a_bool ) {
+        node.setVal(1);
+    } else {
+        node.setVal(0);
+    }
     return node;
-}
-
-AstNode mkVar(AstNode t_ast){
-  AstNode node;
-  node.setLeft(nullptr);
-  node.setRight(nullptr);
-  node.setArg1(nullptr);
-  node.setArg2(nullptr);
-  node.setType(AstNode::TVar);
-  node.setText(t_ast.getText());
-
-  return node;
-}
-AstNode mkField(AstNode t_ast){
-  AstNode node;
-  node.setLeft(nullptr);
-  node.setRight(nullptr);
-  node.setArg1(nullptr);
-  node.setArg2(nullptr);
-  node.setType(AstNode::TField);
-  node.setText(t_ast.getText());
-
-  return node;
-}
-AstNode mkParam(AstNode t_ast){
-  AstNode node;
-  node.setLeft(nullptr);
-  node.setRight(nullptr);
-  node.setArg1(nullptr);
-  node.setArg2(nullptr);
-  node.setType(AstNode::TParam);
-  node.setText(t_ast.getText());
-
-  return node;
+#endif
 }

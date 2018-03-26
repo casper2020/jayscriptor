@@ -118,7 +118,7 @@ namespace osal
     /**
      * @brief Set exception code.
      *
-     * @param Exception code, string representation.
+     * @param a_code code, string representation.
      */
     inline void Exception::SetCode (const char *const a_code)
     {

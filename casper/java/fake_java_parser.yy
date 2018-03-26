@@ -1,8 +1,29 @@
+/**
+ * @file fake_java_parser.yy
+ *
+ * Copyright (c) 2011-2018 Cloudware S.A. All rights reserved.
+ *
+ * This file is part of jayscriptor.
+ *
+ * jayscriptor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * jayscriptor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with jayscriptor.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 %skeleton "lalr1.cc"
 %require "3.0"
 %defines
 %define api.namespace  { casper::java }
-%define api.value.type { class AstNode }
+%define api.value.type { class AstNode* }
 %define parser_class_name { FakeJavaParser }
 
 %code requires {
@@ -17,14 +38,13 @@
   #include "casper/java/ast.h"
 }
 
-%parse-param { casper::java::FakeJavaScanner& scanner_ } { casper::java::FakeJavaExpression& expr_ }
+%parse-param { Ast& ast } { casper::java::FakeJavaScanner& scanner_ } { casper::java::FakeJavaExpression& expr_ }
 
 %code {
   #include "casper/java/fake_java_scanner.h"
   #include "casper/java/fake_java_expression.h"
   #include "osal/exception.h"
   #define yylex scanner_.Scan
-  AstNode root;
 }
 
 %token END           0
@@ -98,7 +118,7 @@
 %%
     input:
            END
-         | term END                       { root = $1;                          }
+         | term END                       { ast.root_ = $1;                          }
          ;
 
     term:
@@ -112,76 +132,76 @@
          ;
 
    leaf_terminals:
-                 NUM                      { $$ = $1;                            }
-                 | TEXTLITERAL            { $$ = $1;                            }
-                 | TK_null                { $$ = ast_null();                    }
-                 | VARIABLE               { $$ = mkVar($1);                     }
-                 | FIELD                  { $$ = mkField($1);                   }
-                 | PARAMETER              { $$ = mkParam($1);                   }
+                 NUM                      { $$ = ast.NewAstNode($1->num_);                                       }
+                 | TEXTLITERAL            { $$ = ast.NewAstNode($1->text_);                                      }
+                 | TK_null                { $$ = ast.NewAstNode();                                              }
+                 | VARIABLE               { $$ = ast.NewAstNode(casper::java::AstNode::Type::TVar, $1->text_);   }
+                 | FIELD                  { $$ = ast.NewAstNode(casper::java::AstNode::Type::TField, $1->text_); }
+                 | PARAMETER              { $$ = ast.NewAstNode(casper::java::AstNode::Type::TParam, $1->text_); }
                  ;
 
     expressions:
-                '(' term ')'              { $$ = $2;                            }
-              | term '+' term             { $$ = ast_expression("+",$1,$3);     }
-              | term '-' term             { $$ = ast_expression("-",$1,$3);     }
-              | term '*' term             { $$ = ast_expression("*",$1,$3);     }
-              | term '/' term             { $$ = ast_expression("/",$1,$3);     }
-              | term '^' term             { $$ = ast_expression("^",$1,$3);     }
-              | term '%' term             { $$ = ast_expression("%",$1,$3);     }
-              | term '>' term             { $$ = ast_expression(">",$1,$3);     }
-              | term '<' term             { $$ = ast_expression("<",$1,$3);     }
-              | term  GE term             { $$ = ast_expression(">=",$1,$3);    }
-              | term  LE term             { $$ = ast_expression("<=",$1,$3);    }
-              | term  NE term             { $$ = ast_expression("!=",$1,$3);    }
-              | term  EQ term             { $$ = ast_expression("==",$1,$3);    }
-              | term  OR term             { $$ = ast_expression("||",$1,$3);    }
-              | term AND term             { $$ = ast_expression("&&",$1,$3);    }
-              | term '?' term ':' term    { $$ = ast_if($1, $3, $5);            }
-              | '-' term %prec UMINUS     { $$ = ast_expression("UM",$2,$2);    }
+                '(' term ')'              { $2->pare_ = true; $$ = $2;          }
+              | term '+' term             { $$ = ast.Expression("+",$1,$3);     }
+              | term '-' term             { $$ = ast.Expression("-",$1,$3);     }
+              | term '*' term             { $$ = ast.Expression("*",$1,$3);     }
+              | term '/' term             { $$ = ast.Expression("/",$1,$3);     }
+              | term '^' term             { $$ = ast.Expression("^",$1,$3);     }
+              | term '%' term             { $$ = ast.Expression("%",$1,$3);     }
+              | term '>' term             { $$ = ast.Expression(">",$1,$3);     }
+              | term '<' term             { $$ = ast.Expression("<",$1,$3);     }
+              | term  GE term             { $$ = ast.Expression(">=",$1,$3);    }
+              | term  LE term             { $$ = ast.Expression("<=",$1,$3);    }
+              | term  NE term             { $$ = ast.Expression("!=",$1,$3);    }
+              | term  EQ term             { $$ = ast.Expression("==",$1,$3);    }
+              | term  OR term             { $$ = ast.Expression("||",$1,$3);    }
+              | term AND term             { $$ = ast.Expression("&&",$1,$3);    }
+              | term '?' term ':' term    { $$ = ast.If($1, $3, $5);            }
+              | '-' term %prec UMINUS     { $$ = ast.Expression("UM",$2,$2);    }
               | '+' term %prec UPLUS      { $$ = $2;                            }
-              | '!' term                  { $$ = ast_expression("!",$2,$2);     }
+              | '!' term                  { $$ = ast.Expression("!",$2,$2);     }
               ;
     generic_ops:
-                 term '.' equals      '(' term ')'  { $$=ast_expression("==",$1,$5);            }
-               | term '.' toString    '(' ')'       { $$=ast_operation("toString",$1);          }
-               | term '.' intValue    '(' ')'       { $$=ast_operation("parseInt",$1);          }
-               | term '.' to_i        '(' ')'       { $$=ast_operation("parseInt",$1);          }
-               | term '.' to_f        '(' ')'       { $$=ast_operation("parseFloat",$1);        }
-               | term '.' doubleValue '(' ')'       { $$=ast_operation("parseFloat",$1);        }
-               | term '.' isNaN       '(' ')'       { $$=ast_operation("isNan",$1);             }
+                 term '.' equals      '(' term ')'  { $$=ast.Expression("==",$1,$5);            }
+               | term '.' toString    '(' ')'       { $$=ast.Operation("toString",$1);          }
+               | term '.' intValue    '(' ')'       { $$=ast.Operation("parseInt",$1);          }
+               | term '.' to_i        '(' ')'       { $$=ast.Operation("parseInt",$1);          }
+               | term '.' to_f        '(' ')'       { $$=ast.Operation("parseFloat",$1);        }
+               | term '.' doubleValue '(' ')'       { $$=ast.Operation("parseFloat",$1);        }
+               | term '.' isNaN       '(' ')'       { $$=ast.Operation("isNan",$1);             }
                ;
 
     string_ops:
-                term '.' isEmpty     '(' ')'               { $$=ast_strOp("IsEmpty",$1);        }
-              | term '.' length      '(' ')'               { $$=ast_strOp("length",$1);         }
-              | term '.' toUpperCase '(' ')'               { $$=ast_strOp("toUpperCase",$1);    }
-              | term '.' toLowerCase '(' ')'               { $$=ast_strOp("toLowerCase",$1);    }
-              | term '.' substring   '(' term ',' term ')' { $$=ast_strOp("substring",$1,$5,$7);}
-              | term '.' substring   '(' term ')'          { $$=ast_strOp("substring",$1,$5);   }
-              | term '.' indexOf     '(' term ')'          { $$=ast_strOp("indexOf",$1,$5);     }
-              | term '.' replace     '(' term ',' term ')' { $$=ast_strOp("replace",$1,$5,$7);  }
+                term '.' isEmpty     '(' ')'               { $$=ast.StrOp("IsEmpty",$1);        }
+              | term '.' length      '(' ')'               { $$=ast.StrOp("length",$1);         }
+              | term '.' toUpperCase '(' ')'               { $$=ast.StrOp("toUpperCase",$1);    }
+              | term '.' toLowerCase '(' ')'               { $$=ast.StrOp("toLowerCase",$1);    }
+              | term '.' substring   '(' term ',' term ')' { $$=ast.StrOp("substring",$1,$5,$7);}
+              | term '.' substring   '(' term ')'          { $$=ast.StrOp("substring",$1,$5);   }
+              | term '.' indexOf     '(' term ')'          { $$=ast.StrOp("indexOf",$1,$5);     }
+              | term '.' replace     '(' term ',' term ')' { $$=ast.StrOp("replace",$1,$5,$7);  }
               ;
     boolean_ops:
-                Boolean '.' parseBoolean '(' term ')'    { $$ = ast_operation("parseBool",$5);  }
-              | Boolean '.' valueOf      '(' term ')'    { $$ = ast_operation("valueOf",$5);    }
-              | Boolean '.' TK_TRUE                      { $$ = ast_bool(true);                 }
-              | Boolean '.' TK_FALSE                     { $$ = ast_bool(false);                }
-              | TK_true                                  { $$ = ast_bool(true);                 }
-              | TK_false                                 { $$ = ast_bool(false);                }
+                Boolean '.' parseBoolean '(' term ')'    { $$ = ast.Operation("parseBool",$5);  }
+              | Boolean '.' valueOf      '(' term ')'    { $$ = ast.Operation("valueOf",$5);    }
+              | Boolean '.' TK_TRUE                      { $$ = ast.Bool(true);                 }
+              | Boolean '.' TK_FALSE                     { $$ = ast.Bool(false);                }
+              | TK_true                                  { $$ = ast.Bool(true);                 }
+              | TK_false                                 { $$ = ast.Bool(false);                }
               ;
 
     double_ops:
-                Double  '.' valueOf     '(' term ')'     { $$ = ast_operation("parseFloat",$5); }
-              | Double  '.' parseDouble '(' term ')'     { $$ = ast_operation("parseFloat",$5); }
-              | Double  '.' isNaN       '(' term ')'     { $$ = ast_operation("isNan",$5);      }
-              | Double  '.' toString    '(' term ')'     { $$ = ast_operation("toString",$5);   }
-              | Math    '.' abs         '(' term ')'     { $$ = ast_operation("Math.abs",$5);   }
+                Double  '.' valueOf     '(' term ')'     { $$ = ast.Operation("parseFloat",$5); }
+              | Double  '.' parseDouble '(' term ')'     { $$ = ast.Operation("parseFloat",$5); }
+              | Double  '.' isNaN       '(' term ')'     { $$ = ast.Operation("isNan",$5);      }
+              | Double  '.' toString    '(' term ')'     { $$ = ast.Operation("toString",$5);   }
+              | Math    '.' abs         '(' term ')'     { $$ = ast.Operation("Math.abs",$5);   }
               ;
 
     integer_ops:
-                 Integer '.' valueOf    '(' term ')'    { $$ = ast_operation("parseInt",$5);    }
-               | Integer '.' parseInt   '(' term ')'    { $$ = ast_operation("parseInt",$5);    }
-               | Integer '.' toString   '(' term ')'    { $$ = ast_operation("toString",$5);    }
+                 Integer '.' valueOf    '(' term ')'    { $$ = ast.Operation("parseInt",$5);    }
+               | Integer '.' parseInt   '(' term ')'    { $$ = ast.Operation("parseInt",$5);    }
+               | Integer '.' toString   '(' term ')'    { $$ = ast.Operation("toString",$5);    }
                ;
 %%
 
