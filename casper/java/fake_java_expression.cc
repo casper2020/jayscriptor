@@ -20,7 +20,6 @@
  */
 
 #include "casper/java/fake_java_expression.h"
-#include "osal/osalite.h"
 
 casper::java::FakeJavaExpression::FakeJavaExpression ()
     : scanner_(ast_),
@@ -50,16 +49,11 @@ const std::string& casper::java::FakeJavaExpression::Convert (const char* a_expr
         scanner_.SetInput(a_expression, a_len);
         parser_.parse();
         BuildString(ast_.root_);
-        
         tmp_expression_ = tmp_ss_.str();
-        
         ast_.Reset();
-    } catch (osal::Exception& a_exception) {
-        if ( a_exception .IsNull() ) {
-            ast_.Reset();
-        } else {
-            throw a_exception;
-        }
+    } catch (const std::runtime_error& a_error) {
+        ast_.Reset();
+        throw a_error;
     }
     
     return tmp_expression_;

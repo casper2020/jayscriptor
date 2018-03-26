@@ -79,8 +79,6 @@ casper::java::AstNode* casper::java::Ast::NewAstNode (const casper::java::AstNod
 
 casper::java::AstNode* casper::java::Ast::Expression (const std::string& a_op, casper::java::AstNode* a_left, casper::java::AstNode* a_right)
 {
-#if 1
-    
     AstNode* node = new AstNode(AstNode::TExpr, a_left, a_right);
     
     node->setOp(a_op);
@@ -88,25 +86,10 @@ casper::java::AstNode* casper::java::Ast::Expression (const std::string& a_op, c
     allocated_nodes_.push_back(node);
     
     return node;
-    
-#else
-    AstNode node;
-    AstNode* tr = NewNode(a_right);
-    AstNode* tl = NewNode(a_left);
-
-    node.setRight(tr);
-    node.setLeft(tl);
-    node.setOp(a_op);
-    node.setType(AstNode::TExpr);
-
-    return node;
-#endif
 }
 
 casper::java::AstNode* casper::java::Ast::Operation (const std::string& a_op, casper::java::AstNode* a_left)
 {
-#if 1
-    
     AstNode* node = new AstNode(AstNode::TOps, a_left);
     
     node->setOp(a_op);
@@ -114,22 +97,10 @@ casper::java::AstNode* casper::java::Ast::Operation (const std::string& a_op, ca
     allocated_nodes_.push_back(node);
     
     return node;
-    
-#else
-    AstNode node;
-    AstNode* tl = NewNode(a_left);
-    node.setLeft(tl);
-    node.setOp(a_op);
-    node.setType(AstNode::TOps);
-
-    return node;
-#endif
 }
 
 casper::java::AstNode* casper::java::Ast::StrOp (const std::string& a_op, casper::java::AstNode* a_left)
 {
-#if 1
-    
     AstNode* node = new AstNode(AstNode::TStrOps, a_left);
     
     node->setOp(a_op);
@@ -137,23 +108,10 @@ casper::java::AstNode* casper::java::Ast::StrOp (const std::string& a_op, casper
     allocated_nodes_.push_back(node);
     
     return node;
-    
-#else
-
-    AstNode node;
-    AstNode* tl = NewNode(a_left);
-    node.setLeft(tl);
-    node.setOp(a_op);
-    node.setType(AstNode::TStrOps);
-
-    return node;
-#endif
 }
 
 casper::java::AstNode* casper::java::Ast::StrOp (const std::string& a_op, casper::java::AstNode* a_left, casper::java::AstNode* a_right)
 {
-#if 1
-    
     AstNode* node = new AstNode(AstNode::TStrOps, a_left);
     
     node->setOp(a_op);
@@ -162,26 +120,10 @@ casper::java::AstNode* casper::java::Ast::StrOp (const std::string& a_op, casper
     allocated_nodes_.push_back(node);
     
     return node;
-    
-#else
-
-    AstNode node;
-    AstNode* tr = NewNode(a_right);
-    AstNode* tl = NewNode(a_left);
-
-    node.setLeft(tl);
-    node.setOp(a_op);
-    node.setType(AstNode::TStrOps);
-    node.setArg1(tr);
-
-    return node;
-#endif
 }
 
 casper::java::AstNode* casper::java::Ast::StrOp (const std::string& a_op, casper::java::AstNode* a_left, casper::java::AstNode* a_right_1, casper::java::AstNode* a_right_2)
 {
-#if 1
-    
     AstNode* node = new AstNode(AstNode::TStrOps, a_left);
     
     node->setOp(a_op);
@@ -191,29 +133,10 @@ casper::java::AstNode* casper::java::Ast::StrOp (const std::string& a_op, casper
     allocated_nodes_.push_back(node);
     
     return node;
-    
-#else
-
-    AstNode node;
-    AstNode* tl = NewNode(a_left);
-
-    node.setLeft(tl);
-    node.setOp(a_op);
-    node.setType(AstNode::TStrOps);
-    AstNode* tr1 = NewNode(a_right_1);
-    AstNode* tr2 = NewNode(a_right_2);
-
-    node.setArg1(tr1);
-    node.setArg2(tr2);
-
-    return node;
-#endif
 }
 
 casper::java::AstNode* casper::java::Ast::If (casper::java::AstNode* a_left, casper::java::AstNode* a_right_1, casper::java::AstNode* a_right_2)
 {
-#if 1
-    
     AstNode* node = new AstNode(AstNode::TIf, a_left);
     
     node->setOp("if");
@@ -223,30 +146,10 @@ casper::java::AstNode* casper::java::Ast::If (casper::java::AstNode* a_left, cas
     allocated_nodes_.push_back(node);
     
     return node;
-    
-#else
-
-    AstNode node;
-    AstNode* tl = NewNode(a_left);
-
-    node.setLeft(tl);
-    node.setOp("if");
-    node.setType(AstNode::TIf);
-
-    AstNode* tr1 = NewNode(a_right_1);
-    AstNode* tr2 = NewNode(a_right_2);
-
-    node.setArg1(tr1);
-    node.setArg2(tr2);
-
-    return node;
-#endif
 }
 
 casper::java::AstNode* casper::java::Ast::Bool(bool a_bool)
 {
-#if 1
-    
     AstNode* node = new AstNode(AstNode::TBool);
     node->setBool(a_bool);
     node->setVal(true == a_bool ? 1 : 0);
@@ -254,15 +157,4 @@ casper::java::AstNode* casper::java::Ast::Bool(bool a_bool)
     allocated_nodes_.push_back(node);
 
     return node;
-#else
-
-    AstNode node(AstNode::TBool);
-    node.setBool(a_bool);
-    if ( true == a_bool ) {
-        node.setVal(1);
-    } else {
-        node.setVal(0);
-    }
-    return node;
-#endif
 }

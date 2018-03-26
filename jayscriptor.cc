@@ -24,9 +24,7 @@
 
 #include <unistd.h>
 
-#include "osal/exception.h"
 #include "casper/java/fake_java_expression.h"
-
 
 /**
  * @brief Show version.
@@ -137,12 +135,12 @@ int main(int argc, char* argv[])
                 fprintf(stdout, "console.log(");
                 expression = exp.Convert(line);
                 if ( 0 == expression.length() ) {
-                    throw OSAL_EXCEPTION("Invalid 'java' expression: %s", line.c_str());
+                    throw std::runtime_error("Invalid 'java' expression: " + line);
                 }
                 fprintf(stdout, "%s", expression.c_str());
                 fprintf(stdout, ")");
-            } catch (osal::Exception& a_exception ){
-                fprintf(stderr, "%s\n", a_exception.Message());
+            } catch (const std::runtime_error& a_error) {
+                fprintf(stderr, "%s\n", a_error.what());
                 return -1;
             }
             fprintf(stdout, "\n");

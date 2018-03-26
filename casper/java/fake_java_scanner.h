@@ -55,6 +55,10 @@ namespace casper
 
             void SetDoubleVar (const char* a_var_name, double a_double);
             void SetStringVar (const char* a_var_name, const char* a_value);
+            
+        public: //
+            
+            static double Pow10 (int n);
 
         };
 

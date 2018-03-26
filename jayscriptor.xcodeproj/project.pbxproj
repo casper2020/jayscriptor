@@ -7,9 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		15660DA4206547EF00189A6E /* posix_time.cc in Sources */ = {isa = PBXBuildFile; fileRef = 15660D37206547EF00189A6E /* posix_time.cc */; };
-		15660DAE206547F000189A6E /* pow10.cc in Sources */ = {isa = PBXBuildFile; fileRef = 15660D51206547EF00189A6E /* pow10.cc */; };
-		15660DB2206547F000189A6E /* exception.cc in Sources */ = {isa = PBXBuildFile; fileRef = 15660D62206547EF00189A6E /* exception.cc */; };
 		15660DBE206547F000189A6E /* fake_java_expression.cc in Sources */ = {isa = PBXBuildFile; fileRef = 15660D89206547EF00189A6E /* fake_java_expression.cc */; };
 		15660DC2206547F000189A6E /* ast.cc in Sources */ = {isa = PBXBuildFile; fileRef = 15660D90206547EF00189A6E /* ast.cc */; };
 		15660DC7206547F000189A6E /* scanner.cc in Sources */ = {isa = PBXBuildFile; fileRef = 15660D9A206547EF00189A6E /* scanner.cc */; };
@@ -71,20 +68,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		15034F0520694F0F005047CB /* generic_number_parser.rlh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generic_number_parser.rlh; sourceTree = "<group>"; };
 		15660D0C2065472200189A6E /* jayscriptor */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = jayscriptor; sourceTree = BUILT_PRODUCTS_DIR; };
 		15660D1C206547EF00189A6E /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = SOURCE_ROOT; };
-		15660D1E206547EF00189A6E /* common.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = common.mk; sourceTree = "<group>"; };
-		15660D1F206547EF00189A6E /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		15660D20206547EF00189A6E /* static-lib-makefile.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "static-lib-makefile.mk"; sourceTree = "<group>"; };
-		15660D24206547EF00189A6E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		15660D25206547EF00189A6E /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		15660D34206547EF00189A6E /* posix_time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = posix_time.h; sourceTree = "<group>"; };
-		15660D37206547EF00189A6E /* posix_time.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = posix_time.cc; sourceTree = "<group>"; };
-		15660D46206547EF00189A6E /* osalite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osalite.h; sourceTree = "<group>"; };
-		15660D51206547EF00189A6E /* pow10.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pow10.cc; sourceTree = "<group>"; };
-		15660D54206547EF00189A6E /* pow10.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pow10.h; sourceTree = "<group>"; };
-		15660D62206547EF00189A6E /* exception.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = exception.cc; sourceTree = "<group>"; };
-		15660D78206547EF00189A6E /* exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = exception.h; sourceTree = "<group>"; };
 		15660D85206547EF00189A6E /* fake_java_expression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fake_java_expression.h; sourceTree = "<group>"; };
 		15660D89206547EF00189A6E /* fake_java_expression.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fake_java_expression.cc; sourceTree = "<group>"; };
 		15660D8C206547EF00189A6E /* fake_java_scanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fake_java_scanner.h; sourceTree = "<group>"; };
@@ -132,65 +118,14 @@
 				15660D82206547EF00189A6E /* casper */,
 				15660D9B206547EF00189A6E /* jayscriptor.cc */,
 				15660D1C206547EF00189A6E /* Makefile */,
-				15660D1D206547EF00189A6E /* osal */,
 			);
 			path = jayscriptor;
-			sourceTree = "<group>";
-		};
-		15660D1D206547EF00189A6E /* osal */ = {
-			isa = PBXGroup;
-			children = (
-				15660D1E206547EF00189A6E /* common.mk */,
-				15660D1F206547EF00189A6E /* LICENSE */,
-				15660D20206547EF00189A6E /* static-lib-makefile.mk */,
-				15660D24206547EF00189A6E /* README.md */,
-				15660D25206547EF00189A6E /* .gitignore */,
-				15660D26206547EF00189A6E /* src */,
-			);
-			path = osal;
-			sourceTree = SOURCE_ROOT;
-		};
-		15660D26206547EF00189A6E /* src */ = {
-			isa = PBXGroup;
-			children = (
-				15660D27206547EF00189A6E /* osal */,
-			);
-			path = src;
-			sourceTree = "<group>";
-		};
-		15660D27206547EF00189A6E /* osal */ = {
-			isa = PBXGroup;
-			children = (
-				15660D28206547EF00189A6E /* posix */,
-				15660D46206547EF00189A6E /* osalite.h */,
-				15660D4A206547EF00189A6E /* utils */,
-				15660D62206547EF00189A6E /* exception.cc */,
-				15660D78206547EF00189A6E /* exception.h */,
-			);
-			path = osal;
-			sourceTree = "<group>";
-		};
-		15660D28206547EF00189A6E /* posix */ = {
-			isa = PBXGroup;
-			children = (
-				15660D34206547EF00189A6E /* posix_time.h */,
-				15660D37206547EF00189A6E /* posix_time.cc */,
-			);
-			path = posix;
-			sourceTree = "<group>";
-		};
-		15660D4A206547EF00189A6E /* utils */ = {
-			isa = PBXGroup;
-			children = (
-				15660D51206547EF00189A6E /* pow10.cc */,
-				15660D54206547EF00189A6E /* pow10.h */,
-			);
-			path = utils;
 			sourceTree = "<group>";
 		};
 		15660D82206547EF00189A6E /* casper */ = {
 			isa = PBXGroup;
 			children = (
+				15034F0520694F0F005047CB /* generic_number_parser.rlh */,
 				15660D83206547EF00189A6E /* java */,
 				15660D99206547EF00189A6E /* scanner.h */,
 				15660D9A206547EF00189A6E /* scanner.cc */,
@@ -298,13 +233,10 @@
 				15660DE020656E9600189A6E /* ast_node.cc in Sources */,
 				15660DDC2065551000189A6E /* fake_java_scanner.rl in Sources */,
 				15660DC2206547F000189A6E /* ast.cc in Sources */,
-				15660DA4206547EF00189A6E /* posix_time.cc in Sources */,
 				15660DDD2065551000189A6E /* fake_java_parser.yy in Sources */,
 				15660DBE206547F000189A6E /* fake_java_expression.cc in Sources */,
 				15660DC8206547F000189A6E /* jayscriptor.cc in Sources */,
 				15660DC7206547F000189A6E /* scanner.cc in Sources */,
-				15660DB2206547F000189A6E /* exception.cc in Sources */,
-				15660DAE206547F000189A6E /* pow10.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,7 +351,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "${SRCROOT}/src/** $(SRCROOT)/osal/src/osal/** $(SRCROOT)/osal/src/ $(SRCROOT)/ /usr/local/include $(SRCROOT)/casper/java";
+				USER_HEADER_SEARCH_PATHS = "${SRCROOT}/src/** $(SRCROOT)/ /usr/local/include $(SRCROOT)/casper/java";
 			};
 			name = Debug;
 		};
@@ -428,7 +360,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "${SRCROOT}/src/** $(SRCROOT)/osal/src/osal/** $(SRCROOT)/osal/src/ $(SRCROOT)/ /usr/local/include $(SRCROOT)/casper/java";
+				USER_HEADER_SEARCH_PATHS = "${SRCROOT}/src/** $(SRCROOT)/ /usr/local/include $(SRCROOT)/casper/java";
 			};
 			name = Release;
 		};

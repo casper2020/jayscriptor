@@ -22,8 +22,6 @@
 
 #include "casper/scanner.h"
 
-#include "osal/osalite.h"
-
 #include <stdlib.h>
 
 const uint8_t casper::Scanner::k_max_fractional_digits_ = 18;

@@ -1,0 +1,18 @@
+
+#macOS 
+.DS_Store
+*xcuserdata*
+
+# binaries
+jayscriptor
+*.o
+
+# bison generated
+casper/java/location.hh
+casper/java/position.hh
+casper/java/stack.hh
+casper/java/fake_java_parser.hh
+casper/java/fake_java_parser.output
+
+casper/java/fake_java_scanner.cc
+casper/java/fake_java_parser.cc

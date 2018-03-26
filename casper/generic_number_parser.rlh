@@ -96,9 +96,9 @@
             }
             if ( exponent_ != 0 ) {
                 if ( negative_exponent_ == false ) {
-                    double_value_ *= (double) osal::utils::Pow10((int)exponent_);
+                    double_value_ *= (double) casper::java::FakeJavaScanner::Pow10((int)exponent_);
                 } else {
-                    double_value_ /= (double) osal::utils::Pow10((int)exponent_);
+                    double_value_ /= (double) casper::java::FakeJavaScanner::Pow10((int)exponent_);
                 }
             }
         }
