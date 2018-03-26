@@ -55,6 +55,16 @@
 		};
 /* End PBXBuildRule section */
 
+/* Begin PBXContainerItemProxy section */
+		15034F0620695547005047CB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 15660D042065472200189A6E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 15660DD6206553B200189A6E;
+			remoteInfo = prebuild;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		15660D0A2065472200189A6E /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -154,7 +164,7 @@
 /* Begin PBXLegacyTarget section */
 		15660DD6206553B200189A6E /* prebuild */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "$(ACTION)";
+			buildArgumentsString = "$(ACTION) bison ragel";
 			buildConfigurationList = 15660DD7206553B200189A6E /* Build configuration list for PBXLegacyTarget "prebuild" */;
 			buildPhases = (
 			);
@@ -182,6 +192,7 @@
 				15660DCB2065489000189A6E /* PBXBuildRule */,
 			);
 			dependencies = (
+				15034F0720695547005047CB /* PBXTargetDependency */,
 			);
 			name = jayscriptor;
 			productName = jayscriptor;
@@ -241,6 +252,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		15034F0720695547005047CB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 15660DD6206553B200189A6E /* prebuild */;
+			targetProxy = 15034F0620695547005047CB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		15660D112065472200189A6E /* Debug */ = {

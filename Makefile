@@ -1,6 +1,9 @@
 
 INCLUDE_DIRS = -I . -I ./osal/src
 
+BISON_OBJECTS=./casper/java/fake_java_parser.o
+RAGEL_OBJECTS=./casper/java/fake_java_scanner.o
+
 INTERM = casper/java/fake_java_parser.hh casper/java/fake_java_parser.cc
 
 OBJECTS = casper/java/fake_java_parser.o      \
@@ -15,13 +18,17 @@ OBJECTS = casper/java/fake_java_parser.o      \
 					casper/java/ast.o                   \
 					casper/java/ast_node.o
 
+PLATFORM:=$(shell uname -s)
+ifeq (Darwin, $(PLATFORM))
+  YACC=/usr/local/Cellar/bison/3.0.4_1/bin/bison
+else
+  YACC=bison
+endif
 
 jayscriptor: $(OBJECTS)
 	$(CXX) -o $@ $(OBJECTS)
 
 
-#YACC=bison
-YACC=/usr/local/Cellar/bison/3.0.4_1/bin/bison
 RAGEL=ragel
 DEFINES = -D CASPER_NO_ICU
 CFLAGS = $(INCLUDE_DIRS) $(DEFINES) -c -g
@@ -49,3 +56,9 @@ CXXFLAGS = $(INCLUDE_DIRS) -std=c++11 -Wall $(DEFINES) -c -g
 
 clean:
 	rm -f $(OBJECTS) $(INTERM)
+
+ragel: $(RAGEL_OBJECTS)
+	@echo "* RAGEL done"
+
+bison: $(BISON_OBJECTS)
+	@echo "* BISON done"
