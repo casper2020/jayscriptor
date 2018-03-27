@@ -8,10 +8,6 @@ INTERM = casper/java/fake_java_parser.hh casper/java/fake_java_parser.cc
 
 OBJECTS = casper/java/fake_java_parser.o      \
 					jayscriptor.o 											\
-					./osal/src/osal/osal_date.o         \
-					./osal/src/osal/posix/posix_time.o  \
-					./osal/src/osal/exception.o         \
-					./osal/src/osal/utils/pow10.o       \
 					casper/java/fake_java_scanner.o     \
 					casper/scanner.o                    \
 					casper/java/fake_java_expression.o  \
