@@ -33,7 +33,7 @@ namespace casper
 
     namespace java
     {
-        
+
         class FakeJavaParser;
 
         class AstNode
@@ -55,7 +55,8 @@ namespace casper
                 TVar    = 8,
                 TParam  = 9,
                 TField  = 10,
-                TNull   = 11
+                TNull   = 11,
+                TDate   = 12
             };
 
         protected:
@@ -114,11 +115,11 @@ namespace casper
             void          operator =(const std::string& a_string);
             void          operator =(double a_value);
             void          operator =(bool t_bool);
-            
+
         public: // Operator(s)
-            
+
             AstNode& operator =(const AstNode &obj) = delete;
-            
+
         };
 
         inline void AstNode::operator = (const char* const a_string) {

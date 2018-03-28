@@ -64,7 +64,7 @@ void show_help (const char* a_name = "jayscriptor")
 int parse_args (int a_argc, char** a_argv, std::string& o_file, std::string& o_string)
 {
     // ... not enough arguments?
-    if ( a_argc < 2 ) {
+    if ( a_argc < 3 ) {
         // ... show error ...
         fprintf(stderr, "invalid number of arguments: got %d, expected at least %d!\n", a_argc, 1);
         // ... and help ...
@@ -109,6 +109,8 @@ int main(int argc, char* argv[])
     std::string file;
     std::string java_expression;
 
+
+
     const int arg_rv = parse_args(argc, argv, file, java_expression);
     if ( 0 != arg_rv ) {
         return arg_rv;
@@ -132,13 +134,13 @@ int main(int argc, char* argv[])
 
         while ( getline(in, line) ) {
             try{
-                fprintf(stdout, "console.log(");
+                //fprintf(stdout, "console.log(");
                 expression = exp.Convert(line);
                 if ( 0 == expression.length() ) {
                     throw std::runtime_error("Invalid 'java' expression: " + line);
                 }
                 fprintf(stdout, "%s", expression.c_str());
-                fprintf(stdout, ")");
+                //fprintf(stdout, ")");
             } catch (const std::runtime_error& a_error) {
                 fprintf(stderr, "%s", a_error.what());
                 return -1;

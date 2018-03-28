@@ -129,6 +129,7 @@
          | integer_ops
          | boolean_ops
          | double_ops
+         | date_ops
          | leaf_terminals
          ;
 
@@ -204,6 +205,11 @@
                | Integer '.' parseInt   '(' term ')'    { $$ = ast.Operation("parseInt",$5);    }
                | Integer '.' toString   '(' term ')'    { $$ = ast.Operation("toString",$5);    }
                ;
+    date_ops:
+                TK_NEW         '.' TK_DATE '(' ')'                { $$ = ast.DateOp("newDate");          }
+               | TK_DATE_FORMAT '.' parse   '(' term ',' term ')' { $$ = ast.DateOp("parseDate",$5, $7); }
+               ;
+
 %%
 
 void casper::java::FakeJavaParser::error (const location_type& a_location, const std::string& a_msg)

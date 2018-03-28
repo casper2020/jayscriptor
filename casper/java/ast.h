@@ -60,6 +60,8 @@ namespace casper
             AstNode* StrOp      (const std::string& a_op, AstNode* a_left, AstNode* a_right_1, AstNode* a_right_2);
             AstNode* If         (AstNode* a_left, AstNode* a_right_1, AstNode* a_right_2);
             AstNode* Bool       (bool a_bool);
+            AstNode* DateOp     (const std::string& a_op, AstNode* a_right_1, AstNode* a_right_2);
+            AstNode* DateOp     (const std::string& a_op);
 
             AstNode* NewAstNode ();
             AstNode* NewAstNode (const casper::java::AstNode::Type a_type);

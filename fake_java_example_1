@@ -13,3 +13,4 @@ $F{gajo}
 $P{tax_registration_number}.doubleValue() != 0 ? $F{field1} : null
 "A referência gerada está disponível até " + $P{tax_registration_number}.substring(1,6)
 "A referência gerada está disponível até " + $P{tax_registration_number}.substring(0,10)
+DateFormat.parse("2015-01-11","yyya-MM-dd")

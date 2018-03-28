@@ -55,48 +55,48 @@ const std::string& casper::java::FakeJavaExpression::Convert (const char* a_expr
         ast_.Reset();
         throw a_error;
     }
-    
+
     return tmp_expression_;
 }
 
 void casper::java::FakeJavaExpression::BuildString (casper::java::AstNode* a_node)
 {
-    
+
     if ( nullptr == a_node ) {
         return;
     }
-    
+
     if ( a_node->getType()==casper::java::AstNode::TNum ) {
-        
+
         //
         // Numbers
         //
-        
+
         tmp_ss_ << a_node->getVal();
-        
+
     } else if ( a_node->getType()==casper::java::AstNode::TText ) {
-        
+
         //
         // Text
         //
-        
+
         tmp_ss_  << "(\"";
         tmp_ss_  << a_node->getText();
         tmp_ss_  << "\")";
-        
+
     } else if ( a_node->getType()==casper::java::AstNode::TBool ) {
-        
+
         //
         // Bool
         //
         tmp_ss_ << ( a_node->getBool() ? "true" : "false" );
-        
+
     }else if ( a_node->getType()==casper::java::AstNode::TExpr ) {
-        
+
         //
         // Expressions
         //
-        
+
         if ( ! a_node->getOp().compare("!") ) {
             tmp_ss_  << " !";
             BuildString(a_node->getLeft());
@@ -107,22 +107,22 @@ void casper::java::FakeJavaExpression::BuildString (casper::java::AstNode* a_nod
             if ( a_node->getPare() ) {
                 tmp_ss_  << "(";
                 BuildString(a_node->getLeft());
-                tmp_ss_  << ' ' << a_node->getOp();
+                tmp_ss_  << " " << a_node->getOp() << " ";
                 BuildString(a_node->getRight());
                 tmp_ss_  << ")";
             } else {
                 BuildString(a_node->getLeft());
-                tmp_ss_  << ' ' << a_node->getOp();
+                tmp_ss_  << " " << a_node->getOp() << " ";
                 BuildString(a_node->getRight());
             }
         }
-        
+
     } else if ( a_node->getType()==casper::java::AstNode::TOps ) {
-        
+
         //
         // Operations
         //
-        
+
         if ( ! a_node->getOp().compare("toString") ) {
             tmp_ss_  << "(";
             BuildString(a_node->getLeft());
@@ -135,20 +135,20 @@ void casper::java::FakeJavaExpression::BuildString (casper::java::AstNode* a_nod
             BuildString(a_node->getLeft());
             tmp_ss_  << " == \"true\" ? true : false";
         } else {
-            tmp_ss_ << ' ' << a_node->getOp() << "(";
+            tmp_ss_ << a_node->getOp() << "(";
             BuildString(a_node->getLeft());
             tmp_ss_   << ")";
         }
-        
+
     } else if ( a_node->getType()==casper::java::AstNode::TStrOps ) {
-        
+
         //
         // String Ops
         //
-        
+
         if ( ! a_node->getOp().compare("IsEmpty") ) {
             BuildString(a_node->getLeft());
-            tmp_ss_  << ".length===0";
+            tmp_ss_  << ".length === 0";
         } else if ( ! a_node->getOp().compare("length") ) {
             BuildString(a_node->getLeft());
             tmp_ss_  << ".length";
@@ -165,7 +165,7 @@ void casper::java::FakeJavaExpression::BuildString (casper::java::AstNode* a_nod
                 BuildString(a_node->getLeft());
                 tmp_ss_  << "." << a_node->getOp() << "(";
                 BuildString(a_node->getArg1());
-                tmp_ss_  << ",";
+                tmp_ss_  << " , ";
                 BuildString(a_node->getArg2());
                 tmp_ss_  << ")";
             }
@@ -178,48 +178,60 @@ void casper::java::FakeJavaExpression::BuildString (casper::java::AstNode* a_nod
             BuildString(a_node->getLeft());
             tmp_ss_  << "." << a_node->getOp() << "(";
             BuildString(a_node->getArg1());
-            tmp_ss_ << ",";
+            tmp_ss_ << " , ";
             BuildString(a_node->getArg2());
             tmp_ss_ << ")";
         } else tmp_ss_ << "error";
-        
+
     } else if ( a_node->getType()==casper::java::AstNode::TIf ) {
-        
+
         //
         //Ifs
         //
-        
+
         tmp_ss_ << "(";
         BuildString(a_node->getLeft());
-        tmp_ss_ << " ?";
+        tmp_ss_ << " ? ";
         BuildString(a_node->getArg1());
-        tmp_ss_ << " :";
+        tmp_ss_ << " : ";
         BuildString(a_node->getArg2());
         tmp_ss_ << ")";
-        
+
     } else if ( a_node->getType()==casper::java::AstNode::TVar || a_node->getType()==casper::java::AstNode::TParam ) {
-        
+
         //
         // Vars & Params
         //
-        
-        tmp_ss_ << " $." << a_node->getText();
-        
+
+        tmp_ss_ << "$." << a_node->getText();
+
     } else if ( a_node->getType()==casper::java::AstNode::TField ) {
 
         //
         // Fields
         //
-        
-        tmp_ss_ << " $.lines[$._dri]." << a_node->getText();
+
+        tmp_ss_ << "$.lines[$._dri]." << a_node->getText();
     } else if ( a_node->getType()==casper::java::AstNode::TNull ) {
-        
+
         //
         // Numbers
         //
-        
-        tmp_ss_ << " null";
-        
+
+        tmp_ss_ << "null";
+
+    }else if ( a_node->getType()==casper::java::AstNode::TDate ) {
+
+        //
+        // Date
+        //
+
+        if(a_node->getOp().compare("newDate") == 0){
+            tmp_ss_ << "new Date";
+        }else if(a_node->getOp().compare("parseDate") == 0){
+            if(a_node->getArg2()->getText().compare("yyyy-MM-dd") == 0)
+                tmp_ss_ <<  "Date.parse(" << a_node->getArg1()->getText() << ")";
+            else throw std::runtime_error("Error: pattern is not supported!\n");
+        }
     }
 }
-

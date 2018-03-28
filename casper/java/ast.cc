@@ -53,9 +53,9 @@ casper::java::AstNode* casper::java::Ast::NewAstNode ()
 casper::java::AstNode* casper::java::Ast::NewAstNode (const casper::java::AstNode::Type a_type)
 {
     AstNode* node = new AstNode(a_type);
-    
+
     allocated_nodes_.push_back(node);
-    
+
     return node;
 }
 
@@ -163,6 +163,29 @@ casper::java::AstNode* casper::java::Ast::Bool(bool a_bool)
     node->setBool(a_bool);
     node->setVal(true == a_bool ? 1 : 0);
 
+    allocated_nodes_.push_back(node);
+
+    return node;
+}
+
+casper::java::AstNode* casper::java::Ast::DateOp(const std::string& a_op, casper::java::AstNode* a_right_1, casper::java::AstNode* a_right_2)
+{
+    AstNode* node = new AstNode(AstNode::TDate);
+
+    node->setOp(a_op);
+    node->setArg1(a_right_1);
+    node->setArg2(a_right_2);
+
+    allocated_nodes_.push_back(node);
+
+    return node;
+}
+
+casper::java::AstNode* casper::java::Ast::DateOp(const std::string& a_op)
+{
+    AstNode* node = new AstNode(AstNode::TDate);
+
+    node->setOp(a_op);
     allocated_nodes_.push_back(node);
 
     return node;
