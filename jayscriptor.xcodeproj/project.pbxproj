@@ -78,7 +78,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		15034F0520694F0F005047CB /* generic_number_parser.rlh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generic_number_parser.rlh; sourceTree = "<group>"; };
+		15034F0520694F0F005047CB /* generic_number_parser.rlh */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp.preprocessed; fileEncoding = 4; path = generic_number_parser.rlh; sourceTree = "<group>"; };
 		15660D0C2065472200189A6E /* jayscriptor */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = jayscriptor; sourceTree = BUILT_PRODUCTS_DIR; };
 		15660D1C206547EF00189A6E /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = SOURCE_ROOT; };
 		15660D85206547EF00189A6E /* fake_java_expression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fake_java_expression.h; sourceTree = "<group>"; };

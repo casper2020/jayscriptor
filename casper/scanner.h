@@ -68,6 +68,7 @@ namespace casper
         double   double_value_;
         bool     negative_exponent_;
         bool     negative_;
+        bool     valid_read_;
         
     public: // methods
         
@@ -81,6 +82,10 @@ namespace casper
     public:
         
         char const* GetInput () const;
+        
+    public: // Static Method(s) / Function(s)
+        
+        void ThrowParsingError (const std::string& a_title, const unsigned int& a_column);
         
     };
     

@@ -136,8 +136,12 @@
                            };
 
         positive_number => {
-                                ret = FakeJavaParser::token::NUM;
-                                (*value) = double_value_;
+                                if ( true == valid_read_ ) {
+                                    ret = FakeJavaParser::token::NUM;
+                                    (*value) = double_value_;
+                                } else {
+                                    ret = FakeJavaParser::token::TK_null;
+                                }
                                 fbreak;
                            };
 
@@ -226,6 +230,10 @@ casper::java::FakeJavaParser::token_type casper::java::FakeJavaScanner::Scan (ca
     a_location->begin.column = (int)(ts_ - input_);
     a_location->end.line     = 1;
     a_location->end.column   = (int)(te_ - input_ - 1);
+                     
+    if ( casper::java::FakeJavaParser::token_type::TK_null  == ret ) {
+        casper::Scanner::ThrowParsingError("Scanner error", a_location->begin.column);
+    }
     return ret;
 }
                      

@@ -208,27 +208,5 @@
 
 void casper::java::FakeJavaParser::error (const location_type& a_location, const std::string& a_msg)
 {
-    const size_t l1 = ( scanner_.pe_ - scanner_.input_ ) + sizeof(char) * 20;
-    const size_t l2 = ( a_location.begin.column        ) + sizeof(char) * 20;
-    
-    char* b1 = new char[l1]; b1[0] = '\0';
-    char* b2 = new char[l2]; b2[0] = '\0';
-    
-    snprintf(b1, l1 - sizeof(char), "%s:\n"
-                                    "   %*.*s\n",
-             a_msg.c_str(),
-             (int)(scanner_.pe_ - scanner_.input_), (int)(scanner_.pe_ - scanner_.input_), scanner_.input_
-    );
-    
-    snprintf(b2, l2 - sizeof(char), "   %*.*s^~~~~~\n",
-             a_location.begin.column, a_location.begin.column,
-             " "
-    );
-    
-    const std::string msg = std::string(b1) + std::string(b2);
-    
-    delete [] b1;
-    delete [] b2;
-    
-    throw new std::runtime_error(msg);
+    scanner_.ThrowParsingError("Parsing error", a_location.begin.column);
 }

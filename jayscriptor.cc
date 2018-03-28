@@ -72,7 +72,7 @@ int parse_args (int a_argc, char** a_argv, std::string& o_file, std::string& o_s
         // ... can't proceed ...
         return -1;
     }
-    
+
     // ... parse arguments ...
     char opt;
     while ( -1 != ( opt = getopt(a_argc, a_argv, "hvf:s:") ) ) {
@@ -95,7 +95,7 @@ int parse_args (int a_argc, char** a_argv, std::string& o_file, std::string& o_s
                 return -1;
         }
     }
-    
+
     return 0;
 }
 
@@ -103,33 +103,33 @@ int parse_args (int a_argc, char** a_argv, std::string& o_file, std::string& o_s
 
 int main(int argc, char* argv[])
 {
-    
+
     casper::java::FakeJavaExpression exp;
-    
+
     std::string file;
     std::string java_expression;
-    
+
     const int arg_rv = parse_args(argc, argv, file, java_expression);
     if ( 0 != arg_rv ) {
         return arg_rv;
     }
-    
+
     if ( file.length() > 0 ) {
 
         std::ifstream in(file);
-        
+
         std::string expression;
-        
+
         if ( !in ) {
             std::cout<< "Cannot open input file!\n";
             return 1;
         }
-        
+
         std::string line;
         int n=0;
-        
+
         //std::cout << "var t0 = performance.now();\n";
-        
+
         while ( getline(in, line) ) {
             try{
                 fprintf(stdout, "console.log(");
@@ -140,34 +140,37 @@ int main(int argc, char* argv[])
                 fprintf(stdout, "%s", expression.c_str());
                 fprintf(stdout, ")");
             } catch (const std::runtime_error& a_error) {
-                fprintf(stderr, "%s\n", a_error.what());
+                fprintf(stderr, "%s", a_error.what());
                 return -1;
             }
             fprintf(stdout, "\n");
             n++;
         }
         in.close();
-        
-        
+
+
         //std::cout << "var t1 = performance.now();\n";
         //std::cout << "console.log(\"nr of operations: "<< n <<"\")\n";
         //std::cout << "console.log(\"elapsed time: \" + (t1 - t0)/1000 + \"s\\n\")\n";
-        
+
         return 0;
-        
+
     } else {
-        
-        const std::string js_expression = exp.Convert(java_expression);
-        if ( 0 == js_expression.length() ) {
-            fprintf(stderr, "Invalid input string '%s'", java_expression.c_str());
-            return -1;
-        } else {
-            fprintf(stdout, "%s\n", js_expression.c_str());
-            return 0;
-        }
-        
+        try{
+            const std::string js_expression = exp.Convert(java_expression);
+            if ( 0 == js_expression.length() ) {
+                fprintf(stdout, "%s\n", java_expression.c_str());
+                return 0;
+            } else {
+                fprintf(stdout, "%s\n", js_expression.c_str());
+                return 0;
+            }
+          }catch (const std::runtime_error& a_error) {
+              fprintf(stderr, "%s", a_error.what());
+              return -1;
+          }
+
     }
-    
+
     return -1;
 }
-
