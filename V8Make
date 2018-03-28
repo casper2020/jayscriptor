@@ -1,0 +1,33 @@
+
+INCLUDE_DIRS = -I . -I /Users/bruno/work/v8/v8/include
+
+OBJECTS =   test.o \
+            v8_shell.o
+
+OBJECTS2 =     /Users/bruno/work/v8/v8/out/x64.release/libv8_base.a        \
+/Users/bruno/work/v8/v8/out/x64.release/libv8_libbase.a                    \
+/Users/bruno/work/v8/v8/out/x64.release/libv8_external_snapshot.a          \
+/Users/bruno/work/v8/v8/out/x64.release/libv8_libplatform.a                \
+/Users/bruno/work/v8/v8/out/x64.release/libv8_libsampler.a                 \
+/Users/bruno/work/v8/v8/out/x64.release/libicuuc.a                         \
+/Users/bruno/work/v8/v8/out/x64.release/libicui18n.a
+
+test: $(OBJECTS)
+	$(CXX) -o $@ $(OBJECTS) -O3 -Wl, $(OBJECTS2) -Wl, -ldl
+
+DEFINES = -D CASPER_NO_ICU
+CFLAGS = $(INCLUDE_DIRS) $(DEFINES) -c -g -O3
+CXXFLAGS = $(INCLUDE_DIRS) -std=c++11 -Wall $(DEFINES) -c -g -O3
+
+# c++
+.c.o:
+	@echo "* [$(TARGET)] c   $< ..."
+	$(C) $(CFLAGS) $< -o $@
+
+# c++
+.cc.o:
+	@echo "* [$(TARGET)] cc  $< ..."
+	$(CXX) $(CXXFLAGS) $< -o $@
+
+clean:
+	rm $(OBJECTS)
