@@ -2,10 +2,12 @@
 #macOS 
 .DS_Store
 *xcuserdata*
+*xcworkspacedata*
 
 # binaries
 jayscriptor
 *.o
+out/*
 
 # bison generated
 casper/java/location.hh

@@ -1,0 +1,71 @@
+//
+// @file jayscriptor.xcconfig
+//
+// Copyright (c) 2011-2018 Cloudware S.A. All rights reserved.
+//
+// This file is part of jayscriptor.
+//
+// jayscriptor is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// jayscriptor is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with jayscriptor.  If not, see <http://www.gnu.org/licenses/>.
+//
+
+J_OUT_DIR = $(SRCROOT)/out/darwin/$(XCODE_VERSION_ACTUAL)
+J_INTERMEDIATES_DIR = $(J_OUT_DIR)/Intermediates
+J_PRODUCTS_DIR = $(J_OUT_DIR)/Products/$(CONFIGURATION)
+
+//
+BUILD_DIR =  $(J_OUT_DIR)/Products
+BUILD_ROOT = $(J_OUT_DIR)/Products
+
+OBJECT_FILE_DIR =$(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/$(CONFIGURATION)/$(PROJECT_NAME).build/Objects
+OBJECT_FILE_DIR_normal = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/$(CONFIGURATION)/$(PROJECT_NAME).build/Objects-normal
+
+CODESIGNING_FOLDER_PATH = $(J_PRODUCTS_DIR)/$(PROJECT_NAME)
+DWARF_DSYM_FOLDER_PATH = $(J_PRODUCTS_DIR)
+
+DERIVED_FILES_DIR = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/$(CONFIGURATION)/$(PROJECT_NAME)/DerivedSources
+DERIVED_FILE_DIR = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/$(CONFIGURATION)/$(PROJECT_NAME).build/DerivedSources
+
+CLASS_FILE_DIR = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/$(CONFIGURATION)/$(PROJECT_NAME).build/$(PROJECT_NAME).build/JavaClasses
+COMPOSITE_SDK_DIRS = $(J_INTERMEDIATES_DIR)/CompositeSDKs
+
+PROJECT_TEMP_DIR = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build
+PROJECT_TEMP_ROOT = $(J_INTERMEDIATES_DIR)
+PROJECT_DERIVED_FILE_DIR = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/DerivedSources
+
+PRECOMP_DESTINATION_DIR = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/$(CONFIGURATION)/$(PROJECT_NAME).build/PrefixHeaders
+REZ_COLLECTOR_DIR = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/$(CONFIGURATION)/$(PROJECT_NAME).build/ResourceManagerResources
+REZ_OBJECTS_DIR = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/$(CONFIGURATION)/$(PROJECT_NAME).build/ResourceManagerResources/Objects
+
+TARGET_BUILD_DIR = $(J_PRODUCTS_DIR)
+TARGET_TEMP_DIR = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/$(CONFIGURATION)/$(PROJECT_NAME).build
+TEMP_DIR = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/$(CONFIGURATION)/$(PROJECT_NAME).build
+TEMP_FILES_DIR = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/$(CONFIGURATION)/$(PROJECT_NAME).build
+TEMP_FILE_DIR = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/$(CONFIGURATION)/$(PROJECT_NAME).build
+TEMP_ROOT = $(J_INTERMEDIATES_DIR)
+
+LD_DEPENDENCY_INFO_FILE = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/$(CONFIGURATION)/$(PROJECT_NAME).build/Objects-normal/$(CURRENT_ARCH)/$(PROJECT_NAME)_dependency_info.dat
+
+
+//// [B] NW :
+//
+//CONFIGURATION_BUILD_DIR = $(J_PRODUCTS_DIR)
+//CONFIGURATION_TEMP_DIR = $(J_INTERMEDIATES_DIR)/$(PROJECT_NAME).build/$(CONFIGURATION)
+//SHARED_PRECOMPS_DIR = $(J_INTERMEDIATES_DIR)/PrecompiledHeaders
+//SYMROOT = $(J_OUT_DIR)/Products/
+//OBJROOT = $(J_INTERMEDIATES_DIR)
+//BUILT_PRODUCTS_DIR = $(J_PRODUCTS_DIR)
+//MODULE_CACHE_DIR = $(J_OUT_DIR)/DerivedData/ModuleCache
+//
+//// [E] NW
+
