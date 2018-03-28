@@ -135,7 +135,7 @@
    leaf_terminals:
                  NUM                      { $$ = ast.NewAstNode($1->num_);                                       }
                  | TEXTLITERAL            { $$ = ast.NewAstNode($1->text_);                                      }
-                 | TK_null                { $$ = ast.NewAstNode();                                              }
+                 | TK_null                { $$ = ast.NewAstNode(casper::java::AstNode::Type::TNull);             }
                  | VARIABLE               { $$ = ast.NewAstNode(casper::java::AstNode::Type::TVar, $1->text_);   }
                  | FIELD                  { $$ = ast.NewAstNode(casper::java::AstNode::Type::TField, $1->text_); }
                  | PARAMETER              { $$ = ast.NewAstNode(casper::java::AstNode::Type::TParam, $1->text_); }

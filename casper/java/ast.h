@@ -62,6 +62,7 @@ namespace casper
             AstNode* Bool       (bool a_bool);
 
             AstNode* NewAstNode ();
+            AstNode* NewAstNode (const casper::java::AstNode::Type a_type);
             AstNode* NewAstNode (const double a_num);
             AstNode* NewAstNode (const std::string& a_text);
             AstNode* NewAstNode (const casper::java::AstNode::Type a_type, const std::string& a_text);

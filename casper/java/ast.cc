@@ -49,6 +49,16 @@ casper::java::AstNode* casper::java::Ast::NewAstNode ()
     return node;
 }
 
+
+casper::java::AstNode* casper::java::Ast::NewAstNode (const casper::java::AstNode::Type a_type)
+{
+    AstNode* node = new AstNode(a_type);
+    
+    allocated_nodes_.push_back(node);
+    
+    return node;
+}
+
 casper::java::AstNode* casper::java::Ast::NewAstNode (const double a_num)
 {
     AstNode* node = new AstNode(a_num);
@@ -66,7 +76,6 @@ casper::java::AstNode* casper::java::Ast::NewAstNode (const std::string& a_text)
 
     return node;
 }
-
 
 casper::java::AstNode* casper::java::Ast::NewAstNode (const casper::java::AstNode::Type a_type, const std::string& a_text)
 {

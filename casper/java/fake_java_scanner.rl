@@ -218,9 +218,11 @@ casper::java::FakeJavaParser::token_type casper::java::FakeJavaScanner::Scan (ca
 {
     casper::java::FakeJavaParser::token_type ret = casper::java::FakeJavaParser::token::END;
     bool has_quotes = false;
+    bool new_node   = false;
 
     if ( nullptr == (*o_val) ) {
         (*o_val) = ast_.NewAstNode();
+        new_node = true;
     }
 
     casper::java::FakeJavaParser::semantic_type value = (*o_val);
@@ -231,8 +233,10 @@ casper::java::FakeJavaParser::token_type casper::java::FakeJavaScanner::Scan (ca
     a_location->end.line     = 1;
     a_location->end.column   = (int)(te_ - input_ - 1);
                      
-    if ( casper::java::FakeJavaParser::token_type::TK_null  == ret ) {
-        casper::Scanner::ThrowParsingError("Scanner error", a_location->begin.column);
+    if ( true == new_node ) {
+         if ( casper::java::FakeJavaParser::token_type::TK_null  == ret && casper::java::AstNode::Type::TNull != (*o_val)->getType() ) {
+            casper::Scanner::ThrowParsingError("Scanner error", a_location->begin.column);
+         }
     }
     return ret;
 }

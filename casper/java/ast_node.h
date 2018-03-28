@@ -54,7 +54,8 @@ namespace casper
                 TBool   = 7,
                 TVar    = 8,
                 TParam  = 9,
-                TField  = 10
+                TField  = 10,
+                TNull   = 11
             };
 
         protected:

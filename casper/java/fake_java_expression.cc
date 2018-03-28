@@ -84,28 +84,35 @@ void casper::java::FakeJavaExpression::BuildString (casper::java::AstNode* a_nod
         tmp_ss_  << a_node->getText();
         tmp_ss_  << "\")";
         
-    } else if ( a_node->getType()==casper::java::AstNode::TExpr ) {
+    } else if ( a_node->getType()==casper::java::AstNode::TBool ) {
+        
+        //
+        // Bool
+        //
+        tmp_ss_ << ( a_node->getBool() ? "true" : "false" );
+        
+    }else if ( a_node->getType()==casper::java::AstNode::TExpr ) {
         
         //
         // Expressions
         //
         
         if ( ! a_node->getOp().compare("!") ) {
-            tmp_ss_  << "!";
+            tmp_ss_  << " !";
             BuildString(a_node->getLeft());
         } else if ( ! a_node->getOp().compare("UM") ) {
-            tmp_ss_  << "-";
+            tmp_ss_  << " -";
             BuildString(a_node->getLeft());
         } else {
             if ( a_node->getPare() ) {
                 tmp_ss_  << "(";
                 BuildString(a_node->getLeft());
-                tmp_ss_  << a_node->getOp();
+                tmp_ss_  << ' ' << a_node->getOp();
                 BuildString(a_node->getRight());
                 tmp_ss_  << ")";
             } else {
                 BuildString(a_node->getLeft());
-                tmp_ss_  << a_node->getOp();
+                tmp_ss_  << ' ' << a_node->getOp();
                 BuildString(a_node->getRight());
             }
         }
@@ -128,7 +135,7 @@ void casper::java::FakeJavaExpression::BuildString (casper::java::AstNode* a_nod
             BuildString(a_node->getLeft());
             tmp_ss_  << " == \"true\" ? true : false";
         } else {
-            tmp_ss_  << a_node->getOp() << "(";
+            tmp_ss_ << ' ' << a_node->getOp() << "(";
             BuildString(a_node->getLeft());
             tmp_ss_   << ")";
         }
@@ -184,9 +191,9 @@ void casper::java::FakeJavaExpression::BuildString (casper::java::AstNode* a_nod
         
         tmp_ss_ << "(";
         BuildString(a_node->getLeft());
-        tmp_ss_ << " ? ";
+        tmp_ss_ << " ?";
         BuildString(a_node->getArg1());
-        tmp_ss_ << " : ";
+        tmp_ss_ << " :";
         BuildString(a_node->getArg2());
         tmp_ss_ << ")";
         
@@ -196,7 +203,7 @@ void casper::java::FakeJavaExpression::BuildString (casper::java::AstNode* a_nod
         // Vars & Params
         //
         
-        tmp_ss_ << "$." << a_node->getText();
+        tmp_ss_ << " $." << a_node->getText();
         
     } else if ( a_node->getType()==casper::java::AstNode::TField ) {
 
@@ -204,7 +211,15 @@ void casper::java::FakeJavaExpression::BuildString (casper::java::AstNode* a_nod
         // Fields
         //
         
-        tmp_ss_ << "$.lines[$._dri]." << a_node->getText();
+        tmp_ss_ << " $.lines[$._dri]." << a_node->getText();
+    } else if ( a_node->getType()==casper::java::AstNode::TNull ) {
+        
+        //
+        // Numbers
+        //
+        
+        tmp_ss_ << " null";
+        
     }
 }
 

@@ -1,10 +1,15 @@
 9+4*3/(9-21)>5 && 6/11<=12
-(Math.abs(-(5+23.23)%5)).to_i()
+(Math.abs(-(5+23.23)*5)).to_i()
 (5*4/23).equals(6+2-4)
 "teste".isEmpty()
 ("teste").substring(2,4)
 ("teste").replace("e"+"s","ab")
 ("teste").isEmpty() ? "ola" : "ola2: " + "teste2"
-6 == 1 ? "Original" : (6.toString() + "ª Via")
+6 == 1 ? "Original" : ((6).toString() + "ª Via")
 ("teste").indexOf("es"+"t")
 $P{tax_registration_number} + ": A idade de " + ($F{gajo} ? "tipo" : "tipa") + " " + $F{field2} + " é " + ($F{field1} + 0.5)
+$P{tax_registration_number} != null && $F{gajo} == true ? "IVA regularizado" : "Valor já recebido"
+$F{gajo}
+$P{tax_registration_number}.doubleValue() != 0 ? $F{field1} : null
+"A referência gerada está disponível até " + $P{tax_registration_number}.substring(1,6)
+"A referência gerada está disponível até " + $P{tax_registration_number}.substring(0,10)
