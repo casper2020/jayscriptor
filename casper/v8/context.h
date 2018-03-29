@@ -66,7 +66,7 @@ namespace casper
             Context ()
             {
                 create_params_.array_buffer_allocator = ::v8::ArrayBuffer::Allocator::NewDefaultAllocator();
-                isolate_ = ::v8::Isolate::New(create_params_);
+                isolate_       = ::v8::Isolate::New(create_params_);                
             }
             
             virtual ~Context ()
@@ -164,15 +164,38 @@ namespace casper
                     // not found
                     return false;
                 }
-                
+
                 // Create a handle scope to keep the temporary object references.
                 ::v8::HandleScope handle_scope(isolate_);
-                
+
                 // Create a new local context
                 ::v8::Local<::v8::Context> context = ::v8::Local<::v8::Context>::New(isolate_, context_);
-                
+
                 // Enter this function's context so all the remaining operations take place there
                 ::v8::Context::Scope context_scope(context);
+
+                // Set up an exception handler before calling the function
+                ::v8::TryCatch try_catch(isolate_);
+
+                // Grab 'local' function
+                ::v8::Local<::v8::Function> local_function = ::v8::Local<::v8::Function>::New(isolate_, it->second->f_);
+
+                // Call function
+                const bool rv = local_function->Call(context, context->Global(), a_n_args, a_args).ToLocal(&o_result);
+                if ( false == rv ) {
+                    LogException(isolate_, &try_catch);
+                }
+                return rv;
+            }
+            
+            bool ExecuteFunction (::v8::Local<::v8::Context>& a_context, const char* a_name, const int a_n_args, ::v8::Local<::v8::Value> a_args[], ::v8::Local<::v8::Value>& o_result)
+            {
+                // pick function info
+                const auto it = functions_.find(a_name);
+                if ( functions_.end() == it ) {
+                    // not found
+                    return false;
+                }
                 
                 // Set up an exception handler before calling the function
                 ::v8::TryCatch try_catch(isolate_);
@@ -180,8 +203,7 @@ namespace casper
                 // Grab 'local' function
                 ::v8::Local<::v8::Function> local_function = ::v8::Local<::v8::Function>::New(isolate_, it->second->f_);
                 
-                // Call function
-                const bool rv = local_function->Call(context, context->Global(), a_n_args, a_args).ToLocal(&o_result);
+                const bool rv = local_function->Call(a_context, a_context->Global(), a_n_args, a_args).ToLocal(&o_result);
                 if ( false == rv ) {
                     LogException(isolate_, &try_catch);
                 }
