@@ -1,8 +1,7 @@
 
 INCLUDE_DIRS = -I . -I /Users/bruno/work/v8/v8/include
 
-OBJECTS =   test.o \
-            v8_shell.o
+OBJECTS =   test.o
 
 OBJECTS2 =     /Users/bruno/work/v8/v8/out/x64.release/libv8_base.a        \
 /Users/bruno/work/v8/v8/out/x64.release/libv8_libbase.a                    \
