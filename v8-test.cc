@@ -34,8 +34,8 @@ void show_version (const char* a_name = "test")
 void show_help (const char* a_name = "test")
 {
     fprintf(stderr, "usage: %s [-s <script file>] [-j <json file>]\n", a_name);
-    fprintf(stderr, "       -%c: %s\n", 's' , "script to load.");
-    fprintf(stderr, "       -%c: %s\n", 'j' , "data to load, json file.");
+    fprintf(stderr, "       -%c: %s\n", 'e' , "expressions to load, json file.");
+    fprintf(stderr, "       -%c: %s\n", 'd' , "data to load, json file.");
     fprintf(stderr, "       -%c: %s\n", 'h' , "show help.");
     fprintf(stderr, "       -%c: %s\n", 'v' , "show version.");
 }
@@ -51,7 +51,7 @@ void show_help (const char* a_name = "test")
  *
  * @return 0 on success, < 0 on error.
  */
-int parse_args (int a_argc, char** a_argv, std::string& o_script_file, std::string& o_json_file)
+int parse_args (int a_argc, char** a_argv, std::string& o_expressions_file, std::string& o_data_file)
 {
     // ... not enough arguments?
     if ( a_argc < 3 ) {
@@ -65,7 +65,7 @@ int parse_args (int a_argc, char** a_argv, std::string& o_script_file, std::stri
 
     // ... parse arguments ...
     char opt;
-    while ( -1 != ( opt = getopt(a_argc, a_argv, "hvs:j:") ) ) {
+    while ( -1 != ( opt = getopt(a_argc, a_argv, "hve:d:") ) ) {
         switch (opt) {
             case 'h':
                 show_help(a_argv[0]);
@@ -73,11 +73,11 @@ int parse_args (int a_argc, char** a_argv, std::string& o_script_file, std::stri
             case 'v':
                 show_version(a_argv[0]);
                 return 0;
-            case 's':
-                o_script_file = optarg;
+            case 'e':
+                o_expressions_file = optarg;
                 break;
-            case 'j':
-                o_json_file = optarg;
+            case 'd':
+                o_data_file = optarg;
                 break;
             default:
                 fprintf(stderr, "llegal option %s:\n", optarg);
@@ -150,15 +150,53 @@ int main(int argc, char* argv[]) {
 //        }
         
         //v8::Context::Scope context_scope(casper_context->context_);
-        std::string script_file;
-        std::string json_file;
+        std::string expressions_file;
+        std::string data_file;
         
-        const int arg_rv = parse_args(argc, argv, script_file, json_file);
+        const int arg_rv = parse_args(argc, argv, expressions_file, data_file);
         if ( 0 != arg_rv ) {
             return arg_rv;
         }
         
+        std::ifstream ef_is(expressions_file);
+        std::string   ef_c((std::istreambuf_iterator<char>(ef_is)), (std::istreambuf_iterator<char>()));
+
+        std::ifstream df_is(data_file);
+        std::string   df_c((std::istreambuf_iterator<char>(df_is)), (std::istreambuf_iterator<char>()));
+
+        
+        ::v8::Local<::v8::ObjectTemplate> global = ::v8::ObjectTemplate::New(casper_context->isolate_);
+        ::v8::Local<::v8::Context> context = v8::Context::New(casper_context->isolate_, NULL, global);
+
+        casper::v8::Context::Expressions expressions;
+        
+        ::v8::Local<::v8::Value> json_data = ::v8::JSON::Parse(context,
+                                                               v8::String::NewFromUtf8(casper_context->isolate_, ef_c.c_str(), v8::NewStringType::kNormal).ToLocalChecked()).ToLocalChecked();
+        
+//
+//        ::v8::MaybeLocal<::v8::Value> json_data = ::v8::JSON::Parse(context,
+//                                                               v8::String::NewFromUtf8(casper_context->isolate_, ef_c.c_str(), v8::NewStringType::kNormal).ToLocalChecked());
+
+//        ::v8::MaybeLocal<::v8::Object> json_object = json_data->ToObject(context);
+//        if ( true == json_object->IsArray() ) {
+        
+        // TODO get expressions object
+            ::v8::Local<::v8::Array> array = json_data.As<::v8::Array>();
+            ::v8::Local<::v8::Value> expr_1 = array->Get(0);
+            const char* expr_1_c_str = casper::v8::Context::ToCString(::v8::String::Utf8Value(expr_1));
+        
+//            ::v8::Local<::v8::Array> array = ::v8::Array::Cast();
+
+//        }
+//        ::v8::Local<::v8::Object> json_array_element_1 = json_object->Get(1);
+        
+        casper_context->LoadExpressions("evaluate_expressions", expressions);
+        
+        casper_context->LoadData("data_object", df_c.c_str());
+
+
         // Use all other arguments as names of files to load and run.
+#if 0
         v8::Local<v8::String> source;
         if ( ! ReadFileToV8String(casper_context->isolate_, script_file.c_str()).ToLocal(&source) ) {
             fprintf(stderr, "Error reading '%s'\n", script_file.c_str());
@@ -178,6 +216,7 @@ int main(int argc, char* argv[]) {
             fprintf(stderr, "Error while loading functions from '%s'\n", script_file.c_str());
             return -1;
         }
+#endif
 
         //Declarations
         /*  v8::Local<v8::String> func_name2 =
@@ -192,19 +231,20 @@ int main(int argc, char* argv[]) {
         // auto start1 = std::chrono::high_resolution_clock::now();
         //
          //std::ifstream ifs("jsonapi.json");
+#if 0
          std::ifstream ifs(json_file);
          std::string content( (std::istreambuf_iterator<char>(ifs)),
                              (std::istreambuf_iterator<char>()) );
-                
-        ::v8::Local<::v8::ObjectTemplate> global = ::v8::ObjectTemplate::New(casper_context->isolate_);
-        ::v8::Local<::v8::Context> context = v8::Context::New(casper_context->isolate_, NULL, global);
+#endif
         
 //        ::v8::Local<::v8::Context> context = v8::Context::New(casper_context->isolate_, NULL, global);
         
 //        casper_context->context_.Reset(casper_context->isolate_, context);
         
+#if 0
         ::v8::Local<::v8::Value> json_data = ::v8::JSON::Parse(context,
                                                           v8::String::NewFromUtf8(casper_context->isolate_, content.c_str(), v8::NewStringType::kNormal).ToLocalChecked()).ToLocalChecked();
+#endif
         // auto end1 = std::chrono::high_resolution_clock::now();
         // auto duration = std::chrono::duration_cast<std::chrono::microseconds>( end1 - start1 ).count();
         // std::cout << "\nTime for JSON Parse: " << (duration)/1000.0 << "ms\n\n";

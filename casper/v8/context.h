@@ -26,6 +26,7 @@
 #include "libplatform/libplatform.h"
 #include "v8.h"
 
+#include <vector>
 #include <map>
 #include <string>
 #include <sstream>
@@ -44,7 +45,7 @@ namespace casper
             
             typedef struct
             {
-                const char* name_;
+                const char* const name_;
             } Function;
             
             typedef std::vector<Function>                            FunctionsVector;
@@ -72,6 +73,10 @@ namespace casper
                 }
                 
             } ;
+            
+        public: // Data Type(s)
+            
+            typedef std::vector<std::string> Expressions;
             
         public: // Data
             
@@ -107,6 +112,14 @@ namespace casper
                                ::v8::Persistent<::v8::Value>& o_result,
                                const TraceCallback a_on_error = nullptr);
             
+            bool LoadExpressions (const char* const a_name,
+                                  const Expressions& a_expressions,
+                                  const TraceCallback a_on_error = nullptr);
+            
+            bool LoadData       (const char* const a_name, const char* const a_data,
+                                 const TraceCallback a_on_error = nullptr,
+                                 ::v8::Persistent<::v8::Value>* o_object = nullptr);
+
         private: // Method(s) / Function(s)
             
             void TraceException (::v8::TryCatch* a_try_catch, const TraceCallback a_on_error);
