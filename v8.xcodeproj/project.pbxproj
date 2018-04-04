@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -193,13 +193,17 @@
 				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = NRS;
 				TargetAttributes = {
+					47AF266D2073933300C4344F = {
+						ProvisioningStyle = Automatic;
+					};
 					47EE447C207370F00046E698 = {
 						CreatedOnToolsVersion = 9.3;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
 			buildConfigurationList = 47EE4478207370F00046E698 /* Build configuration list for PBXProject "v8" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -357,10 +361,7 @@
 					"-Wno-documentation",
 				);
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)",
-					"$(SRCROOT)/../v8/depot_tools/v8/include",
-				);
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT) $(SRCROOT)/../v8/depot_tools/v8/include";
 			};
 			name = Debug;
 		};
@@ -417,10 +418,7 @@
 					"-Wno-documentation",
 				);
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)",
-					"$(SRCROOT)/../v8/depot_tools/v8/include",
-				);
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT) $(SRCROOT)/../v8/depot_tools/v8/include";
 			};
 			name = Release;
 		};
