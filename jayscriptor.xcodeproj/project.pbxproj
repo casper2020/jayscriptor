@@ -93,7 +93,7 @@
 		15660D9B206547EF00189A6E /* jayscriptor.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jayscriptor.cc; sourceTree = SOURCE_ROOT; };
 		15660DDE20656E9600189A6E /* ast_node.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ast_node.cc; sourceTree = "<group>"; };
 		15660DDF20656E9600189A6E /* ast_node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ast_node.h; sourceTree = "<group>"; };
-		474812F8206BA2240031AE44 /* jayscriptor.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = jayscriptor.xcconfig; sourceTree = "<group>"; };
+		47EE4496207374A10046E698 /* common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = common.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,7 +110,7 @@
 		15660D032065472100189A6E = {
 			isa = PBXGroup;
 			children = (
-				474812F8206BA2240031AE44 /* jayscriptor.xcconfig */,
+				47EE4496207374A10046E698 /* common.xcconfig */,
 				15660D82206547EF00189A6E /* casper */,
 				15660D9B206547EF00189A6E /* jayscriptor.cc */,
 				15660D1C206547EF00189A6E /* Makefile */,
@@ -258,7 +258,7 @@
 /* Begin XCBuildConfiguration section */
 		15660D112065472200189A6E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 474812F8206BA2240031AE44 /* jayscriptor.xcconfig */;
+			baseConfigurationReference = 47EE4496207374A10046E698 /* common.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -314,7 +314,7 @@
 		};
 		15660D122065472200189A6E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 474812F8206BA2240031AE44 /* jayscriptor.xcconfig */;
+			baseConfigurationReference = 47EE4496207374A10046E698 /* common.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;

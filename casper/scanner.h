@@ -19,7 +19,6 @@
  * along with jayscriptor.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #pragma once
 #ifndef NRS_CASPER_CASPER_SCANNER_H
 #define NRS_CASPER_CASPER_SCANNER_H
