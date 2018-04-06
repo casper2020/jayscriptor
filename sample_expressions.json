@@ -1,8 +1,12 @@
 {
-    "expression": [
-    	"$.field1 + \" \" + $.field2",
-        "$.field1+50",
-	"($.gajo ? \"é gajo\" : \"é gaja\")"
+    "expressions": [
+    "$.tax_registration_number",
+
+    "((((($.tax_registration_number+(\": A idade de \"))+($.lines[$dri].gajo ? (\"tipo\") : (\"tipa\")))+(" "))+$.lines[$dri].field2)+(\" é \"))+($.lines[$dri].field1))",
+
+    "($.v1+(\": Isto é \")+$.lines[$dri].field2+(\" é \")+($.lines[$dri].field1))"
+
+    "$.tax_registration_number / 100"
     ],
     "results":[]
 }
