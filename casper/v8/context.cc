@@ -21,6 +21,8 @@
 
 #include "casper/v8/context.h"
 
+#include <iomanip> // std::setw
+
 /**
  * @brief Default constructor.
  */
@@ -53,12 +55,55 @@ casper::v8::Context::Context ()
 casper::v8::Context::~Context ()
 {
     // release isolate and context
-    isolate_->Dispose();
+    // TODO isolate_->Dispose();
 }
 
 #ifdef __APPLE__
 #pragma mark -
 #endif
+
+/**
+ * @brief Parse a JSON string into an \link ::v8::Object \link.
+ *
+ * @param a_uri
+ * @param o_object
+ * @param o_data
+ *
+ * @return
+ */
+bool casper::v8::Context::Parse (const std::string& a_uri,
+                                 ::v8::Persistent<::v8::Object>& o_object, ::v8::Persistent<::v8::Value>& o_data)
+{
+    // set up an error handler to catch any exceptions the script might throw.
+    ::v8::TryCatch try_catch(isolate_);
+    try_catch.SetVerbose(true);
+
+    ::v8::Local<::v8::Context> context = context_.Get(isolate_);
+    
+    ::v8::Context::Scope       context_scope(context);
+    ::v8::HandleScope          handle_scope (isolate_);
+
+    std::ifstream ifs(a_uri);
+    std::string   data((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
+    
+    const ::v8::Local<::v8::String> payload = ::v8::String::NewFromUtf8(isolate_, data.c_str(), ::v8::NewStringType::kNormal).ToLocalChecked();
+
+    CASPER_V8_CHRONO_START(parse)
+    ::v8::MaybeLocal<::v8::Value> value = ::v8::JSON::Parse(context, payload);
+    CASPER_V8_CHRONO_END(parse, "parse %zd byte(s) of JSON data", data.length());
+    
+    const ::v8::String::Utf8Value exception(try_catch.Exception());
+    
+    if ( exception.length() == 0 ) {
+        o_object.Reset(isolate_, value.ToLocalChecked()->ToObject(context).ToLocalChecked());
+        o_data.Reset(isolate_, value.ToLocalChecked());
+    } else {
+        o_object.Reset();
+        o_data.Reset();
+    }
+    
+    return ( false == o_object.IsEmpty() );
+}
 
 /**
  * @brief Compile a script and ( optionaly ) load some functions from it.
@@ -76,7 +121,7 @@ bool casper::v8::Context::Compile (const ::v8::Local<::v8::String>& a_script,
     ::v8::TryCatch try_catch(isolate_);
     
     raw_script_.Set(isolate_, a_script);
-    
+    // TODO READ THIS AND DOUBLE CHECK CODE
     // Each processor gets its own context so different processors don't
     // affect each other. Context::New returns a persistent handle which
     // is what we need for the reference to remain after we return from
@@ -130,8 +175,21 @@ bool casper::v8::Context::Compile (const ::v8::Local<::v8::String>& a_script,
     // Load functions
     //
     if ( nullptr != a_functions ) {
-        return LoadFunctions(*a_functions, context, context_scope);
+        if ( false == LoadFunctions(context, context_scope, try_catch, *a_functions, functions_) ) {
+            // ... report it ...
+            if ( nullptr != a_on_error ) {
+                TraceException(&try_catch, a_on_error);
+            } else {
+                LogException(&try_catch);
+            }
+            // failure
+            return false;
+        } else {
+            // success
+            return true;
+        }
     } else {
+        // success
         return true;
     }
 }
@@ -159,61 +217,19 @@ bool casper::v8::Context::LoadFunctions (const casper::v8::Context::FunctionsVec
     // Enter this function's context so all the remaining operations take place there
     ::v8::Context::Scope context_scope(context);
     
-    return LoadFunctions(a_functions, context, context_scope);
-}
-
-/**
- * @brief Load some functions previously compiled for a specific context and scope.
- *
- * @param a_functions
- * @param a_context
- * @param a_scope
- * @param a_on_error
- *
- * @return
- */
-bool casper::v8::Context::LoadFunctions (const FunctionsVector& a_functions, ::v8::Local<::v8::Context>& a_context,
-                                         ::v8::Context::Scope& a_scope,
-                                         const casper::v8::Context::TraceCallback a_on_error)
-{
-    // catch any exceptions the script might throw.
-    ::v8::TryCatch try_catch(isolate_);
-    
-    for ( auto it : a_functions ) {
-        
-        const ::v8::Local<::v8::String> func_name = ::v8::String::NewFromUtf8(isolate_, it.name_, ::v8::NewStringType::kNormal).ToLocalChecked();
-        ::v8::Local<::v8::Value>  process_val;
-        // If there is no function, or if it is not a function, bail out
-        if ( ! a_context->Global()->Get(a_context, func_name).ToLocal(&process_val) || ! process_val->IsFunction() ) {
-            //
-            // failed to load function
-            //
-            // ... report it ...
-            if ( nullptr != a_on_error ) {
-                TraceException(&try_catch, a_on_error);
-            } else {
-                LogException(&try_catch);
-            }
-            // ... and bail out
-            return false;
+    if ( false == LoadFunctions(context, context_scope, try_catch, a_functions, functions_) ) {
+        // ... report it ...
+        if ( nullptr != a_on_error ) {
+            TraceException(&try_catch, a_on_error);
+        } else {
+            LogException(&try_catch);
         }
-        // It is a function; cast it to a Function
-        const ::v8::Local<::v8::Function> process_fun = ::v8::Local<::v8::Function>::Cast(process_val);
-        
-        // create a new \link LoadedFunction \link
-        LoadedFunction* function = new LoadedFunction(it.name_);
-        
-        // keep track of new funcion
-        functions_[it.name_] = function;
-        
-        // store the function in a Global handle,
-        // since we also want that to remain after this call returns
-        function->f_.Set(isolate_, process_fun);
-        
+        // failure
+        return false;
+    } else {
+        // success
+        return true;
     }
-    
-    // done
-    return true;
 }
 
 #ifdef __APPLE__
@@ -223,20 +239,17 @@ bool casper::v8::Context::LoadFunctions (const FunctionsVector& a_functions, ::v
 /**
  * @brief Execute a previously load function.
  *
- * @param a_name
- * @param a_n_args
- * @param a_args
+ * @param a_callable
  * @param o_result
  * @param a_on_error
  *
  * @return
  */
-bool casper::v8::Context::CallFunction (const char* a_name, const int a_argc, ::v8::Local<::v8::Value>* a_argv,
-                                        ::v8::Persistent<::v8::Value>& o_result,
+bool casper::v8::Context::CallFunction (const casper::v8::Context::LoadedFunction::Callable& a_callable, ::v8::Persistent<::v8::Value>& o_result,
                                         const casper::v8::Context::TraceCallback a_on_error)
 {
     // pick function info
-    const auto it = functions_.find(a_name);
+    const auto it = functions_.find(a_callable.name_);
     if ( functions_.end() == it ) {
         // not found
         return false;
@@ -260,52 +273,7 @@ bool casper::v8::Context::CallFunction (const char* a_name, const int a_argc, ::
     // call function
 //    auto a = local_function->Call(context, context->Global(), a_argc, a_argv);
     ::v8::Local<::v8::Value> local_result;
-    const bool rv = local_function->Call(context, context->Global(), a_argc, a_argv).ToLocal(&local_result);
-    if ( false == rv ) {
-        if ( nullptr != a_on_error ) {
-            TraceException(&try_catch, a_on_error);
-        } else {
-            LogException(&try_catch);
-        }
-    } else {
-        o_result.Reset(isolate_, local_result);
-    }
-    
-    // done
-    return rv;
-}
-
-/**
- * @brief Execute a previously load function for a specific context.
- *
- * @param a_name
- * @param a_n_args
- * @param a_args
- * @param o_result
- * @param a_on_error
- *
- * @return
- */
-bool casper::v8::Context::CallFunction (::v8::Local<::v8::Context>& a_context, const char* a_name, const int a_n_args, ::v8::Local<::v8::Value>* a_args,
-                                        ::v8::Persistent<::v8::Value>& o_result,
-                                        const casper::v8::Context::TraceCallback a_on_error)
-{
-    // pick function info
-    const auto it = functions_.find(a_name);
-    if ( functions_.end() == it ) {
-        // not found
-        return false;
-    }
-    
-    // set up an error handler to catch any exceptions the script might throw.
-    ::v8::TryCatch try_catch(isolate_);
-    
-    // grab function
-    ::v8::Local<::v8::Function> local_function = it->second->f_.Get(isolate_);
-    
-    // call function
-    ::v8::Local<::v8::Value> local_result;
-    const bool rv = local_function->Call(a_context, a_context->Global(), a_n_args, a_args).ToLocal(&local_result);
+    const bool rv = local_function->Call(context, context->Global(), a_callable.argc_, a_callable.argv_).ToLocal(&local_result);
     if ( false == rv ) {
         if ( nullptr != a_on_error ) {
             TraceException(&try_catch, a_on_error);
@@ -331,15 +299,16 @@ bool casper::v8::Context::LoadExpressions (const char* const a_name,
                                            const casper::v8::Context::Expressions& a_expressions,
                                            const TraceCallback a_on_error)
 {
-    tmp_trace_ss_.str("");
+    
+    //    tmp_trace_ss_ << "\"use strict\";\n";
     tmp_trace_ss_ << "function " << a_name << "(number, $, index) {\n";
-    tmp_trace_ss_ << "switch (number) {\n";
+    tmp_trace_ss_ << std::setw(4) << ' ' << "switch (number) {\n";
     for ( size_t idx = 0 ; idx < a_expressions.size() ; ++idx ) {
-        tmp_trace_ss_ << "case " << idx << " : return " << a_expressions[idx] << ";\n";
+        tmp_trace_ss_ << std::setw(8) << ' ' << "case " << idx << " : return " << a_expressions[idx] << ";\n";
     }
-    tmp_trace_ss_ << "default: return op;\n";
-    tmp_trace_ss_ << "}\n"; // end of case
-    tmp_trace_ss_ << "}";   // end of function
+    tmp_trace_ss_ << std::setw(8) << ' ' << "default: return index;\n";
+    tmp_trace_ss_ << std::setw(4) << ' ' << "}\n"; // end of case
+    tmp_trace_ss_ << "}";   // end of function    
     
     const ::v8::Local<::v8::String>                    script    = ::v8::String::NewFromUtf8(isolate_, tmp_trace_ss_.str().c_str(), ::v8::NewStringType::kNormal).ToLocalChecked();
     const std::vector<::casper::v8::Context::Function> functions = {
@@ -354,12 +323,13 @@ bool casper::v8::Context::LoadExpressions (const char* const a_name,
  * @brief Load a JSON string to current context.
  *
  * @param a_name
- * @param a_data
+ * @param a_uri
  * @param a_on_error
+ * @param o_object
  */
-bool casper::v8::Context::LoadData (const char* const a_name, const char* a_data,
+bool casper::v8::Context::LoadData (const char* const a_name, const std::string& a_uri,
                                     const casper::v8::Context::TraceCallback a_on_error,
-                                    ::v8::Persistent<::v8::Value>* o_object)
+                                    ::v8::Persistent<::v8::Value>* o_object, ::v8::Persistent<::v8::Value>* o_value)
 {
     // set up an error handler to catch any exceptions the script might throw.
     ::v8::TryCatch try_catch(isolate_);
@@ -371,22 +341,38 @@ bool casper::v8::Context::LoadData (const char* const a_name, const char* a_data
     ::v8::Local<::v8::Context> context = context_.Get(isolate_);
     
     // enter this function's context so all the remaining operations take place there
-//    TODO CHECK IF IT'S NECESSARY ::v8::Context::Scope context_scope(context);
+//    TODO CHECK IF IT'S NECESSARY
+    ::v8::Context::Scope context_scope(context);
     
     
     ::v8::Local<::v8::Object> object = ::v8::Object::New(isolate_);
     
+    std::ifstream ifs(a_uri);
+    std::string   data((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
+    
     const ::v8::Local<::v8::String> key   = ::v8::String::NewFromUtf8(isolate_, a_name, ::v8::NewStringType::kNormal).ToLocalChecked();
-    const ::v8::Local<::v8::String> data  = ::v8::String::NewFromUtf8(isolate_, a_data, ::v8::NewStringType::kNormal).ToLocalChecked();
-    const ::v8::Local<::v8::Value>  value = ::v8::JSON::Parse(context, data).ToLocalChecked();
+    const ::v8::Local<::v8::String> payload  = ::v8::String::NewFromUtf8(isolate_, data.c_str(), ::v8::NewStringType::kNormal).ToLocalChecked();
+    const ::v8::Local<::v8::Value>  value = ::v8::JSON::Parse(context, payload).ToLocalChecked();
     
     object->Set(key, value);
     
     const ::v8::String::Utf8Value exception(try_catch.Exception());
     
     if ( exception.length() == 0 ) {
-        o_object->Reset(isolate_, value);
+        if ( nullptr != o_object ) {
+            o_object->Reset(isolate_, object);
+        }
+        if ( nullptr != o_value ) {
+            o_value->Reset(isolate_, value);
+        }
         return true;
+    } else {
+        if ( nullptr != o_object ) {
+            o_object->Reset();
+        }
+        if ( nullptr != o_value ) {
+            o_value->Reset();
+        }
     }
     
     if ( nullptr != a_on_error ) {
@@ -396,6 +382,93 @@ bool casper::v8::Context::LoadData (const char* const a_name, const char* a_data
     }
     
     return false;
+}
+
+#ifdef __APPLE__
+#pragma mark -
+#endif
+
+/**
+ * @brief Load some functions previously compiled for a specific context and scope.
+ *
+ * @param a_context
+ * @param a_scope
+ * @param a_try_catch
+ * @param a_functions
+ * @param o_functions
+ *
+ * @return
+ */
+bool casper::v8::Context::LoadFunctions (::v8::Local<::v8::Context>& a_context, ::v8::Context::Scope& a_scope, ::v8::TryCatch& a_try_catch,
+                                         const FunctionsVector& a_functions, std::map<std::string, LoadedFunction*>& o_functions)
+{
+    // catch any exceptions the script might throw.
+    ::v8::TryCatch try_catch(a_context->GetIsolate());
+    
+    for ( auto it : a_functions ) {
+        
+        const ::v8::Local<::v8::String> func_name = ::v8::String::NewFromUtf8(a_context->GetIsolate(), it.name_, ::v8::NewStringType::kNormal).ToLocalChecked();
+        ::v8::Local<::v8::Value>  process_val;
+        // If there is no function, or if it is not a function, bail out
+        if ( ! a_context->Global()->Get(a_context, func_name).ToLocal(&process_val) || ! process_val->IsFunction() ) {
+            // failed to load function - bail out
+            return false;
+        }
+        // It is a function; cast it to a Function
+        const ::v8::Local<::v8::Function> process_fun = ::v8::Local<::v8::Function>::Cast(process_val);
+        
+        // create a new \link LoadedFunction \link
+        LoadedFunction* function = new LoadedFunction(it.name_);
+        
+        // keep track of new funcion
+        o_functions[it.name_] = function;
+        
+        // store the function in a Global handle,
+        // since we also want that to remain after this call returns
+        function->f_.Set(a_context->GetIsolate(), process_fun);
+        
+    }
+    
+    // done
+    return true;
+}
+
+/**
+ * @brief Execute a previously load function for a specific context.
+ *
+ * @param a_name
+ * @param a_n_args
+ * @param a_args
+ * @param o_result
+ * @param a_on_error
+ *
+ * @return
+ */
+bool casper::v8::Context::CallFunction (::v8::Local<::v8::Context>& a_context, ::v8::Context::Scope& a_scope, ::v8::TryCatch& a_try_catch,
+                                        const casper::v8::Context::LoadedFunctionsMap& a_functions, const casper::v8::Context::LoadedFunction::Callable& a_callable,
+                                        ::v8::Persistent<::v8::Value>& o_result)
+{
+    // pick function info
+    const auto it = a_functions.find(a_callable.name_);
+    if ( a_functions.end() == it ) {
+        // not found
+        return false;
+    }
+    
+    // grab function
+    ::v8::Local<::v8::Function> local_function = it->second->f_.Get(a_context->GetIsolate());
+
+    // call function
+    ::v8::Local<::v8::Value> local_result;
+    const bool rv = local_function->Call(a_context, a_context->Global(), a_callable.argc_, a_callable.argv_).ToLocal(&local_result);
+    if ( false == rv ) {
+        o_result.Reset();
+    } else {
+        o_result.Reset(a_context->GetIsolate(), local_result);
+    }
+
+    // done
+    return rv;
 }
 
 #ifdef __APPLE__
@@ -426,7 +499,7 @@ void casper::v8::Context::TraceException (::v8::TryCatch* a_try_catch, const cas
  */
 bool casper::v8::Context::TraceException (::v8::TryCatch* a_try_catch, std::string& o_trace)
 {
-    ::v8::HandleScope       handle_scope(isolate_);
+    ::v8::HandleScope             handle_scope(isolate_);
     const ::v8::String::Utf8Value exception(a_try_catch->Exception());
     
     //

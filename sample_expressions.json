@@ -2,9 +2,9 @@
     "expressions": [
     "$.tax_registration_number",
 
-    "((((($.tax_registration_number+(\": A idade de \"))+($.lines[$dri].gajo ? (\"tipo\") : (\"tipa\")))+(" "))+$.lines[$dri].field2)+(\" é \"))+($.lines[$dri].field1))",
+    "(((((($.tax_registration_number+(\": A idade de \"))+($.lines[index].gajo ? (\"tipo\") : (\"tipa\")))+(\" \"))+$.lines[index].field2)+(\" é \"))+($.lines[index].field1))",
 
-    "($.v1+(\": Isto é \")+$.lines[$dri].field2+(\" é \")+($.lines[$dri].field1))",
+    "($.v1+(\": Isto é \")+$.lines[index].field2+(\" é \")+($.lines[index].field1))",
 
     "$.tax_registration_number / 100"
     ],
