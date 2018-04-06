@@ -90,7 +90,7 @@ int parse_args (int a_argc, char** a_argv, std::string& o_expressions_file, std:
     return 0;
 }
 
-int use_eternal_context (const std::string& a_expressions_file, const std::string& a_data_file, const size_t a_rounds,
+int use_eternal_context (const std::string& a_expressions_file, const std::string& a_data_file, const size_t a_lines, const size_t a_rounds,
                          size_t& o_number_of_functions, size_t& o_elapsed)
 {
     fprintf(stdout, "//\n// Using C++ object\n//\n");
@@ -160,27 +160,28 @@ int use_eternal_context (const std::string& a_expressions_file, const std::strin
     };
     
     CASPER_V8_CHRONO_START(eternal_context)
-    size_t cnt = 0;
-    for ( size_t i = 0; i < a_rounds; i++ ) {
-        for ( size_t e = 0 ; e < expressions.size() ; ++e ) {
-            args[0] = /* expr number */    v8::Integer::NewFromUnsigned(casper_context->isolate_, static_cast<unsigned int>(e));
-            success =  casper_context->CallFunction(callable, js_result);
-            if ( false == success ) {
-                fprintf(stderr,
-                        "Error while evaluating expression #%zd\n", e
-                );
-                return -1;
-            }/* else {
-                fprintf(stdout, "%zd: %s\n", e, casper::v8::Context::ToCString(v8::String::Utf8Value(casper_context->isolate_, js_result.Get(casper_context->isolate_))));
-            } */
-            cnt ++;
+    for ( unsigned int l = 0; l < static_cast<unsigned>(a_lines); l++ ) {
+        args[2] = /* data row index */ v8::Integer::NewFromUnsigned(casper_context->isolate_, l);
+        for ( size_t i = 0; i < a_rounds; i++ ) {
+            for ( size_t e = 0 ; e < expressions.size() ; ++e ) {
+                args[0] = /* expr number */    v8::Integer::NewFromUnsigned(casper_context->isolate_, static_cast<unsigned int>(e));
+                success =  casper_context->CallFunction(callable, js_result);
+                if ( false == success ) {
+                    fprintf(stderr,
+                            "Error while evaluating expression #%zd\n", e
+                    );
+                    return -1;
+                }/* else {
+                    fprintf(stdout, "%zd: %s\n", e, casper::v8::Context::ToCString(v8::String::Utf8Value(casper_context->isolate_, js_result.Get(casper_context->isolate_))));
+                  } */
+            }
         }
     }
     o_number_of_functions = static_cast<size_t>(array_object->Length());
-    o_elapsed             = CASPER_V8_CHRONO_END(eternal_context, "evaluate %zd expression(s) for %zd round(s): %zd", expressions.size(), a_rounds, cnt);
+    o_elapsed             = CASPER_V8_CHRONO_END(eternal_context, "evaluate %zd expression(s) for %zd round(s)", expressions.size(), a_rounds);
     
     fprintf(stdout, "\tTook %.3f ms per function call\n",
-            ( static_cast<double>(o_elapsed) / 1000.0f ) / ( a_rounds * o_number_of_functions)
+            ( static_cast<double>(o_elapsed) / 1000.0f ) / ( a_rounds * a_lines * o_number_of_functions )
     );
 
     delete casper_context;
@@ -188,7 +189,7 @@ int use_eternal_context (const std::string& a_expressions_file, const std::strin
     return 0;
 }
 
-int use_local_context (const std::string& a_expressions_file, const std::string& a_data_file, const size_t a_rounds,
+int use_local_context (const std::string& a_expressions_file, const std::string& a_data_file, const size_t a_lines, const size_t a_rounds,
                        size_t& o_number_of_functions, size_t& o_elapsed)
 {
     fprintf(stdout, "//\n// Using LOCAL variables\n//\n");
@@ -220,7 +221,7 @@ int use_local_context (const std::string& a_expressions_file, const std::string&
     CASPER_V8_CHRONO_END(local_data_parsing, "parse %zd byte(s) of JSON data", ef_c.length());
     
     //
-    ::v8::Local<::v8::Object> local_obj    = expression_as_json_value.ToLocalChecked()->ToObject(context).ToLocalChecked();
+    ::v8::Local<::v8::Object>       local_obj   = expression_as_json_value.ToLocalChecked()->ToObject(context).ToLocalChecked();
     const ::v8::Handle<::v8::Value> array_value = local_obj->Get(::v8::String::NewFromUtf8(isolate, "expressions"));
     if ( false == array_value->IsArray() ) {
         fprintf(stderr,
@@ -316,32 +317,32 @@ int use_local_context (const std::string& a_expressions_file, const std::string&
     bool                 success = false;
     
     args[1] = /* data object */    value;
-    args[2] = /* data row index */ v8::Integer::NewFromUnsigned(isolate, 0);
     
     CASPER_V8_CHRONO_START(local_context)
-    size_t cnt = 0;
-    for ( size_t i = 0; i < a_rounds; i++ ) {
-        for ( size_t e = 0 ; e < expressions.size() ; ++e ) {
-            args[0] = /* expr number */ v8::Integer::NewFromUnsigned(isolate, static_cast<unsigned int>(e));
-            success = local_function->Call(context, context->Global(), 3, args).ToLocal(&fc_result);
-            if ( false == success ) {
-                fprintf(stderr,
-                        "Error while evaluating expression #%zd\n", e
-                );
-                return -1;
+   for ( unsigned int l = 0; l < static_cast<unsigned>(a_lines); l++ ) {
+        args[2] = /* data row index */ v8::Integer::NewFromUnsigned(isolate, l);
+        for ( size_t i = 0; i < a_rounds; i++ ) {
+            for ( size_t e = 0 ; e < expressions.size() ; ++e ) {
+                args[0] = /* expr number */ v8::Integer::NewFromUnsigned(isolate, static_cast<unsigned int>(e));
+                success = local_function->Call(context, context->Global(), 3, args).ToLocal(&fc_result);
+                if ( false == success ) {
+                    fprintf(stderr,
+                            "Error while evaluating expression #%zd\n", e
+                            );
+                    return -1;
+                }
+                /* else {
+                    fprintf(stdout, "%zd: %s\n", e, casper::v8::Context::ToCString(v8::String::Utf8Value(isolate, fc_result)));
+                 }
+                 */
             }
-            /* else {
-                fprintf(stdout, "%zd: %s\n", e, casper::v8::Context::ToCString(v8::String::Utf8Value(isolate, fc_result)));
-            }
-             */
-            cnt++;
         }
     }
     o_number_of_functions = static_cast<size_t>(array_object->Length());
-    o_elapsed             = CASPER_V8_CHRONO_END(local_context, "evaluate %zd expression(s) for %zd round(s): %zd", expressions.size(), a_rounds, cnt);
+    o_elapsed             = CASPER_V8_CHRONO_END(local_context, "evaluate %zd expression(s) for %zd round(s)", expressions.size(), a_rounds);
     
     fprintf(stdout, "\tTook %.3f ms per function call\n",
-            ( static_cast<double>(o_elapsed) / 1000.0f ) / ( a_rounds * o_number_of_functions)
+            ( static_cast<double>(o_elapsed) / 1000.0f ) / ( a_rounds * a_lines * o_number_of_functions )
     );
     return 0;
 }
@@ -372,16 +373,17 @@ int main(int argc, char* argv[]) {
     
     int result;
     
-    const size_t rounds = 1000;
+    const size_t lines  = 100;
+    const size_t rounds = 10;
     
     size_t eternal_elapsed = 0;
     size_t eternal_num_func = 0;
     size_t local_elapsed   = 0;
     size_t local_num_func = 0;
 
-    if ( 0 != ( result = use_local_context(expressions_file, data_file, rounds, local_num_func, local_elapsed) ) ) {
+    if ( 0 != ( result = use_local_context(expressions_file, data_file, lines, rounds, local_num_func, local_elapsed) ) ) {
         fprintf(stderr, "Error while running local rounds!\n");
-    } else if ( 0 != ( result = use_eternal_context(expressions_file, data_file, rounds, eternal_num_func, eternal_elapsed) ) ) {
+    } else if ( 0 != ( result = use_eternal_context(expressions_file, data_file, lines, rounds, eternal_num_func, eternal_elapsed) ) ) {
         fprintf(stderr, "Error while running eternal rounds!\n");
     }
     
