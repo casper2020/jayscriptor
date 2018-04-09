@@ -33,7 +33,7 @@
 #include <algorithm>
 
 
-#if (defined(DEBUG) || defined(_DEBUG) || defined(ENABLE_DEBUG))
+#if ( defined(CASPER_V8_CHRONO_ENABLED) || defined(DEBUG) || defined(_DEBUG) || defined(ENABLE_DEBUG) )
     #define CASPER_V8_CHRONO_START(a_name) \
         const auto debug_##a_name## _start_tp = std::chrono::high_resolution_clock::now();
     #define CASPER_V8_CHRONO_ELPASED(a_name)[&]() -> size_t { \

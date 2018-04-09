@@ -232,7 +232,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TMP_BLOBS_TO_LINK=(\"natives_blob.bin\" \"snapshot_blob.bin\" \"icudtl.dat\")\ncd $BUILD_DIR/$CONFIGURATION\nfor __blob in ${TMP_BLOBS_TO_LINK[@]} ; do\n    if [ ! -f $__blob ] ; then\n        cp -fv $SRCROOT/../v8/depot_tools/v8/out.gn/x64.debug/$__blob .\n    fi\ndone";
+			shellScript = "CONFIGURATION_LC=\"$(tr '[:upper:]' '[:lower:]' <<< ${CONFIGURATION})\"\nTMP_BLOBS_TO_LINK=(\"natives_blob.bin\" \"snapshot_blob.bin\" \"icudtl.dat\")\ncd $BUILD_DIR/$CONFIGURATION\nfor __blob in ${TMP_BLOBS_TO_LINK[@]} ; do\n cp -fv $SRCROOT/../v8/depot_tools/v8/out.gn/x64.$CONFIGURATION_LC/$__blob .\ndone";
 		};
 		478665FC207509F700B4C35D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -245,7 +245,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TMP_BLOBS_TO_LINK=(\"natives_blob.bin\" \"snapshot_blob.bin\" \"icudtl.dat\")\ncd $BUILD_DIR/$CONFIGURATION\nfor __blob in ${TMP_BLOBS_TO_LINK[@]} ; do\nif [ ! -f $__blob ] ; then\ncp -fv $SRCROOT/../v8/depot_tools/v8/out.gn/x64.debug/$__blob .\nfi\ndone";
+			shellScript = "CONFIGURATION_LC=\"$(tr '[:upper:]' '[:lower:]' <<< ${CONFIGURATION})\"\nTMP_BLOBS_TO_LINK=(\"natives_blob.bin\" \"snapshot_blob.bin\" \"icudtl.dat\")\ncd $BUILD_DIR/$CONFIGURATION\nfor __blob in ${TMP_BLOBS_TO_LINK[@]} ; do\n    cp -fv $SRCROOT/../v8/depot_tools/v8/out.gn/x64.$CONFIGURATION_LC/$__blob .\ndone";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -344,8 +344,8 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					"CASPER_V8_CHRONO_ENABLED=1",
 					"DEBUG=1",
-					"$(inherited)",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -405,6 +405,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "CASPER_V8_CHRONO_ENABLED=1";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;

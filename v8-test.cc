@@ -159,7 +159,7 @@ int use_eternal_context (const std::string& a_expressions_file, const std::strin
         /* argv_   */ args
     };
     
-    CASPER_V8_CHRONO_START(eternal_context)
+    CASPER_V8_CHRONO_START(eternal_context);
     for ( unsigned int l = 0; l < static_cast<unsigned>(a_lines); l++ ) {
         args[2] = /* data row index */ v8::Integer::NewFromUnsigned(casper_context->isolate_, l);
         for ( size_t i = 0; i < a_rounds; i++ ) {
@@ -196,15 +196,23 @@ int use_local_context (const std::string& a_expressions_file, const std::string&
 
     ::v8::Isolate::CreateParams create_params;
     create_params.array_buffer_allocator = ::v8::ArrayBuffer::Allocator::NewDefaultAllocator();
-    // prepare isotale
+    
+    // prepare isolate
     ::v8::Isolate* isolate = ::v8::Isolate::New(create_params);
-    // prepare context
-    ::v8::HandleScope handle_scope (isolate);
+    
+    // enter isolate scope
+    v8::Isolate::Scope isolate_scope(isolate);
+    
+    // create a stack-allocated handle scope.
+    v8::HandleScope handle_scope(isolate);
+    
     // add debug function
     ::v8::Local<::v8::ObjectTemplate> global = ::v8::ObjectTemplate::New(isolate);
+    
     // make a context
     ::v8::Local<::v8::Context> context = ::v8::Context::New(isolate, NULL, global);
-
+    
+    // enter the context for compiling and running the hello world script.
     v8::Context::Scope context_scope(context);
     
     std::ifstream ef_is(a_expressions_file);
@@ -216,7 +224,7 @@ int use_local_context (const std::string& a_expressions_file, const std::string&
     //
     ::v8::MaybeLocal<::v8::String> expressions_string = ::v8::String::NewFromUtf8(isolate, ef_c.c_str(), ::v8::NewStringType::kNormal);
     
-    CASPER_V8_CHRONO_START(local_data_parsing)
+    CASPER_V8_CHRONO_START(local_data_parsing);
     ::v8::MaybeLocal<::v8::Value> expression_as_json_value = ::v8::JSON::Parse(context, expressions_string.ToLocalChecked());
     CASPER_V8_CHRONO_END(local_data_parsing, "parse %zd byte(s) of JSON data", ef_c.length());
     
@@ -302,9 +310,9 @@ int use_local_context (const std::string& a_expressions_file, const std::string&
 //    ::v8::Local<::v8::Object> data_object = ::v8::Object::New(isolate);
     
 //    const ::v8::Local<::v8::String> key      = ::v8::String::NewFromUtf8(isolate, "data_object", ::v8::NewStringType::kNormal).ToLocalChecked();
-    const ::v8::Local<::v8::String> payload  = ::v8::String::NewFromUtf8(isolate, df_c.c_str(), ::v8::NewStringType::kNormal).ToLocalChecked();
-    CASPER_V8_CHRONO_START(local_data_file_parsing)
-    const ::v8::Local<::v8::Value>  value    = ::v8::JSON::Parse(context, payload).ToLocalChecked();
+    const ::v8::Local<::v8::String> payload = ::v8::String::NewFromUtf8(isolate, df_c.c_str(), ::v8::NewStringType::kNormal).ToLocalChecked();
+    CASPER_V8_CHRONO_START(local_data_file_parsing);
+    const ::v8::Local<::v8::Value>  value   = ::v8::JSON::Parse(context, payload).ToLocalChecked();
     CASPER_V8_CHRONO_END(local_data_file_parsing, "parse %zd byte(s) of JSON data", df_c.length());
     
 //    data_object->Set(key, value);
@@ -318,17 +326,20 @@ int use_local_context (const std::string& a_expressions_file, const std::string&
     
     args[1] = /* data object */    value;
     
-    CASPER_V8_CHRONO_START(local_context)
+   CASPER_V8_CHRONO_START(local_context);
+    
    for ( unsigned int l = 0; l < static_cast<unsigned>(a_lines); l++ ) {
         args[2] = /* data row index */ v8::Integer::NewFromUnsigned(isolate, l);
         for ( size_t i = 0; i < a_rounds; i++ ) {
             for ( size_t e = 0 ; e < expressions.size() ; ++e ) {
                 args[0] = /* expr number */ v8::Integer::NewFromUnsigned(isolate, static_cast<unsigned int>(e));
-                success = local_function->Call(context, context->Global(), 3, args).ToLocal(&fc_result);
+                
+                ::v8::MaybeLocal<::v8::Value> ml_value = local_function->Call(context, context->Global(), 3, args);
+                success = ml_value.ToLocal(&fc_result);
                 if ( false == success ) {
                     fprintf(stderr,
                             "Error while evaluating expression #%zd\n", e
-                            );
+                    );
                     return -1;
                 }
                 /* else {

@@ -88,7 +88,7 @@ bool casper::v8::Context::Parse (const std::string& a_uri,
     
     const ::v8::Local<::v8::String> payload = ::v8::String::NewFromUtf8(isolate_, data.c_str(), ::v8::NewStringType::kNormal).ToLocalChecked();
 
-    CASPER_V8_CHRONO_START(parse)
+    CASPER_V8_CHRONO_START(parse);
     ::v8::MaybeLocal<::v8::Value> value = ::v8::JSON::Parse(context, payload);
     CASPER_V8_CHRONO_END(parse, "parse %zd byte(s) of JSON data", data.length());
     
