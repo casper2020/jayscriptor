@@ -1,13 +1,21 @@
 <script>
-
 function convert_json($){
+
+	var new_root = {};
+
+	new_root = $.data.attributes;
+	new_root.id = $.data.id;
+	new_root.type = $.data.type;
 
 	// dynamically create variables
 	var type_id_map = {};
-	for (var r in $.data.relationships ) {
+    var included = $.included
+    $ = $.data;
 
-    	var src_var = eval("$.data.relationships."+r);
-    	var new_var = eval("$."+r+"=new Array(" + src_var.length + ")");
+	for (var r in $.relationships ) {
+
+    	var src_var = eval("$.relationships."+r);
+    	var new_var = eval("new_root."+r+"=new Array(" + src_var.length + ")");
     	new_var = src_var.data;
 
 	    var idx = 0;
@@ -23,19 +31,20 @@ function convert_json($){
     	}
 	}
 
-  // collect objects and link with dynamically created variables
-	for (var entry of $.included){
+    // collect objects and link with dynamically created variables
+	for (var entry of included){
 		var key = entry.type + '$' + entry.id;
 		var interest_array = type_id_map[key];
         for ( var e of interest_array ) {
-        	$[e.variable][e.order] = entry.attributes;
-	        $[e.variable][e.order].id = entry.id;
-	        $[e.variable][e.order].type = entry.type;
+        	new_root[e.variable][e.order] = entry.attributes;
+	        new_root[e.variable][e.order].id = entry.id;
+	        new_root[e.variable][e.order].type = entry.type;
         }
 	}
 
-  return $;
+  return new_root;
 }
+
 
 var obj = {
 	"data": {
