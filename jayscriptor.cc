@@ -61,7 +61,7 @@ void show_help (const char* a_name = "jayscriptor")
  *
  * @return 0 on success, < 0 on error.
  */
-int parse_args (int a_argc, char** a_argv, std::string& o_file, std::string& o_string)
+int parse_args (int a_argc, char** a_argv, std::string& o_file, std::string& o_string, std::string& o_entity)
 {
     // ... not enough arguments?
     if ( a_argc < 3 ) {
@@ -75,7 +75,7 @@ int parse_args (int a_argc, char** a_argv, std::string& o_file, std::string& o_s
 
     // ... parse arguments ...
     char opt;
-    while ( -1 != ( opt = getopt(a_argc, a_argv, "hvf:s:") ) ) {
+    while ( -1 != ( opt = getopt(a_argc, a_argv, "hvf:s:e:") ) ) {
         switch (opt) {
             case 'h':
                 show_help(a_argv[0]);
@@ -88,6 +88,9 @@ int parse_args (int a_argc, char** a_argv, std::string& o_file, std::string& o_s
                 break;
             case 's':
                 o_string = optarg;
+                break;
+            case 'e':
+                o_entity = optarg;
                 break;
             default:
                 fprintf(stderr, "llegal option %s:\n", optarg);
@@ -108,10 +111,10 @@ int main(int argc, char* argv[])
 
     std::string file;
     std::string java_expression;
+    std::string entity;
 
 
-
-    const int arg_rv = parse_args(argc, argv, file, java_expression);
+    const int arg_rv = parse_args(argc, argv, file, java_expression, entity);
     if ( 0 != arg_rv ) {
         return arg_rv;
     }
@@ -135,7 +138,7 @@ int main(int argc, char* argv[])
         while ( getline(in, line) ) {
             try{
                 //fprintf(stdout, "console.log(");
-                expression = exp.Convert(line);
+                expression = exp.Convert(line, entity);
                 if ( 0 == expression.length() ) {
                     throw std::runtime_error("Invalid 'java' expression: " + line);
                 }
@@ -159,7 +162,7 @@ int main(int argc, char* argv[])
 
     } else {
         try{
-            const std::string js_expression = exp.Convert(java_expression);
+            const std::string js_expression = exp.Convert(java_expression, entity);
             if ( 0 == js_expression.length() ) {
                 fprintf(stdout, "%s\n", java_expression.c_str());
                 return 0;

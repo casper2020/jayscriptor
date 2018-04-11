@@ -34,15 +34,17 @@ casper::java::FakeJavaExpression::~FakeJavaExpression ()
 }
 
 
-const std::string& casper::java::FakeJavaExpression::Convert (const std::string& a_expression)
+const std::string& casper::java::FakeJavaExpression::Convert (const std::string& a_expression, const std::string entity)
 {
-    return Convert(a_expression.c_str(), a_expression.size());
+    return Convert(a_expression.c_str(), a_expression.size(), entity);
 }
 
-const std::string& casper::java::FakeJavaExpression::Convert (const char* a_expression, size_t a_len)
+const std::string& casper::java::FakeJavaExpression::Convert (const char* a_expression, size_t a_len, const std::string a_entity)
 {
     tmp_ss_.str("");
     tmp_expression_ = "";
+
+    entity_ = a_entity.length() ? a_entity : "lines";
 
     try {
         ast_.Reset();
@@ -197,10 +199,18 @@ void casper::java::FakeJavaExpression::BuildString (casper::java::AstNode* a_nod
         BuildString(a_node->getArg2());
         tmp_ss_ << ")";
 
-    } else if ( a_node->getType()==casper::java::AstNode::TVar || a_node->getType()==casper::java::AstNode::TParam ) {
+    } else if ( a_node->getType()==casper::java::AstNode::TVar ) {
 
         //
-        // Vars & Params
+        // Vars
+        //
+
+        tmp_ss_ << "$.$" << a_node->getText();
+
+    } else if ( a_node->getType()==casper::java::AstNode::TParam ) {
+
+        //
+        // Params
         //
 
         tmp_ss_ << "$." << a_node->getText();
@@ -211,7 +221,7 @@ void casper::java::FakeJavaExpression::BuildString (casper::java::AstNode* a_nod
         // Fields
         //
 
-        tmp_ss_ << "$.lines[$._dri]." << a_node->getText();
+        tmp_ss_ << "$." << entity_ << "[$._dri]." << a_node->getText();
     } else if ( a_node->getType()==casper::java::AstNode::TNull ) {
 
         //

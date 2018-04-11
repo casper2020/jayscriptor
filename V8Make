@@ -1,22 +1,22 @@
+$(SRCROOT)/../old_v8/v8/v8/out/x64.release
+INCLUDE_DIRS = -I . -I /Users/bruno/work/old_v8/v8/v8/include
 
-INCLUDE_DIRS = -I . -I /Users/bruno/work/v8/v8/include
+OBJECTS =   v8-test.o casper/v8/context.o casper/v8/singleton.o
 
-OBJECTS =   test.o
-
-OBJECTS2 =     /Users/bruno/work/v8/v8/out/x64.release/libv8_base.a        \
-/Users/bruno/work/v8/v8/out/x64.release/libv8_libbase.a                    \
-/Users/bruno/work/v8/v8/out/x64.release/libv8_external_snapshot.a          \
-/Users/bruno/work/v8/v8/out/x64.release/libv8_libplatform.a                \
-/Users/bruno/work/v8/v8/out/x64.release/libv8_libsampler.a                 \
-/Users/bruno/work/v8/v8/out/x64.release/libicuuc.a                         \
-/Users/bruno/work/v8/v8/out/x64.release/libicui18n.a
+OBJECTS2 =     /Users/bruno/work/old_v8/v8/v8/out/x64.release/libv8_base.a        \
+/Users/bruno/work/old_v8/v8/v8/out/x64.release/libv8_libbase.a                    \
+/Users/bruno/work/old_v8/v8/v8/out/x64.release/libv8_external_snapshot.a          \
+/Users/bruno/work/old_v8/v8/v8/out/x64.release/libv8_libplatform.a                \
+/Users/bruno/work/old_v8/v8/v8/out/x64.release/libv8_libsampler.a                 \
+/Users/bruno/work/old_v8/v8/v8/out/x64.release/libicuuc.a                         \
+/Users/bruno/work/old_v8/v8/v8/out/x64.release/libicui18n.a
 
 test: $(OBJECTS)
-	$(CXX) -o $@ $(OBJECTS) -O3 -Wl, $(OBJECTS2) -Wl, -ldl
+	$(CXX) -o $@ $(OBJECTS) -O2 -Wl, $(OBJECTS2) -Wl, -ldl
 
-DEFINES = -D CASPER_NO_ICU
-CFLAGS = $(INCLUDE_DIRS) $(DEFINES) -c -g -O3
-CXXFLAGS = $(INCLUDE_DIRS) -std=c++11 -Wall $(DEFINES) -c -g -O3
+DEFINES = -D CASPER_NO_ICU -D ENABLE_CASPER_V8_CHRONO=1
+CFLAGS = $(INCLUDE_DIRS) $(DEFINES) -c -g -O2
+CXXFLAGS = $(INCLUDE_DIRS) -std=c++11 -Wall $(DEFINES) -c -g -O2
 
 # c++
 .c.o:
@@ -29,4 +29,4 @@ CXXFLAGS = $(INCLUDE_DIRS) -std=c++11 -Wall $(DEFINES) -c -g -O3
 	$(CXX) $(CXXFLAGS) $< -o $@
 
 clean:
-	rm $(OBJECTS)
+	rm -f $(OBJECTS)

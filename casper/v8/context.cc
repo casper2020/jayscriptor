@@ -258,6 +258,8 @@ bool casper::v8::Context::CallFunction (const casper::v8::Context::LoadedFunctio
     // set up an error handler to catch any exceptions the script might throw.
     ::v8::TryCatch try_catch(isolate_);
     
+    ::v8::Isolate::Scope isolate_scope(isolate_);
+    
     // create a handle scope to keep the temporary object references.
     ::v8::HandleScope handle_scope(isolate_);
     
@@ -333,6 +335,8 @@ bool casper::v8::Context::LoadData (const char* const a_name, const std::string&
 {
     // set up an error handler to catch any exceptions the script might throw.
     ::v8::TryCatch try_catch(isolate_);
+    
+    ::v8::Isolate::Scope isolate_scope(isolate_);
     
     // create a handle scope to keep the temporary object references.
     ::v8::HandleScope handle_scope(isolate_);

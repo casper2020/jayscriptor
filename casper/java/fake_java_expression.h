@@ -49,6 +49,7 @@ namespace casper
             Ast             ast_;     //!<
             FakeJavaScanner scanner_; //!< Scanner for a small subset of JAVA used in the report expressions
             FakeJavaParser  parser_;  //!< Expression parser for a restricted subset of the JAVA language
+            std::string     entity_;
             
         private: // Data
             
@@ -60,8 +61,8 @@ namespace casper
             FakeJavaExpression ();
             virtual ~FakeJavaExpression ();
 
-            const std::string& Convert (const std::string& a_expression);
-            const std::string& Convert (const char* a_expression, size_t a_len);
+            const std::string& Convert (const std::string& a_expression, const std::string a_entity);
+            const std::string& Convert (const char* a_expression, size_t a_len, const std::string entity);
             
         protected: // Method(s) / Function(s)
             

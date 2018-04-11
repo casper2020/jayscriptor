@@ -7,7 +7,7 @@
 ("teste").isEmpty() ? "ola" : "ola2: " + "teste2"
 6 == 1 ? "Original" : ((6).toString() + "ª Via")
 ("teste").indexOf("es"+"t")
-$P{tax_registration_number} + ": A idade de " + ($F{gajo} ? "tipo" : "tipa") + " " + $F{field2} + " é " + ($F{field1} + 0.5)
+$V{tax_registration_number} + ": A idade de " + ($F{gajo} ? "tipo" : "tipa") + " " + $F{field2} + " é " + ($F{field1} + 0.5)
 $P{tax_registration_number} != null && $F{gajo} == true ? "IVA regularizado" : "Valor já recebido"
 $F{gajo}
 $P{tax_registration_number}.doubleValue() != 0 ? $F{field1} : null
