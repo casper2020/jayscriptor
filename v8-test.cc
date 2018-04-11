@@ -97,6 +97,13 @@ int use_eternal_context (const std::string& a_expressions_file, const std::strin
     
     casper::v8::Context* casper_context = new casper::v8::Context();
     
+    if ( false == casper_context->Initialize() ) {
+        fprintf(stderr,
+                "Error initializing 'casper' context\n"
+        );
+        return -1;
+    }
+    
     // TODO avoid casper_context->isolate_ calls
     
     ::v8::Isolate::Scope isolate_scope (casper_context->isolate_);
@@ -175,10 +182,10 @@ int use_eternal_context (const std::string& a_expressions_file, const std::strin
                     return -1;
                 } else {
                   //fprintf(stdout, "%zd: %s\n", e, casper::v8::Context::ToCString(v8::String::Utf8Value(casper_context->isolate_, js_result.Get(casper_context->isolate_))));
-                    fc_result = js_result.Get(casper_context->isolate_);
-                    ::v8::String::Utf8Value str_2(fc_result);
-                    const char* cstr = casper::v8::Context::ToCString(str_2);
-                    printf("%s\n", cstr);
+//                    fc_result = js_result.Get(casper_context->isolate_);
+//                    ::v8::String::Utf8Value str_2(fc_result);
+//                    const char* cstr = casper::v8::Context::ToCString(str_2);
+                   // printf("%s\n", cstr);
                     
                   }
             }
@@ -232,9 +239,9 @@ int use_local_context (const std::string& a_expressions_file, const std::string&
     //
     ::v8::MaybeLocal<::v8::String> expressions_string = ::v8::String::NewFromUtf8(isolate, ef_c.c_str(), ::v8::NewStringType::kNormal);
     
-    CASPER_V8_CHRONO_START(local_data_parsing);
+    //CASPER_V8_CHRONO_START(local_data_parsing);
     ::v8::MaybeLocal<::v8::Value> expression_as_json_value = ::v8::JSON::Parse(context, expressions_string.ToLocalChecked());
-    CASPER_V8_CHRONO_END(local_data_parsing, "parse %zd byte(s) of JSON data", ef_c.length());
+    //CASPER_V8_CHRONO_END(local_data_parsing, "parse %zd byte(s) of JSON data", ef_c.length());
     
     //
     ::v8::Local<::v8::Object>       local_obj   = expression_as_json_value.ToLocalChecked()->ToObject(context).ToLocalChecked();
@@ -360,9 +367,9 @@ int use_local_context (const std::string& a_expressions_file, const std::string&
     
 //    const ::v8::Local<::v8::String> key      = ::v8::String::NewFromUtf8(isolate, "data_object", ::v8::NewStringType::kNormal).ToLocalChecked();
     const ::v8::Local<::v8::String> payload = ::v8::String::NewFromUtf8(isolate, df_c.c_str(), ::v8::NewStringType::kNormal).ToLocalChecked();
-    CASPER_V8_CHRONO_START(local_data_file_parsing);
+    //CASPER_V8_CHRONO_START(local_data_file_parsing);
     const ::v8::Local<::v8::Value>  value   = ::v8::JSON::Parse(context, payload).ToLocalChecked();
-    CASPER_V8_CHRONO_END(local_data_file_parsing, "parse %zd byte(s) of JSON data", df_c.length());
+    //CASPER_V8_CHRONO_END(local_data_file_parsing, "parse %zd byte(s) of JSON data", df_c.length());
     
 //    data_object->Set(key, value);
     
@@ -458,10 +465,9 @@ int main(int argc, char* argv[]) {
     
     if ( 0 != ( result = use_local_context(expressions_file, data_file, lines, rounds, local_num_func, local_elapsed) ) ) {
         fprintf(stderr, "Error while running local rounds!\n");
+    } else if ( 0 != ( result = use_eternal_context(expressions_file, data_file, lines, rounds, eternal_num_func, eternal_elapsed) ) ) {
+       fprintf(stderr, "Error while running eternal rounds!\n");
     }
-//    else if ( 0 != ( result = use_eternal_context(expressions_file, data_file, lines, rounds, eternal_num_func, eternal_elapsed) ) ) {
-//       fprintf(stderr, "Error while running eternal rounds!\n");
-//       }
 //
 //    if ( 0 == result ) {
 //        const size_t diff = ( eternal_elapsed < local_elapsed ? ( local_elapsed - eternal_elapsed ) : ( eternal_elapsed - local_elapsed ) );

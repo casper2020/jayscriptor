@@ -1,41 +1,42 @@
 <script>
-function getKeyByValue(object, value) {
-  return Object.keys(object).find(key => object[key] === value);
-}
+
 function convert_json($){
 
-
+	// dynamically create variables
 	var type_id_map = {};
-  for (var r in $.data.relationships ) {
+	for (var r in $.data.relationships ) {
 
-	var src_var = eval("$.data.relationships."+r);
-	var new_var = eval("$."+r+"={}");
-    new_var = src_var.data;
+    	var src_var = eval("$.data.relationships."+r);
+    	var new_var = eval("$."+r+"=new Array(" + src_var.length + ")");
+    	new_var = src_var.data;
 
-	var idx = 0;
-    for ( var o of new_var ) {
-	    var key = o.type + '_' + o.id;
-	    var array = type_id_map[key];
-        if ( undefined == array ) {
-            array = []
-        	type_id_map[key] = array
-        }
-		array.push({"variable": r, "order": idx});
-		++idx;
-    }
-
-  }
-	for (var entry of $.included){
-		var key = entry.type + '_' + entry.id;
-		var obj = type_id_map[key];
-		console.log(key + " ~> " + obj.variable + " at " + obj.order);
+	    var idx = 0;
+    	for ( var o of new_var ) {
+        	var key = o.type + '$' + o.id;
+        	var array = type_id_map[key];
+        	if ( undefined == array ) {
+            	array = []
+            	type_id_map[key] = array
+        	}
+        	array.push({"variable": r, "order": idx, "id": o.id});
+        	++idx;
+    	}
 	}
 
-	console.log($);
-	console.log(type_id_map);
+  // collect objects and link with dynamically created variables
+	for (var entry of $.included){
+		var key = entry.type + '$' + entry.id;
+		var interest_array = type_id_map[key];
+        for ( var e of interest_array ) {
+        	$[e.variable][e.order] = entry.attributes;
+	        $[e.variable][e.order].id = entry.id;
+	        $[e.variable][e.order].type = entry.type;
+        }
+	}
 
   return $;
 }
+
 var obj = {
 	"data": {
 		"type": "documents",

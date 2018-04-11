@@ -123,8 +123,6 @@ namespace casper
             
             ::v8::Isolate*               isolate_;
             ::v8::Eternal<::v8::Context> context_;
-            ::v8::Eternal<::v8::String>  raw_script_;       // TODO do we need this?
-            ::v8::Eternal<::v8::String>  compiled_script_;  // TODO do we need this?
             ::v8::Eternal<::v8::Script>  script_;           // TODO do we need this?
             
         private: // Data
@@ -138,6 +136,8 @@ namespace casper
             virtual ~Context ();
             
         public: // Method(s) / Function(s)
+            
+            bool Initialize    ();
             
             bool Parse         (const std::string& a_uri,
                                 ::v8::Persistent<::v8::Object>& o_object, ::v8::Persistent<::v8::Value>& o_data);
@@ -177,6 +177,8 @@ namespace casper
             static void DebugLog (const ::v8::FunctionCallbackInfo<::v8::Value>& a_args);
             
         public: // Static Method(s) / Function(s)
+            
+            static bool LoadJSONAPIConversionFunction ();
             
             // Extracts a C string from a V8 Utf8Value.
             static const char* ToCString (const ::v8::String::Utf8Value& a_value)

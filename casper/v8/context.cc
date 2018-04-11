@@ -63,6 +63,61 @@ casper::v8::Context::~Context ()
 #endif
 
 /**
+ * @brief Initialize context.
+ */
+bool casper::v8::Context::Initialize ()
+{
+    // create JS data conversion function
+    
+    tmp_trace_ss_.str("");
+    tmp_trace_ss_ << "\"use strict\";\n";
+    tmp_trace_ss_ << "function convert_jsonapi_to_js_object ($) {\n";
+    tmp_trace_ss_ << "var type_id_map = {};\n";
+    tmp_trace_ss_ << "for (var r in $.data.relationships ) {\n";
+    
+    tmp_trace_ss_ << "var src_var = eval(\"$.data.relationships.\"+r);\n";
+    tmp_trace_ss_ << "var new_var = eval(\"$.\"+r+\"=new Array(\" + src_var.length + \")\");\n";
+    tmp_trace_ss_ << "new_var = src_var.data;";
+    
+    tmp_trace_ss_ << "var idx = 0;\n";
+    tmp_trace_ss_ << "for ( var o of new_var ) {\n";
+    tmp_trace_ss_ << "var key = o.type + \'$\' + o.id;\n";
+    tmp_trace_ss_ << "var array = type_id_map[key];\n";
+    tmp_trace_ss_ << "if ( undefined == array ) {\n";
+    tmp_trace_ss_ << "array = []\n";
+    tmp_trace_ss_ << "type_id_map[key] = array}\n";
+    tmp_trace_ss_ << "array.push({\"variable\": r, \"order\": idx, \"id\": o.id});\n";
+    tmp_trace_ss_ << "++idx;}}\n";
+    
+    tmp_trace_ss_ << "for (var entry of $.included){\n";
+    tmp_trace_ss_ << "var key = entry.type + \'$\' + entry.id;\n";
+    tmp_trace_ss_ << "var interest_array = type_id_map[key];\n";
+    tmp_trace_ss_ << "for ( var e of interest_array ) {\n";
+    tmp_trace_ss_ << "$[e.variable][e.order] = entry.attributes;\n";
+    tmp_trace_ss_ << "$[e.variable][e.order].id = entry.id;\n";
+    tmp_trace_ss_ << "$[e.variable][e.order].type = entry.type;}}\n";
+    
+    tmp_trace_ss_ << "return $;\n";
+    tmp_trace_ss_ << "}";   // end of function
+    
+    ::v8::Isolate::Scope isolate_scope(isolate_);
+    
+    // create a handle scope to keep the temporary object references.
+    ::v8::HandleScope handle_scope(isolate_);
+    
+    // create a new local context
+    ::v8::Local<::v8::Context> context = context_.Get(isolate_);
+    
+    // enter this function's context so all the remaining operations take place there
+    ::v8::Context::Scope context_scope(context);
+    
+    const ::v8::Local<::v8::String> script = ::v8::String::NewFromUtf8(isolate_, tmp_trace_ss_.str().c_str(), ::v8::NewStringType::kNormal).ToLocalChecked();
+    
+    // ... prepare script ...
+    return Compile(script, /* a_functions */ nullptr, /* a_on_error */nullptr);
+}
+
+/**
  * @brief Parse a JSON string into an \link ::v8::Object \link.
  *
  * @param a_uri
@@ -120,7 +175,6 @@ bool casper::v8::Context::Compile (const ::v8::Local<::v8::String>& a_script,
     // set up an error handler to catch any exceptions the script might throw.
     ::v8::TryCatch try_catch(isolate_);
     
-    raw_script_.Set(isolate_, a_script);
     // TODO READ THIS AND DOUBLE CHECK CODE
     // Each processor gets its own context so different processors don't
     // affect each other. Context::New returns a persistent handle which
@@ -137,7 +191,7 @@ bool casper::v8::Context::Compile (const ::v8::Local<::v8::String>& a_script,
     // Compile the script and check for errors.
     //
     ::v8::Local<::v8::Script> local_compiled_script;
-    if ( false == ::v8::Script::Compile(context, raw_script_.Get(isolate_)).ToLocal(&local_compiled_script) ) {
+    if ( false == ::v8::Script::Compile(context, a_script).ToLocal(&local_compiled_script) ) {
         //
         // the script failed to compile
         //
@@ -302,7 +356,8 @@ bool casper::v8::Context::LoadExpressions (const char* const a_name,
                                            const TraceCallback a_on_error)
 {
     
-    //    tmp_trace_ss_ << "\"use strict\";\n";
+    tmp_trace_ss_.str("");
+    tmp_trace_ss_ << "\"use strict\";\n";
     tmp_trace_ss_ << "function " << a_name << "(number, $, index) {\n";
     tmp_trace_ss_ << std::setw(4) << ' ' << "switch (number) {\n";
     for ( size_t idx = 0 ; idx < a_expressions.size() ; ++idx ) {
