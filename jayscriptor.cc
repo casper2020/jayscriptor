@@ -61,7 +61,7 @@ void show_help (const char* a_name = "jayscriptor")
  *
  * @return 0 on success, < 0 on error.
  */
-int parse_args (int a_argc, char** a_argv, std::string& o_file, std::string& o_string, std::string& o_entity)
+int parse_args (int a_argc, char** a_argv, std::string& o_file, std::string& o_string, std::string& o_relationship)
 {
     // ... not enough arguments?
     if ( a_argc < 3 ) {
@@ -75,7 +75,7 @@ int parse_args (int a_argc, char** a_argv, std::string& o_file, std::string& o_s
 
     // ... parse arguments ...
     char opt;
-    while ( -1 != ( opt = getopt(a_argc, a_argv, "hvf:s:e:") ) ) {
+    while ( -1 != ( opt = getopt(a_argc, a_argv, "hvf:s:r:") ) ) {
         switch (opt) {
             case 'h':
                 show_help(a_argv[0]);
@@ -89,8 +89,8 @@ int parse_args (int a_argc, char** a_argv, std::string& o_file, std::string& o_s
             case 's':
                 o_string = optarg;
                 break;
-            case 'e':
-                o_entity = optarg;
+            case 'r':
+                o_relationship = optarg;
                 break;
             default:
                 fprintf(stderr, "llegal option %s:\n", optarg);
@@ -111,10 +111,10 @@ int main(int argc, char* argv[])
 
     std::string file;
     std::string java_expression;
-    std::string entity;
+    std::string relationship;
 
 
-    const int arg_rv = parse_args(argc, argv, file, java_expression, entity);
+    const int arg_rv = parse_args(argc, argv, file, java_expression, relationship);
     if ( 0 != arg_rv ) {
         return arg_rv;
     }
@@ -138,7 +138,7 @@ int main(int argc, char* argv[])
         while ( getline(in, line) ) {
             try{
                 //fprintf(stdout, "console.log(");
-                expression = exp.Convert(line, entity);
+                expression = exp.Convert(line, relationship);
                 if ( 0 == expression.length() ) {
                     throw std::runtime_error("Invalid 'java' expression: " + line);
                 }
@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
 
     } else {
         try{
-            const std::string js_expression = exp.Convert(java_expression, entity);
+            const std::string js_expression = exp.Convert(java_expression, relationship);
             if ( 0 == js_expression.length() ) {
                 fprintf(stdout, "%s\n", java_expression.c_str());
                 return 0;

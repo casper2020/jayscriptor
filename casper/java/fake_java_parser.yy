@@ -167,8 +167,8 @@
                  term '.' equals      '(' term ')'  { $$=ast.Expression("==",$1,$5);            }
                | term '.' toString    '(' ')'       { $$=ast.Operation("toString",$1);          }
                | term '.' intValue    '(' ')'       { $$=ast.Operation("parseInt",$1);          }
-               | term '.' to_i        '(' ')'       { $$=ast.Operation("parseInt",$1);          }
-               | term '.' to_f        '(' ')'       { $$=ast.Operation("parseFloat",$1);        }
+               | term '.' to_i        '(' ')'       { $$=ast.Operation("to_i",$1);              }
+               | term '.' to_f        '(' ')'       { $$=ast.Operation("to_f",$1);              }
                | term '.' doubleValue '(' ')'       { $$=ast.Operation("parseFloat",$1);        }
                | term '.' isNaN       '(' ')'       { $$=ast.Operation("isNan",$1);             }
                ;
@@ -207,7 +207,7 @@
                ;
     date_ops:
                 TK_NEW         '.' TK_DATE '(' ')'                { $$ = ast.DateOp("newDate");          }
-               | TK_DATE_FORMAT '.' parse   '(' term ',' term ')' { $$ = ast.DateOp("parseDate",$5, $7); }
+               | TK_DATE_FORMAT '.' parse   '(' term ',' term ')' { $$ = ast.DateOp("DateFormat.parse",$5, $7); }
                ;
 
 %%

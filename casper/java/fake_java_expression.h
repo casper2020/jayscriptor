@@ -46,10 +46,10 @@ namespace casper
 
         public: //protected: // data
             
-            Ast             ast_;     //!<
-            FakeJavaScanner scanner_; //!< Scanner for a small subset of JAVA used in the report expressions
-            FakeJavaParser  parser_;  //!< Expression parser for a restricted subset of the JAVA language
-            std::string     entity_;
+            Ast             ast_;           //!<
+            FakeJavaScanner scanner_;       //!< Scanner for a small subset of JAVA used in the report expressions
+            FakeJavaParser  parser_;        //!< Expression parser for a restricted subset of the JAVA language
+            std::string     relationship_;
             
         private: // Data
             
@@ -61,8 +61,8 @@ namespace casper
             FakeJavaExpression ();
             virtual ~FakeJavaExpression ();
 
-            const std::string& Convert (const std::string& a_expression, const std::string a_entity);
-            const std::string& Convert (const char* a_expression, size_t a_len, const std::string entity);
+            const std::string& Convert (const std::string& a_expression, const std::string& a_relationship);
+            const std::string& Convert (const char* a_expression, size_t a_len, const std::string& a_relationship);
             
         protected: // Method(s) / Function(s)
             
