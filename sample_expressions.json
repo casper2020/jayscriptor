@@ -1,20 +1,20 @@
 {
 	"expressions": [
-		"$.tax_registration_number",
-
-		"(((((($.tax_registration_number+(\": A idade de \"))+($.lines[index].gajo ? (\"tipo\") : (\"tipa\")))+(\" \"))+$.lines[index].field2)+(\" é \"))+($.lines[index].field1))",
-
-		"($.$v1+(\": Isto é \")+$.lines[index].field2+(\" é \")+($.lines[index].field1))",
-
-		"$.tax_registration_number / 100",
-
-		"$.$v1"
+		"$.description",
+		"$.id",
+		"$.user_id",
+		"$.dots[0].type",
+		"$.$PAGE_NUMBER",
+		"$.lines[2].account_description",
+		"$.squares[1].account_description + 5"
 	],
 	"results": [
-		"178985112",
-		"178985112: A idade de tipo eurico é 53",
-		"20: Isto é eurico é 53",
-		"1789851.12",
-		"20"
+		"Teste eurico Made in WS1",
+		"2613",
+		"36126",
+		"ef",
+		"7",
+		"IVA - Dedutível-Investimentos-Reduzida-Operações gerais-Continente",
+		"34c5"
 	]
 }

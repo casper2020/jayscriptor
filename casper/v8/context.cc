@@ -71,33 +71,39 @@ bool casper::v8::Context::Initialize ()
     
     tmp_trace_ss_.str("");
     tmp_trace_ss_ << "\"use strict\";\n";
-    tmp_trace_ss_ << "function convert_jsonapi_to_js_object ($) {\n";
+    tmp_trace_ss_ << "function convert_jsonapi_to_js_object($) {\n";
+    tmp_trace_ss_ << "var new_root = {};\n";
+    tmp_trace_ss_ << "new_root = $.data.attributes;\n";
+    tmp_trace_ss_ << "new_root.id = $.data.id;\n";
+    tmp_trace_ss_ << "new_root.type = $.data.type;\n";
     tmp_trace_ss_ << "var type_id_map = {};\n";
-    tmp_trace_ss_ << "for (var r in $.data.relationships ) {\n";
+    tmp_trace_ss_ << "var included = $.included;\n";
+    tmp_trace_ss_ << "$ = $.data;\n";
+    tmp_trace_ss_ << "for (var r in $.relationships ) {\n";
     
-    tmp_trace_ss_ << "var src_var = eval(\"$.data.relationships.\"+r);\n";
-    tmp_trace_ss_ << "var new_var = eval(\"$.\"+r+\"=new Array(\" + src_var.length + \")\");\n";
-    tmp_trace_ss_ << "new_var = src_var.data;";
+    tmp_trace_ss_ << "var src_var = eval(\"$.relationships.\"+r);\n";
+    tmp_trace_ss_ << "var new_var = eval(\"new_root.\"+r+\"=new Array(\" + src_var.length + \")\");\n";
+    tmp_trace_ss_ << "new_var = src_var.data;\n";
     
     tmp_trace_ss_ << "var idx = 0;\n";
     tmp_trace_ss_ << "for ( var o of new_var ) {\n";
-    tmp_trace_ss_ << "var key = o.type + \'$\' + o.id;\n";
+    tmp_trace_ss_ << "var key = o.type + '$' + o.id;\n";
     tmp_trace_ss_ << "var array = type_id_map[key];\n";
     tmp_trace_ss_ << "if ( undefined == array ) {\n";
-    tmp_trace_ss_ << "array = []\n";
-    tmp_trace_ss_ << "type_id_map[key] = array}\n";
+    tmp_trace_ss_ << "array = [];\n";
+    tmp_trace_ss_ << "type_id_map[key] = array;}\n";
     tmp_trace_ss_ << "array.push({\"variable\": r, \"order\": idx, \"id\": o.id});\n";
-    tmp_trace_ss_ << "++idx;}}\n";
+    tmp_trace_ss_ << "++idx;\n}}";
     
-    tmp_trace_ss_ << "for (var entry of $.included){\n";
-    tmp_trace_ss_ << "var key = entry.type + \'$\' + entry.id;\n";
+    tmp_trace_ss_ << "for (var entry of included){\n";
+    tmp_trace_ss_ << "var key = entry.type + '$' + entry.id;\n";
     tmp_trace_ss_ << "var interest_array = type_id_map[key];\n";
     tmp_trace_ss_ << "for ( var e of interest_array ) {\n";
-    tmp_trace_ss_ << "$[e.variable][e.order] = entry.attributes;\n";
-    tmp_trace_ss_ << "$[e.variable][e.order].id = entry.id;\n";
-    tmp_trace_ss_ << "$[e.variable][e.order].type = entry.type;}}\n";
+    tmp_trace_ss_ << "new_root[e.variable][e.order] = entry.attributes;\n";
+    tmp_trace_ss_ << "new_root[e.variable][e.order].id = entry.id;\n";
+    tmp_trace_ss_ << "new_root[e.variable][e.order].type = entry.type;}}\n";
     
-    tmp_trace_ss_ << "return $;\n";
+    tmp_trace_ss_ << "return new_root;\n";
     tmp_trace_ss_ << "}";   // end of function
     
     ::v8::Isolate::Scope isolate_scope(isolate_);
@@ -113,8 +119,12 @@ bool casper::v8::Context::Initialize ()
     
     const ::v8::Local<::v8::String> script = ::v8::String::NewFromUtf8(isolate_, tmp_trace_ss_.str().c_str(), ::v8::NewStringType::kNormal).ToLocalChecked();
     
+    const std::vector<::casper::v8::Context::Function> functions = {
+        { /* name_ */ "convert_jsonapi_to_js_object" }
+    };
+    
     // ... prepare script ...
-    return Compile(script, /* a_functions */ nullptr, /* a_on_error */nullptr);
+    return Compile(script, /* a_functions */ &functions, /* a_on_error */nullptr);
 }
 
 /**
@@ -143,9 +153,9 @@ bool casper::v8::Context::Parse (const std::string& a_uri,
     
     const ::v8::Local<::v8::String> payload = ::v8::String::NewFromUtf8(isolate_, data.c_str(), ::v8::NewStringType::kNormal).ToLocalChecked();
 
-    CASPER_V8_CHRONO_START(parse);
+    //CASPER_V8_CHRONO_START(parse);
     ::v8::MaybeLocal<::v8::Value> value = ::v8::JSON::Parse(context, payload);
-    CASPER_V8_CHRONO_END(parse, "parse %zd byte(s) of JSON data", data.length());
+    //CASPER_V8_CHRONO_END(parse, "parse %zd byte(s) of JSON data", data.length());
     
     const ::v8::String::Utf8Value exception(try_catch.Exception());
     
@@ -443,6 +453,7 @@ bool casper::v8::Context::LoadData (const char* const a_name, const std::string&
     return false;
 }
 
+
 #ifdef __APPLE__
 #pragma mark -
 #endif
@@ -528,6 +539,28 @@ bool casper::v8::Context::CallFunction (::v8::Local<::v8::Context>& a_context, :
 
     // done
     return rv;
+}
+
+bool casper::v8::Context::SetVar(const ::v8::Local<::v8::Value> a_key, const ::v8::Local<::v8::Value> a_value,
+                                 ::v8::Local<::v8::Value> a_json){
+    
+    ::v8::Local<::v8::Object> t_obj = a_json.As<::v8::Object>();
+    
+    t_obj->Set(a_key, a_value);
+    
+    return true;
+}
+
+const char* casper::v8::Context::GetVar(const ::v8::Local<::v8::Value> a_key, ::v8::Local<::v8::Value> a_json){
+    
+    ::v8::Local<::v8::Object> t_obj = a_json.As<::v8::Object>();
+    
+    ::v8::Local<::v8::Value> valf = t_obj->Get(a_key);
+    
+    ::v8::String::Utf8Value str_3(valf);
+    const char* cstr2 = casper::v8::Context::ToCString(str_3);
+    
+    return cstr2;
 }
 
 #ifdef __APPLE__

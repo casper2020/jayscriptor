@@ -157,6 +157,13 @@ namespace casper
             bool LoadData       (const char* const a_name, const std::string& a_uri,
                                  const TraceCallback a_on_error = nullptr,
                                  ::v8::Persistent<::v8::Value>* o_object = nullptr,  ::v8::Persistent<::v8::Value>* o_value = nullptr);
+            
+            bool SetVar         (const ::v8::Local<::v8::Value> a_key,
+                                 const ::v8::Local<::v8::Value> a_value, ::v8::Local<::v8::Value> a_json);
+            
+            const char* GetVar  (const ::v8::Local<::v8::Value> a_key,
+                                 ::v8::Local<::v8::Value> a_json);
+
 
         private: // Method(s) / Function(s)
             
