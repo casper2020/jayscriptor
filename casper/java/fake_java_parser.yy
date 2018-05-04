@@ -96,6 +96,7 @@
 %token VARIABLE      "$V{"
 %token PARAMETER     "$P{"
 %token FIELD         "$F{"
+%token IF            "IF"
 %token TK_NEW        "new"
 %token TK_DATE       "Date"
 %token TK_DATE_FORMAT "DateFormat"
@@ -162,6 +163,7 @@
               | '-' term %prec UMINUS     { $$ = ast.Expression("UM",$2,$2);    }
               | '+' term %prec UPLUS      { $$ = $2;                            }
               | '!' term                  { $$ = ast.Expression("!",$2,$2);     }
+              | IF '(' term ';' term ';' term ')' { $$ = ast.If($3, $5, $7);         }
               ;
     generic_ops:
                  term '.' equals      '(' term ')'  { $$=ast.Expression("==",$1,$5);            }

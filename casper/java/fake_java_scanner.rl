@@ -87,6 +87,7 @@
         'Date'          => { ret = FakeJavaParser::token::TK_DATE      ; fbreak; };
         'DateFormat'    => { ret = FakeJavaParser::token::TK_DATE_FORMAT; fbreak; };
         'new'           => { ret = FakeJavaParser::token::TK_NEW        ; fbreak; };
+        'IF'            => { ret = FakeJavaParser::token::IF            ; fbreak; };
 
         #
         # Operators and other "atomics" that we like to see as they are in the grammar
@@ -113,6 +114,8 @@
         '=='  => { ret = FakeJavaParser::token::EQ        ; fbreak; };
         '&&'  => { ret = FakeJavaParser::token::AND       ; fbreak; };
         '||'  => { ret = FakeJavaParser::token::OR        ; fbreak; };
+
+        ';'   => { ret = (FakeJavaParser::token_type) ';' ; fbreak; };
 
         #
         # Tokens that rely on regular expressions

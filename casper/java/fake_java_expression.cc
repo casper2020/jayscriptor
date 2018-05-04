@@ -240,16 +240,22 @@ void casper::java::FakeJavaExpression::BuildString (casper::java::AstNode* a_nod
         //
         // Params
         //
-
-        tmp_ss_ << "$." << a_node->getText();
+        if ( nullptr != strchr(a_node->getText().c_str(), '-') ) {
+            tmp_ss_ << "$[\"" << a_node->getText() << "\"]";
+        } else {
+            tmp_ss_ << "$." << a_node->getText();
+        }
 
     } else if ( a_node->getType()==casper::java::AstNode::TField ) {
 
         //
         // Fields
         //
-
-       tmp_ss_ << "$." << relationship_ << "[index]." <<  a_node->getText();
+        if ( nullptr != strchr(a_node->getText().c_str(), '-') ) {
+            tmp_ss_ << "$[\"" << relationship_ << "\"][index]." <<  a_node->getText();
+        } else {
+            tmp_ss_ << "$." << relationship_ << "[index]." <<  a_node->getText();
+        }
         
     } else if ( a_node->getType()==casper::java::AstNode::TNull ) {
 
