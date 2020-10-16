@@ -276,7 +276,7 @@ void casper::java::FakeJavaExpression::BuildString (casper::java::AstNode* a_nod
         } else if ( 0 == a_node->getOp().compare("DateFormat.parse") ) {
             tmp_ss_ << "NativeParseDate(";
             BuildString(a_node->getArg1());
-            tmp_ss_ << ", \"" << a_node->getArg2()->getText() << "\")";
+            tmp_ss_ << ", \"" << a_node->getArg2()->getText() << "\",$.$$VARIABLES[index].LOCALE)";
         }
     }
 }

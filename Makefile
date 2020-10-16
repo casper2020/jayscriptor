@@ -16,7 +16,7 @@ OBJECTS = casper/java/fake_java_parser.o      \
 
 PLATFORM:=$(shell uname -s)
 ifeq (Darwin, $(PLATFORM))
-  YACC=/usr/local/Cellar/bison/3.0.4_1/bin/bison
+  YACC=/usr/local/Cellar/bison/3.7.2/bin/bison
 else
   YACC=bison
 endif

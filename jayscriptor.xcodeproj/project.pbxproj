@@ -22,6 +22,8 @@
 			compilerSpec = com.apple.compilers.proxy.script;
 			filePatterns = "*.rl";
 			fileType = pattern.proxy;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 				"${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc",
@@ -29,13 +31,15 @@
 			outputFilesCompilerFlags = (
 				"-Wno-unreachable-code",
 			);
-			script = "#!/bin/bash\n/usr/local/bin/ragel ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.rl -G2 -o ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc";
+			script = "#!/bin/bash\n/usr/local/bin/ragel ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.rl -G2 -o ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc\n";
 		};
 		15660DD320654A4000189A6E /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			filePatterns = "*.yy";
 			fileType = pattern.proxy;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 				"${INPUT_FILE_DIR}/stack.hh",
@@ -51,7 +55,7 @@
 				"-Wno-unreachable-code",
 				"",
 			);
-			script = "#!/bin/bash\nmkdir -p ${DERIVED_FILES_DIR} \\\n&& \\\n/usr/local/Cellar/bison/3.0.4_1/bin/bison ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.yy -v --locations -o ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc \\\n&& \\\ncp ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*stack.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*parser.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*location.hh ${DERIVED_FILES_DIR}";
+			script = "#!/bin/bash\nmkdir -p ${DERIVED_FILES_DIR} \\\n&& \\\n/usr/local/Cellar/bison/3.7.2/bin/bison ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.yy -v --locations -o ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc \\\n&& \\\ncp ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cc ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*stack.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*parser.hh ${DERIVED_FILES_DIR} \\\n&& \\\ncp ${INPUT_FILE_DIR}/*location.hh ${DERIVED_FILES_DIR}\n";
 		};
 /* End PBXBuildRule section */
 
