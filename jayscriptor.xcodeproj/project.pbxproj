@@ -7,13 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		15660DBE206547F000189A6E /* fake_java_expression.cc in Sources */ = {isa = PBXBuildFile; fileRef = 15660D89206547EF00189A6E /* fake_java_expression.cc */; };
-		15660DC2206547F000189A6E /* ast.cc in Sources */ = {isa = PBXBuildFile; fileRef = 15660D90206547EF00189A6E /* ast.cc */; };
-		15660DC7206547F000189A6E /* scanner.cc in Sources */ = {isa = PBXBuildFile; fileRef = 15660D9A206547EF00189A6E /* scanner.cc */; };
 		15660DC8206547F000189A6E /* jayscriptor.cc in Sources */ = {isa = PBXBuildFile; fileRef = 15660D9B206547EF00189A6E /* jayscriptor.cc */; };
-		15660DDC2065551000189A6E /* fake_java_scanner.rl in Sources */ = {isa = PBXBuildFile; fileRef = 15660D95206547EF00189A6E /* fake_java_scanner.rl */; };
-		15660DDD2065551000189A6E /* fake_java_parser.yy in Sources */ = {isa = PBXBuildFile; fileRef = 15660D8D206547EF00189A6E /* fake_java_parser.yy */; };
-		15660DE020656E9600189A6E /* ast_node.cc in Sources */ = {isa = PBXBuildFile; fileRef = 15660DDE20656E9600189A6E /* ast_node.cc */; };
+		477C0CA4253D89E60093FD61 /* context.cc in Sources */ = {isa = PBXBuildFile; fileRef = 477C0C8C253D89E60093FD61 /* context.cc */; };
+		477C0CA5253D89E60093FD61 /* singleton.cc in Sources */ = {isa = PBXBuildFile; fileRef = 477C0C8E253D89E60093FD61 /* singleton.cc */; };
+		477C0CA6253D89E60093FD61 /* ast_node.cc in Sources */ = {isa = PBXBuildFile; fileRef = 477C0C94253D89E60093FD61 /* ast_node.cc */; };
+		477C0CA7253D89E60093FD61 /* fake_java_expression.cc in Sources */ = {isa = PBXBuildFile; fileRef = 477C0C96253D89E60093FD61 /* fake_java_expression.cc */; };
+		477C0CA8253D89E60093FD61 /* ast.cc in Sources */ = {isa = PBXBuildFile; fileRef = 477C0C99253D89E60093FD61 /* ast.cc */; };
+		477C0CAB253D89E60093FD61 /* scanner.cc in Sources */ = {isa = PBXBuildFile; fileRef = 477C0CA1253D89E60093FD61 /* scanner.cc */; };
+		477C0CB0253D8A390093FD61 /* fake_java_parser.yy in Sources */ = {isa = PBXBuildFile; fileRef = 477C0C98253D89E60093FD61 /* fake_java_parser.yy */; };
+		477C0CB2253D8A3B0093FD61 /* fake_java_scanner.rl in Sources */ = {isa = PBXBuildFile; fileRef = 477C0C9D253D89E60093FD61 /* fake_java_scanner.rl */; };
+		47F7BC88253D8B170060975A /* libcasper-connectors-v8.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 477C0CC1253D8ABE0093FD61 /* libcasper-connectors-v8.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -60,12 +63,40 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
-		15034F0620695547005047CB /* PBXContainerItemProxy */ = {
+		477C0CBE253D8ABE0093FD61 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 15660D042065472200189A6E /* Project object */;
+			containerPortal = 477C0CB7253D8ABE0093FD61 /* casper-connectors.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 476EF7CA1E23EC91004A13C2;
+			remoteInfo = "casper-connectors";
+		};
+		477C0CC0253D8ABE0093FD61 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 477C0CB7253D8ABE0093FD61 /* casper-connectors.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 47E9FA8822300AE80043E8DF;
+			remoteInfo = "casper-connectors-v8";
+		};
+		477C0CC2253D8ABE0093FD61 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 477C0CB7253D8ABE0093FD61 /* casper-connectors.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 47DDAD162452EFF20056D703;
+			remoteInfo = "casper-connectors-icu";
+		};
+		477C0CC4253D8ABE0093FD61 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 477C0CB7253D8ABE0093FD61 /* casper-connectors.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 472C199F251A15FC00811559;
+			remoteInfo = "casper-cc";
+		};
+		47F7BC80253D8B0B0060975A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 477C0CB7253D8ABE0093FD61 /* casper-connectors.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 15660DD6206553B200189A6E;
-			remoteInfo = prebuild;
+			remoteGlobalIDString = 47E9FA0C22300AE80043E8DF;
+			remoteInfo = "casper-connectors-v8";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -82,22 +113,31 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		15034F0520694F0F005047CB /* generic_number_parser.rlh */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp.preprocessed; fileEncoding = 4; path = generic_number_parser.rlh; sourceTree = "<group>"; };
 		15660D0C2065472200189A6E /* jayscriptor */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = jayscriptor; sourceTree = BUILT_PRODUCTS_DIR; };
 		15660D1C206547EF00189A6E /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = SOURCE_ROOT; };
-		15660D85206547EF00189A6E /* fake_java_expression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fake_java_expression.h; sourceTree = "<group>"; };
-		15660D89206547EF00189A6E /* fake_java_expression.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fake_java_expression.cc; sourceTree = "<group>"; };
-		15660D8C206547EF00189A6E /* fake_java_scanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fake_java_scanner.h; sourceTree = "<group>"; };
-		15660D8D206547EF00189A6E /* fake_java_parser.yy */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp.preprocessed; fileEncoding = 4; path = fake_java_parser.yy; sourceTree = "<group>"; };
-		15660D90206547EF00189A6E /* ast.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ast.cc; sourceTree = "<group>"; };
-		15660D93206547EF00189A6E /* ast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ast.h; sourceTree = "<group>"; };
-		15660D95206547EF00189A6E /* fake_java_scanner.rl */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp.preprocessed; fileEncoding = 4; path = fake_java_scanner.rl; sourceTree = "<group>"; };
-		15660D99206547EF00189A6E /* scanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scanner.h; sourceTree = "<group>"; };
-		15660D9A206547EF00189A6E /* scanner.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scanner.cc; sourceTree = "<group>"; };
 		15660D9B206547EF00189A6E /* jayscriptor.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jayscriptor.cc; sourceTree = SOURCE_ROOT; };
-		15660DDE20656E9600189A6E /* ast_node.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ast_node.cc; sourceTree = "<group>"; };
-		15660DDF20656E9600189A6E /* ast_node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ast_node.h; sourceTree = "<group>"; };
-		47EE4496207374A10046E698 /* common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = common.xcconfig; sourceTree = "<group>"; };
+		477C0C88253D89E60093FD61 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
+		477C0C8B253D89E60093FD61 /* singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = singleton.h; sourceTree = "<group>"; };
+		477C0C8C253D89E60093FD61 /* context.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = context.cc; sourceTree = "<group>"; };
+		477C0C8D253D89E60093FD61 /* context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = context.h; sourceTree = "<group>"; };
+		477C0C8E253D89E60093FD61 /* singleton.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = singleton.cc; sourceTree = "<group>"; };
+		477C0C90253D89E60093FD61 /* fake_java_expression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fake_java_expression.h; sourceTree = "<group>"; };
+		477C0C91253D89E60093FD61 /* ast_node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ast_node.h; sourceTree = "<group>"; };
+		477C0C94253D89E60093FD61 /* ast_node.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ast_node.cc; sourceTree = "<group>"; };
+		477C0C96253D89E60093FD61 /* fake_java_expression.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fake_java_expression.cc; sourceTree = "<group>"; };
+		477C0C97253D89E60093FD61 /* fake_java_scanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fake_java_scanner.h; sourceTree = "<group>"; };
+		477C0C98253D89E60093FD61 /* fake_java_parser.yy */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp.preprocessed; fileEncoding = 4; path = fake_java_parser.yy; sourceTree = "<group>"; };
+		477C0C99253D89E60093FD61 /* ast.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ast.cc; sourceTree = "<group>"; };
+		477C0C9B253D89E60093FD61 /* ast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ast.h; sourceTree = "<group>"; };
+		477C0C9D253D89E60093FD61 /* fake_java_scanner.rl */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; path = fake_java_scanner.rl; sourceTree = "<group>"; };
+		477C0CA0253D89E60093FD61 /* scanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scanner.h; sourceTree = "<group>"; };
+		477C0CA1253D89E60093FD61 /* scanner.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scanner.cc; sourceTree = "<group>"; };
+		477C0CA3253D89E60093FD61 /* version.tpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.tpl.h; sourceTree = "<group>"; };
+		477C0CB7253D8ABE0093FD61 /* casper-connectors.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "casper-connectors.xcodeproj"; path = "connectors/casper-connectors.xcodeproj"; sourceTree = "<group>"; };
+		47F7BCAE253D8E4E0060975A /* generic_number_parser.rlh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generic_number_parser.rlh; sourceTree = "<group>"; };
+		47F7BCC2253D8F760060975A /* common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = common.xcconfig; sourceTree = "<group>"; };
+		47F7BCC3253D8F760060975A /* debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = debug.xcconfig; sourceTree = "<group>"; };
+		47F7BCC4253D8F760060975A /* release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = release.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +145,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47F7BC88253D8B170060975A /* libcasper-connectors-v8.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -114,11 +155,12 @@
 		15660D032065472100189A6E = {
 			isa = PBXGroup;
 			children = (
-				47EE4496207374A10046E698 /* common.xcconfig */,
-				15660D82206547EF00189A6E /* casper */,
+				477C0CB6253D8A980093FD61 /* casper-party */,
+				477C0C87253D89E60093FD61 /* src */,
 				15660D9B206547EF00189A6E /* jayscriptor.cc */,
 				15660D1C206547EF00189A6E /* Makefile */,
 				15660D0D2065472200189A6E /* Products */,
+				47F7BC87253D8B170060975A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -130,51 +172,94 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		15660D82206547EF00189A6E /* casper */ = {
+		477C0C87253D89E60093FD61 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				15034F0520694F0F005047CB /* generic_number_parser.rlh */,
-				15660D83206547EF00189A6E /* java */,
-				15660D99206547EF00189A6E /* scanner.h */,
-				15660D9A206547EF00189A6E /* scanner.cc */,
+				477C0C88253D89E60093FD61 /* version.h */,
+				477C0CA3253D89E60093FD61 /* version.tpl.h */,
+				477C0C89253D89E60093FD61 /* casper */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		477C0C89253D89E60093FD61 /* casper */ = {
+			isa = PBXGroup;
+			children = (
+				477C0C8A253D89E60093FD61 /* v8 */,
+				477C0C8F253D89E60093FD61 /* java */,
+				477C0CA0253D89E60093FD61 /* scanner.h */,
+				477C0CA1253D89E60093FD61 /* scanner.cc */,
+				47F7BCAE253D8E4E0060975A /* generic_number_parser.rlh */,
 			);
 			path = casper;
-			sourceTree = SOURCE_ROOT;
+			sourceTree = "<group>";
 		};
-		15660D83206547EF00189A6E /* java */ = {
+		477C0C8A253D89E60093FD61 /* v8 */ = {
 			isa = PBXGroup;
 			children = (
-				15660D93206547EF00189A6E /* ast.h */,
-				15660D90206547EF00189A6E /* ast.cc */,
-				15660DDF20656E9600189A6E /* ast_node.h */,
-				15660DDE20656E9600189A6E /* ast_node.cc */,
-				15660D85206547EF00189A6E /* fake_java_expression.h */,
-				15660D89206547EF00189A6E /* fake_java_expression.cc */,
-				15660D8C206547EF00189A6E /* fake_java_scanner.h */,
-				15660D95206547EF00189A6E /* fake_java_scanner.rl */,
-				15660D8D206547EF00189A6E /* fake_java_parser.yy */,
+				477C0C8D253D89E60093FD61 /* context.h */,
+				477C0C8C253D89E60093FD61 /* context.cc */,
+				477C0C8B253D89E60093FD61 /* singleton.h */,
+				477C0C8E253D89E60093FD61 /* singleton.cc */,
+			);
+			path = v8;
+			sourceTree = "<group>";
+		};
+		477C0C8F253D89E60093FD61 /* java */ = {
+			isa = PBXGroup;
+			children = (
+				477C0C91253D89E60093FD61 /* ast_node.h */,
+				477C0C94253D89E60093FD61 /* ast_node.cc */,
+				477C0C9B253D89E60093FD61 /* ast.h */,
+				477C0C99253D89E60093FD61 /* ast.cc */,
+				477C0C90253D89E60093FD61 /* fake_java_expression.h */,
+				477C0C96253D89E60093FD61 /* fake_java_expression.cc */,
+				477C0C98253D89E60093FD61 /* fake_java_parser.yy */,
+				477C0C97253D89E60093FD61 /* fake_java_scanner.h */,
+				477C0C9D253D89E60093FD61 /* fake_java_scanner.rl */,
 			);
 			path = java;
 			sourceTree = "<group>";
 		};
-/* End PBXGroup section */
-
-/* Begin PBXLegacyTarget section */
-		15660DD6206553B200189A6E /* prebuild */ = {
-			isa = PBXLegacyTarget;
-			buildArgumentsString = "$(ACTION) bison ragel";
-			buildConfigurationList = 15660DD7206553B200189A6E /* Build configuration list for PBXLegacyTarget "prebuild" */;
-			buildPhases = (
+		477C0CB6253D8A980093FD61 /* casper-party */ = {
+			isa = PBXGroup;
+			children = (
+				47F7BCC1253D8F760060975A /* xcode */,
+				477C0CB7253D8ABE0093FD61 /* casper-connectors.xcodeproj */,
 			);
-			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = "$(SRCROOT)/";
-			dependencies = (
-			);
-			name = prebuild;
-			passBuildSettingsInEnvironment = 1;
-			productName = prebuild;
+			name = "casper-party";
+			path = "../casper-packager";
+			sourceTree = "<group>";
 		};
-/* End PBXLegacyTarget section */
+		477C0CB8253D8ABE0093FD61 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				477C0CBF253D8ABE0093FD61 /* libcasper-connectors.a */,
+				477C0CC1253D8ABE0093FD61 /* libcasper-connectors-v8.a */,
+				477C0CC3253D8ABE0093FD61 /* libcasper-connectors-icu.a */,
+				477C0CC5253D8ABE0093FD61 /* libcasper-cc.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		47F7BC87253D8B170060975A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		47F7BCC1253D8F760060975A /* xcode */ = {
+			isa = PBXGroup;
+			children = (
+				47F7BCC2253D8F760060975A /* common.xcconfig */,
+				47F7BCC3253D8F760060975A /* debug.xcconfig */,
+				47F7BCC4253D8F760060975A /* release.xcconfig */,
+			);
+			path = xcode;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
 		15660D0B2065472200189A6E /* jayscriptor */ = {
@@ -190,7 +275,7 @@
 				15660DCB2065489000189A6E /* PBXBuildRule */,
 			);
 			dependencies = (
-				15034F0720695547005047CB /* PBXTargetDependency */,
+				47F7BC81253D8B0B0060975A /* PBXTargetDependency */,
 			);
 			name = jayscriptor;
 			productName = jayscriptor;
@@ -208,11 +293,7 @@
 				TargetAttributes = {
 					15660D0B2065472200189A6E = {
 						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Automatic;
-					};
-					15660DD6206553B200189A6E = {
-						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -226,43 +307,81 @@
 			mainGroup = 15660D032065472100189A6E;
 			productRefGroup = 15660D0D2065472200189A6E /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 477C0CB8253D8ABE0093FD61 /* Products */;
+					ProjectRef = 477C0CB7253D8ABE0093FD61 /* casper-connectors.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				15660D0B2065472200189A6E /* jayscriptor */,
-				15660DD6206553B200189A6E /* prebuild */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		477C0CBF253D8ABE0093FD61 /* libcasper-connectors.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libcasper-connectors.a";
+			remoteRef = 477C0CBE253D8ABE0093FD61 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		477C0CC1253D8ABE0093FD61 /* libcasper-connectors-v8.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libcasper-connectors-v8.a";
+			remoteRef = 477C0CC0253D8ABE0093FD61 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		477C0CC3253D8ABE0093FD61 /* libcasper-connectors-icu.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libcasper-connectors-icu.a";
+			remoteRef = 477C0CC2253D8ABE0093FD61 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		477C0CC5253D8ABE0093FD61 /* libcasper-cc.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libcasper-cc.a";
+			remoteRef = 477C0CC4253D8ABE0093FD61 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		15660D082065472200189A6E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				15660DE020656E9600189A6E /* ast_node.cc in Sources */,
-				15660DDC2065551000189A6E /* fake_java_scanner.rl in Sources */,
-				15660DC2206547F000189A6E /* ast.cc in Sources */,
-				15660DDD2065551000189A6E /* fake_java_parser.yy in Sources */,
-				15660DBE206547F000189A6E /* fake_java_expression.cc in Sources */,
+				477C0CB2253D8A3B0093FD61 /* fake_java_scanner.rl in Sources */,
+				477C0CA6253D89E60093FD61 /* ast_node.cc in Sources */,
+				477C0CAB253D89E60093FD61 /* scanner.cc in Sources */,
 				15660DC8206547F000189A6E /* jayscriptor.cc in Sources */,
-				15660DC7206547F000189A6E /* scanner.cc in Sources */,
+				477C0CA5253D89E60093FD61 /* singleton.cc in Sources */,
+				477C0CA7253D89E60093FD61 /* fake_java_expression.cc in Sources */,
+				477C0CA8253D89E60093FD61 /* ast.cc in Sources */,
+				477C0CA4253D89E60093FD61 /* context.cc in Sources */,
+				477C0CB0253D8A390093FD61 /* fake_java_parser.yy in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		15034F0720695547005047CB /* PBXTargetDependency */ = {
+		47F7BC81253D8B0B0060975A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 15660DD6206553B200189A6E /* prebuild */;
-			targetProxy = 15034F0620695547005047CB /* PBXContainerItemProxy */;
+			name = "casper-connectors-v8";
+			targetProxy = 47F7BC80253D8B0B0060975A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		15660D112065472200189A6E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 47EE4496207374A10046E698 /* common.xcconfig */;
+			baseConfigurationReference = 47F7BCC3253D8F760060975A /* debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -313,12 +432,13 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
 		};
 		15660D122065472200189A6E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 47EE4496207374A10046E698 /* common.xcconfig */;
+			baseConfigurationReference = 47F7BCC4253D8F760060975A /* release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -362,49 +482,45 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
 		};
 		15660D142065472200189A6E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 47F7BCC3253D8F760060975A /* debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				OTHER_LDFLAGS = (
+					"$(SRCROOT)/../v8/out.gn/x64.$(CONFIGURATION::rfc1034identifier:lower)/obj/third_party/icu/libicui18n.a",
+					"$(SRCROOT)/../v8/out.gn/x64.$(CONFIGURATION::rfc1034identifier:lower)/obj/third_party/icu/libicuuc.a",
+					"$(SRCROOT)/../v8/out.gn/x64.$(CONFIGURATION::rfc1034identifier:lower)/obj/libv8_monolith.a",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cldware.jayscriptor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "${SRCROOT}/src/** $(SRCROOT)/ /usr/local/include $(SRCROOT)/casper/java";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/src $(SRCROOT)/../casper-osal/src $(SRCROOT)/../casper-connectors/src $(SRCROOT)/../v8/include $(SRCROOT)/../v8/third_party/icu/source/common $(SRCROOT)/../v8/third_party/icu/source/i18n";
+				WARNING_CFLAGS = "-Wno-documentation";
 			};
 			name = Debug;
 		};
 		15660D152065472200189A6E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 47F7BCC4253D8F760060975A /* release.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				OTHER_LDFLAGS = (
+					"$(SRCROOT)/../v8/out.gn/x64.$(CONFIGURATION::rfc1034identifier:lower)/obj/third_party/icu/libicui18n.a",
+					"$(SRCROOT)/../v8/out.gn/x64.$(CONFIGURATION::rfc1034identifier:lower)/obj/third_party/icu/libicuuc.a",
+					"$(SRCROOT)/../v8/out.gn/x64.$(CONFIGURATION::rfc1034identifier:lower)/obj/libv8_monolith.a",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cldware.jayscriptor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "${SRCROOT}/src/** $(SRCROOT)/ /usr/local/include $(SRCROOT)/casper/java";
-			};
-			name = Release;
-		};
-		15660DD8206553B200189A6E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEBUGGING_SYMBOLS = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		15660DD9206553B200189A6E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/src $(SRCROOT)/../casper-osal/src $(SRCROOT)/../casper-connectors/src $(SRCROOT)/../v8/include $(SRCROOT)/../v8/third_party/icu/source/common $(SRCROOT)/../v8/third_party/icu/source/i18n";
+				WARNING_CFLAGS = "-Wno-documentation";
 			};
 			name = Release;
 		};
@@ -425,15 +541,6 @@
 			buildConfigurations = (
 				15660D142065472200189A6E /* Debug */,
 				15660D152065472200189A6E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		15660DD7206553B200189A6E /* Build configuration list for PBXLegacyTarget "prebuild" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				15660DD8206553B200189A6E /* Debug */,
-				15660DD9206553B200189A6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

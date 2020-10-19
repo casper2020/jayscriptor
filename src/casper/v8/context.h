@@ -23,8 +23,7 @@
 #ifndef NRS_CASPER_V8_CONTEXT_H_
 #define NRS_CASPER_V8_CONTEXT_H_
 
-#include "libplatform/libplatform.h"
-#include "v8.h"
+#include "cc/v8/includes.h"
 
 #include <vector>
 #include <map>

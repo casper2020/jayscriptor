@@ -3,6 +3,7 @@
 .DS_Store
 *xcuserdata*
 *xcworkspacedata*
+*xcworkspace*
 
 # binaries
 jayscriptor
@@ -10,11 +11,15 @@ jayscriptor
 out/*
 
 # bison generated
-casper/java/location.hh
-casper/java/position.hh
-casper/java/stack.hh
-casper/java/fake_java_parser.hh
-casper/java/fake_java_parser.output
+src/casper/java/location.hh
+src/casper/java/position.hh
+src/casper/java/stack.hh
+src/casper/java/fake_java_parser.hh
+src/casper/java/fake_java_parser.output
+src/casper/java/fake_java_parser.cc
 
-casper/java/fake_java_scanner.cc
-casper/java/fake_java_parser.cc
+# ragel generated
+src/casper/java/fake_java_scanner.cc
+
+# Makefile generated
+src/version.h

@@ -157,7 +157,7 @@ bool casper::v8::Context::Parse (const std::string& a_uri,
     ::v8::MaybeLocal<::v8::Value> value = ::v8::JSON::Parse(context, payload);
     //CASPER_V8_CHRONO_END(parse, "parse %zd byte(s) of JSON data", data.length());
     
-    const ::v8::String::Utf8Value exception(try_catch.Exception());
+    const ::v8::String::Utf8Value exception(context->GetIsolate(), try_catch.Exception());
     
     if ( exception.length() == 0 ) {
         o_object.Reset(isolate_, value.ToLocalChecked()->ToObject(context).ToLocalChecked());
@@ -425,7 +425,7 @@ bool casper::v8::Context::LoadData (const char* const a_name, const std::string&
     
     object->Set(key, value);
     
-    const ::v8::String::Utf8Value exception(try_catch.Exception());
+    const ::v8::String::Utf8Value exception(context->GetIsolate(), try_catch.Exception());
     
     if ( exception.length() == 0 ) {
         if ( nullptr != o_object ) {
@@ -557,7 +557,7 @@ const char* casper::v8::Context::GetVar(const ::v8::Local<::v8::Value> a_key, ::
     
     ::v8::Local<::v8::Value> valf = t_obj->Get(a_key);
     
-    ::v8::String::Utf8Value str_3(valf);
+    ::v8::String::Utf8Value str_3(t_obj->GetIsolate(), valf);
     const char* cstr2 = casper::v8::Context::ToCString(str_3);
     
     return cstr2;
@@ -592,7 +592,7 @@ void casper::v8::Context::TraceException (::v8::TryCatch* a_try_catch, const cas
 bool casper::v8::Context::TraceException (::v8::TryCatch* a_try_catch, std::string& o_trace)
 {
     ::v8::HandleScope             handle_scope(isolate_);
-    const ::v8::String::Utf8Value exception(a_try_catch->Exception());
+    const ::v8::String::Utf8Value exception(handle_scope.GetIsolate(), a_try_catch->Exception());
     
     //
     // Data provided?
@@ -617,20 +617,21 @@ bool casper::v8::Context::TraceException (::v8::TryCatch* a_try_catch, std::stri
     }
     
     tmp_trace_ss_.str("");
-    
-    //
-    // v8 DID provide any extra information about this error - collect all available info
-    //
-    const ::v8::String::Utf8Value filename(message->GetScriptOrigin().ResourceName());
 
     // grab context
     ::v8::Local<::v8::Context> context = context_.Get(isolate_);
     
+
+    //
+    // v8 DID provide any extra information about this error - collect all available info
+    //
+    const ::v8::String::Utf8Value filename(context->GetIsolate(), message->GetScriptOrigin().ResourceName());
+
     // <filename>:<line number>: <message>
     tmp_trace_ss_ << casper::v8::Context::ToCString(filename) << ':' << message->GetLineNumber(context).FromJust() << ": " << exception_c_str << '\n';
     
     // line of source code.
-    const ::v8::String::Utf8Value source_line(message->GetSourceLine(context).ToLocalChecked());
+    const ::v8::String::Utf8Value source_line(context->GetIsolate(), message->GetSourceLine(context).ToLocalChecked());
     
     tmp_trace_ss_ << casper::v8::Context::ToCString(source_line) << '\n';
     
@@ -652,7 +653,7 @@ bool casper::v8::Context::TraceException (::v8::TryCatch* a_try_catch, std::stri
         &&
         ::v8::Local<::v8::String>::Cast(stack_trace_v8_string)->Length() > 0
     ) {
-        ::v8::String::Utf8Value stack_trace_utf8_str(stack_trace_v8_string);
+        ::v8::String::Utf8Value stack_trace_utf8_str(context->GetIsolate(), stack_trace_v8_string);
         tmp_trace_ss_ << casper::v8::Context::ToCString(stack_trace_utf8_str);
     }
     
@@ -695,7 +696,7 @@ void casper::v8::Context::DebugLog (const ::v8::FunctionCallbackInfo<::v8::Value
     }
     const ::v8::HandleScope handle_scope(a_args.GetIsolate());
     for ( int i = 0; i < a_args.Length(); i++ ) {
-        ::v8::String::Utf8Value str(a_args[i]);
+        ::v8::String::Utf8Value str(handle_scope.GetIsolate(), a_args[i]);
         const char* cstr = casper::v8::Context::ToCString(str);
         fprintf(stdout, " ");
         fprintf(stdout, "%s", cstr);

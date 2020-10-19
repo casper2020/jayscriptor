@@ -1,60 +1,87 @@
+#
+# Copyright (c) 2011-2020 Cloudware S.A. All rights reserved.
+#
 
-INCLUDE_DIRS = -I . -I ./osal/src
-
-BISON_OBJECTS=./casper/java/fake_java_parser.o
-RAGEL_OBJECTS=./casper/java/fake_java_scanner.o
-
-INTERM = casper/java/fake_java_parser.hh casper/java/fake_java_parser.cc
-
-OBJECTS = casper/java/fake_java_parser.o      \
-					jayscriptor.o 											\
-					casper/java/fake_java_scanner.o     \
-					casper/scanner.o                    \
-					casper/java/fake_java_expression.o  \
-					casper/java/ast.o                   \
-					casper/java/ast_node.o
-
-PLATFORM:=$(shell uname -s)
-ifeq (Darwin, $(PLATFORM))
-  YACC=/usr/local/Cellar/bison/3.7.2/bin/bison
+THIS_DIR := $(abspath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+ifeq (jayscriptor, $(shell basename $(THIS_DIR)))
+  PACKAGER_DIR := $(abspath $(THIS_DIR)/../casper-packager)
 else
-  YACC=bison
+  PACKAGER_DIR := $(abspath $(THIS_DIR)/..)
 endif
 
-jayscriptor: $(OBJECTS)
-	$(CXX) -o $@ $(OBJECTS)
+include $(PACKAGER_DIR)/common/c++/settings.mk
 
+REL_DATE             := $(shell date -u)
+REL_VARIANT          ?= 0
+REL_NAME             ?= jayscriptor$(EXECUTABLE_SUFFIX)
 
-RAGEL=ragel
-DEFINES = -D CASPER_NO_ICU
-CFLAGS = $(INCLUDE_DIRS) $(DEFINES) -c -g
-CXXFLAGS = $(INCLUDE_DIRS) -std=c++11 -Wall $(DEFINES) -c -g
+PROJECT_SRC_DIR     := $(ROOT_DIR)/jayscriptor
+EXECUTABLE_SUFFIX   ?=
+EXECUTABLE_NAME     ?= jayscriptor$(EXECUTABLE_SUFFIX)
+EXECUTABLE_MAIN_SRC := jayscriptor.cc
+LIBRARY_NAME        :=
+VERSION             ?= $(shell cat $(PACKAGER_DIR)/$(EXECUTABLE_NAME)/version)
+CHILD_CWD           := $(THIS_DIR)
+CHILD_MAKEFILE      := $(MAKEFILE_LIST)
 
-# bison
-%.cc:%.yy
-	@echo "* [$(TARGET)] bison  $< ..."
-	$(YACC) $< -v --locations -o $@
+EV_DEP_ON           := true
 
-# ragel
-%.cc:%.rl
-	@echo "* [$(TARGET)] rl  $< ..."
-	$(RAGEL) $(RAGEL_FLAGS) $< -G2 -o $@
+###################
+# THIS TOOL SOURCE
+###################
 
-# c++
-.c.o:
-	@echo "* [$(TARGET)] c   $< ..."
-	$(C) $(CFLAGS) $< -o $@
+# $(PROJECT_SRC_DIR)
 
-# c++
-.cc.o:
-	@echo "* [$(TARGET)] cc  $< ..."
-	$(CXX) $(CXXFLAGS) $< -o $@
+JAYSCRIPTOR_CC_SRC :=                       \
+	src/casper/v8/context.cc                \
+	src/casper/v8/singleton.cc              \
+	src/casper/java/ast_node.cc             \
+	src/casper/java/fake_java_expression.cc \
+	src/casper/java/ast.cc                  \
+	src/casper/scanner.cc
 
-clean:
-	rm -f $(OBJECTS) $(INTERM)
+JAYSCRIPTOR_YY_SRC := \
+	src/casper/java/fake_java_parser.yy
 
-ragel: $(RAGEL_OBJECTS)
-	@echo "* RAGEL done"
+JAYSCRIPTOR_RL_SRC := \
+	src/casper/java/fake_java_scanner.rl
 
-bison: $(BISON_OBJECTS)
-	@echo "* BISON done"
+##########
+# SOURCE
+##########
+
+BISON_SRC := $(JAYSCRIPTOR_YY_SRC)
+RAGEL_SRC := $(JAYSCRIPTOR_RL_SRC)
+
+C_SRC  :=
+CC_SRC := \
+	$(JAYSCRIPTOR_CC_SRC)
+
+OBJECTS :=           \
+	$(C_SRC:.c=.o)      \
+	$(CC_SRC:.cc=.o)    \
+	$(RAGEL_SRC:.rl=.o) \
+	$(BISON_SRC:.yy=.o)
+
+INCLUDE_DIRS += \
+	-I $(PROJECT_SRC_DIR)/src
+
+# common makefile
+include $(PACKAGER_DIR)/common/c++/common.mk
+
+# dependencies
+set-dependencies: casper-connectors-v8-dep-on v8-dep-on
+
+# this is a command line tool
+all: exec
+
+# version
+version:
+	@echo " $(LOG_COMPILING_PREFIX) - patching $(PROJECT_SRC_DIR)/src/version.h"
+	@cp -f $(PROJECT_SRC_DIR)/src/version.tpl.h $(PROJECT_SRC_DIR)/src/version.h
+	@sed -i.bak s#"@b.n.s@"#${EXECUTABLE_SUFFIX}#g $(PROJECT_SRC_DIR)/src/version.h
+	@sed -i.bak s#"x.x.x"#$(VERSION)#g $(PROJECT_SRC_DIR)/src/version.h
+	@sed -i.bak s#"n.n.n"#$(REL_NAME)#g $(PROJECT_SRC_DIR)/src/version.h
+	@sed -i.bak s#"d.d.d"#"$(REL_DATE)"#g $(PROJECT_SRC_DIR)/src/version.h
+	@sed -i.bak s#"v.v.v"#"$(REL_VARIANT)"#g $(PROJECT_SRC_DIR)/src/version.h
+	@rm -f $(PROJECT_SRC_DIR)/src/version.h.bak
