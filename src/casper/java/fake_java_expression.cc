@@ -21,6 +21,8 @@
 
 #include "casper/java/fake_java_expression.h"
 
+#include <string.h> // strchr
+
 casper::java::FakeJavaExpression::FakeJavaExpression ()
     : scanner_(ast_),
       parser_(ast_, scanner_, *this)
